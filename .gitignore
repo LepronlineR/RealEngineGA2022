@@ -60,3 +60,7 @@ dkms.conf
 *.suo
 *.lock
 *.db
+*.opendb
+*.db-shm
+*.db-wal
+*.sqlite
