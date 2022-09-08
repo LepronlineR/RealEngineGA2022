@@ -21,9 +21,21 @@
     <ClCompile Include="wm.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="heap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tlsf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="heap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tlsf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

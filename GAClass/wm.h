@@ -2,11 +2,13 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "heap.h"
 
 typedef struct wm_window_t wm_window_t;
+typedef struct heap_t heap_t;
 
 // Windows operations
-wm_window_t* wm_create();
+wm_window_t* wm_create(heap_t* heap);
 int wm_pump(wm_window_t* window);
 void wm_destroy(wm_window_t* window);
 

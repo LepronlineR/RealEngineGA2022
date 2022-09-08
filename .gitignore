@@ -61,3 +61,10 @@ dkms.conf
 *.ipch
 *.suo
 *.db
+*.lock
+*.sqlite
+*.vsidx
+*.opendb
+*.db-shm
+*.db-wal
+*.vcsproj

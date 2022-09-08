@@ -19,6 +19,7 @@ enum {
 
 typedef struct wm_window_t {
     HWND hwnd;
+    heap_t* heap;
     int quit;
     int has_focus;
     uint32_t mouse_mask;
@@ -97,7 +98,7 @@ static LRESULT CALLBACK _window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-wm_window_t* wm_create() {
+wm_window_t* wm_create(heap_t* heap) {
 
     WNDCLASS wc = {
         .lpfnWndProc = _window_proc,
@@ -127,12 +128,13 @@ wm_window_t* wm_create() {
         return 0;
     }
 
-    wm_window_t* win = calloc(1, sizeof(wm_window_t));
+    wm_window_t* win = heap_alloc(heap, sizeof(wm_window_t), 8);
     win->has_focus = 0;
     win->hwnd = hwnd;
     win->key_mask = 0;
     win->mouse_mask = 0;
     win->quit = 0;
+    win->heap = heap;
 
     SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR) win);
 
@@ -165,5 +167,5 @@ void wm_get_mouse_move(wm_window_t* window, int* x, int* y) {
 
 void wm_destroy(wm_window_t* window) {
     DestroyWindow(window->hwnd);
-    free(window);
+    heap_free(window->heap, window);
 }
