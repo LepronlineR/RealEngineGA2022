@@ -51,16 +51,13 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# Visual Studio Stuff
+# Visual Studio junk
 *.tlog
-*.ipch
-*.recipe
-*.vsidx
 *.log
+*.recipe
+*.filters
+*.user
+*.lastbuildstate
+*.ipch
 *.suo
-*.lock
 *.db
-*.opendb
-*.db-shm
-*.db-wal
-*.sqlite
