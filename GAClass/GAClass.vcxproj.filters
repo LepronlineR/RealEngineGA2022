@@ -27,6 +27,9 @@
     <ClCompile Include="tlsf.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="debug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wm.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tlsf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

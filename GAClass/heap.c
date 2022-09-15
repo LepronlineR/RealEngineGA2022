@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "heap.h"
 #include "tlsf.h"
+#include "debug.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -24,7 +25,7 @@ heap_t* heap_create(size_t grow_increment) {
 	heap_t* heap = VirtualAlloc(NULL, sizeof(heap_t) + tlsf_size(),
 		MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	if (!heap) { // system out of memory
-		printf("OOM\n");
+		debug_print_line(k_print_error, "System is out of memory");
 		return NULL;
 	}
 	heap->grow_increment = grow_increment;
@@ -41,7 +42,7 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 		arena_t* arena = VirtualAlloc(NULL, arena_size + tlsf_pool_overhead(),
 			MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 		if (!heap) { // system out of memory
-			printf("OOM\n");
+			debug_print_line(k_print_error, "System is out of memory");
 			return NULL;
 		}
 		// assign the current arena and set the next arena
