@@ -30,6 +30,15 @@
     <ClCompile Include="debug.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="thread.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="atomic.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="atomic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wm.h">
@@ -42,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="thread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

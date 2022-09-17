@@ -2,7 +2,12 @@
 #include <stdio.h>
 #include "wm.h"
 #include "heap.h"
-#include "debug.h"
+#include "debug.h" 
+#include "thread.h"
+
+static int thread_function(void* data) {
+	return 0;
+}
 
 int main(int argc, char** argv) {
 
@@ -10,6 +15,9 @@ int main(int argc, char** argv) {
 	debug_set_print_mask(k_print_error | k_print_warning);
 
 	heap_t* heap = heap_create(2 * 1024 * 1024);
+
+	thread_t* thread = thread_create(thread_function, heap);
+	thread_destroy(thread);
 
 	wm_window_t* window = wm_create(heap);
 

@@ -131,15 +131,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="atomic.c" />
     <ClCompile Include="debug.c" />
     <ClCompile Include="heap.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="atomic.h" />
+    <ClCompile Include="thread.c" />
     <ClCompile Include="tlsf.c" />
     <ClCompile Include="wm.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debug.h" />
     <ClInclude Include="heap.h" />
+    <ClInclude Include="thread.h" />
     <ClInclude Include="tlsf.h" />
     <ClInclude Include="wm.h" />
   </ItemGroup>

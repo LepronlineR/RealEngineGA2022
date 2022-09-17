@@ -1,7 +1,7 @@
 #include <stdio.h>	
 #include <stdarg.h>
 #include <stdint.h>
-#include <DbgHelp.h>
+//#include <DbgHelp.h>
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 

@@ -2,27 +2,29 @@
 
 static uint32_t s_mask = 0xffffffff;
 
-static LONG debug_exception_handler(LPEXCEPTION_POINTERS POINTER) {
-	debug_print_line(k_print_error, "Caught unhandled exception!");
-	
-	HANDLE file = CreateFile(L"GA2022-crash.dmp", );
-	if (file != INVALID_HANDLE_VALUE) {
-		MINDUMP_EXCEPTION_INFORMATION mini_exception = {0};
+static LONG debug_exception_handler(LPEXCEPTION_POINTERS ExceptionInfo)
+{
+	debug_print(k_print_error, "Caught exception!\n");
+	/*
+	HANDLE file = CreateFile(L"ga2022-crash.dmp", GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (file != INVALID_HANDLE_VALUE)
+	{
+		MINIDUMP_EXCEPTION_INFORMATION mini_exception = { 0 };
 		mini_exception.ThreadId = GetCurrentThreadId();
 		mini_exception.ExceptionPointers = ExceptionInfo;
 		mini_exception.ClientPointers = FALSE;
 
 		MiniDumpWriteDump(GetCurrentProcess(),
-			GetCurrentProcessID(),
+			GetCurrentProcessId(),
 			file,
-			MiniDumpWithTreadInfo,
+			MiniDumpWithThreadInfo,
 			&mini_exception,
 			NULL,
 			NULL);
 
-		CloseHandle();
-	}
-	
+		CloseHandle(file);
+	}*/
+
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 
