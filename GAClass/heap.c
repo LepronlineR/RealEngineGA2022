@@ -155,7 +155,7 @@ void heap_destroy(heap_t* heap) {
 		alloc_node_t* node = heap->allocation->head;
 		alloc_node_t* save_node = NULL;
 		for (int x = 0; x < heap->allocation->size; x++) {
-			debug_backtrace(node);
+			debug_backtrace(node->memory_size, node->frames, node->backtrace);
 			save_node = node->next;
 			VirtualFree(node, 0, MEM_RELEASE);
 			node = save_node;

@@ -1,5 +1,4 @@
 #include "debug.h"
-#include "heap.h"
 
 static uint32_t s_mask = 0xffffffff;
 
@@ -35,7 +34,6 @@ void debug_install_exception_handler() {
 
 void debug_set_print_mask(uint32_t mask) {
 	s_mask = mask;
-
 }
 
 void debug_print_line(uint32_t type, _Printf_format_string_ const char* format, ...) {
@@ -59,11 +57,11 @@ void debug_print_line(uint32_t type, _Printf_format_string_ const char* format, 
 
 }
 
-void debug_backtrace(alloc_node_t* allocation_node) {
+void debug_backtrace(size_t memory_size, unsigned short frames, char** backtrace) {
 	debug_print_line(k_print_warning,
-		"Memory leak of size %zu bytes with callstack:\n", allocation_node->memory_size);
-	for (int x = 0; x < allocation_node->frames; x++) {
+		"Memory leak of size %zu bytes with callstack:\n", memory_size);
+	for (int x = 0; x < frames; x++) {
 		debug_print_line(k_print_warning,
-			"[%d] %s\n", x, allocation_node->backtrace[x]);
+			"[%d] %s\n", x, backtrace[x]);
 	}
 }
