@@ -121,7 +121,8 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 		MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
 	char buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TCHAR)];
-	SYMBOL_INFO* symbol = (SYMBOL_INFO*) buffer;	symbol->MaxNameLen = 255;
+	SYMBOL_INFO* symbol = (SYMBOL_INFO*) buffer;	
+	symbol->MaxNameLen = 255;
 	symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
 	if (symbol) {
 		for (unsigned int x = 0; x < frames; x++) {
