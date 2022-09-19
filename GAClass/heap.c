@@ -129,7 +129,7 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 			SymFromAddr(process, (DWORD64)(stack[x]), 0, symbol);
 			backtrace[x] = VirtualAlloc(NULL, 128 * sizeof(char),
 				MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-			strcpy_s(backtrace[x],128, symbol->Name);
+			strcpy_s(backtrace[x], 128, symbol->Name);
 			// manually check for main in order to stop the call stack
 			if (strcmp(MAIN_STRING_NAME, symbol->Name) == 0) {
 				frames = x + 1;
