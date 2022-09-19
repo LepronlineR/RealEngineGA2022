@@ -1,23 +1,17 @@
+#ifndef __THREAD_H__
+#define __THREAD_H__
+
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
 typedef struct thread_t thread_t;
 
-thread_t* thread_create(int (*function)(void*), void* data) {
-	HANDLE h = CreateThread(NULL, 0, function, data, CREATE_SUSPENDED, NULL);
-	if (h == INVALID_HANDLE_VALUE) { // failed to create thread
-		debug_print_line(k_print_warning, "Thread failed to create\n");
-		return NULL;
-	}
-	ResumeThread(h);
-	return (thread_t*)h;
-}
+// Creates a new thread.
+// Thread begins running function with data on return.
+thread_t* thread_create(int (*function)(void*), void* data);
 
-int thread_destroy(thread_t* thread) {
-	// Wait for thread to complete and then destroy the thread (blocking call)
-	WaitForSingleObject(thread, INFINITE);
-	int code = 0;
-	GetExitCodeThread(thread, &code);
-	CloseHandle(thread);
-	return code;
-}
+// Waits for a thread to complete and destroys it.
+// Returns the thread's exit code.
+int thread_destroy(thread_t* thread);
+
+#endif

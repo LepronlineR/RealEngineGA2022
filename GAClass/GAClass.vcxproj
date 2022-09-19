@@ -81,7 +81,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;-lDbgHelp</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -111,7 +111,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;-lDbgHelp</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,8 +134,10 @@
     <ClCompile Include="atomic.c" />
     <ClCompile Include="debug.c" />
     <ClCompile Include="heap.c" />
+    <ClCompile Include="hw1.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="atomic.h" />
+    <ClCompile Include="mutex.c" />
     <ClCompile Include="thread.c" />
     <ClCompile Include="tlsf.c" />
     <ClCompile Include="wm.c" />
@@ -143,6 +145,8 @@
   <ItemGroup>
     <ClInclude Include="debug.h" />
     <ClInclude Include="heap.h" />
+    <ClInclude Include="hw1.h" />
+    <ClInclude Include="mutex.h" />
     <ClInclude Include="thread.h" />
     <ClInclude Include="tlsf.h" />
     <ClInclude Include="wm.h" />

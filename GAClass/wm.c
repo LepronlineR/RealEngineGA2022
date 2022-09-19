@@ -1,5 +1,6 @@
 #include "wm.h"
 #include "debug.h"
+#include "heap.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -138,9 +139,6 @@ wm_window_t* wm_create(heap_t* heap) {
     win->mouse_mask = 0;
     win->quit = 0;
     win->heap = heap;
-
-    void* stack[10];
-    debug_backtrace(stack, _countof(stack));
 
     SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR) win);
 

@@ -1,9 +1,12 @@
+#ifndef __DEBUG_H__
+#define __DEBUG_H__
+
 #include <stdio.h>	
 #include <stdarg.h>
 #include <stdint.h>
-//#include <DbgHelp.h>
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <DbgHelp.h>
 
 typedef enum debug_print_t {
 	k_print_info = 1 << 0,
@@ -15,3 +18,5 @@ static LONG debug_exception_handler(LPEXCEPTION_POINTERS POINTER);
 void debug_install_exception_handler();
 void debug_set_print_mask(uint32_t mask);
 void debug_print_line(uint32_t type, _Printf_format_string_ const char* format, ...);
+
+#endif

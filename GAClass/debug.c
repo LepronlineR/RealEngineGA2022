@@ -1,11 +1,11 @@
 #include "debug.h"
+#include "heap.h"
 
 static uint32_t s_mask = 0xffffffff;
 
 static LONG debug_exception_handler(LPEXCEPTION_POINTERS ExceptionInfo)
 {
-	debug_print(k_print_error, "Caught exception!\n");
-	/*
+	debug_print_line(k_print_error, "Caught an exception!\n");
 	HANDLE file = CreateFile(L"ga2022-crash.dmp", GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (file != INVALID_HANDLE_VALUE)
 	{
@@ -23,7 +23,7 @@ static LONG debug_exception_handler(LPEXCEPTION_POINTERS ExceptionInfo)
 			NULL);
 
 		CloseHandle(file);
-	}*/
+	}
 
 	return EXCEPTION_EXECUTE_HANDLER;
 }
@@ -57,12 +57,13 @@ void debug_print_line(uint32_t type, _Printf_format_string_ const char* format, 
 	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 	WriteConsoleA(out, buffer, bytes, &written, NULL);
 
-	/*if (type & k_print_error) {
-
-	}*/
-
 }
 
-int debug_backtrace(void** stack, int stack_capacity) {
-	CaptureStackBackTrace(1, stack_capacity, stack, NULL);
+void debug_backtrace(alloc_node_t* allocation_node) {
+	debug_print_line(k_print_warning,
+		"Memory leak of size %zu bytes with callstack:\n", allocation_node->memory_size);
+	for (int x = 0; x < allocation_node->frames; x++) {
+		debug_print_line(k_print_warning,
+			"[%d] %s\n", x, allocation_node->backtrace[x]);
+	}
 }
