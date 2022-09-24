@@ -2,6 +2,7 @@
 #define __FILESYS_H__
 
 #include <stdbool.h>
+#include <stdint.h> 
 
 // Asynchronous read/write file system.
 

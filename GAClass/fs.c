@@ -10,10 +10,17 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+typedef struct comp_t {
+	queue_t* file_queue;
+	thread_t* file_thread;
+} comp_t;
+
 typedef struct fs_t {
 	heap_t* heap;
 	queue_t* file_queue;
 	thread_t* file_thread;
+	comp_t* compressor;
+	comp_t* decompressor;
 } fs_t;
 
 typedef enum fs_work_op_t {
@@ -40,10 +47,27 @@ fs_t* fs_create(heap_t* heap, int queue_capacity) {
 	fs->heap = heap;
 	fs->file_queue = queue_create(heap, queue_capacity);
 	fs->file_thread = thread_create(file_thread_func, fs);
+	// Create the compressor and decompressor for file decompression
+	fs->compressor = heap_alloc(heap, sizeof(comp_t), 8);
+	fs->compressor->file_queue = queue_create(heap, queue_capacity);
+	fs->compressor->file_thread = thread_create(file_thread_func, fs);
+	fs->decompressor = heap_alloc(heap, sizeof(comp_t), 8);
+	fs->decompressor->file_queue = queue_create(heap, queue_capacity);
+	fs->decompressor->file_thread = thread_create(file_thread_func, fs);
 	return fs;
 }
 
 void fs_destroy(fs_t* fs) {
+	// remove the compressor/decompressor
+	queue_push(fs->compressor->file_queue, NULL);
+	thread_destroy(fs->compressor->file_thread);
+	queue_destroy(fs->compressor->file_queue);
+	heap_free(fs->heap, fs->compressor);
+	queue_push(fs->decompressor->file_queue, NULL);
+	thread_destroy(fs->decompressor->file_thread);
+	queue_destroy(fs->decompressor->file_queue);
+	heap_free(fs->heap, fs->decompressor);
+	// remove everything else
 	queue_push(fs->file_queue, NULL);
 	thread_destroy(fs->file_thread);
 	queue_destroy(fs->file_queue);
@@ -77,8 +101,8 @@ fs_work_t* fs_write(fs_t* fs, const char* path, const void* buffer, size_t size,
 	work->null_terminate = false;
 	work->use_compression = use_compression;
 
-	if (use_compression) {
-		// HOMEWORK 2: Queue file write work on compression queue!
+	if (use_compression) { // HOMEWORK 2: Queue file write work on compression queue!
+		queue_push(fs->compressor->file_queue, work);
 	} else {
 		queue_push(fs->file_queue, work);
 	}
@@ -119,7 +143,7 @@ void fs_work_destroy(fs_work_t* work) {
 	}
 }
 
-static void file_read(fs_work_t* work) {
+static void file_read(fs_t* fs, fs_work_t* work) {
 	wchar_t wide_path[1024];
 	if (MultiByteToWideChar(CP_UTF8, 0, work->path, -1, wide_path, sizeof(wide_path)) <= 0) {
 		work->result = -1;
@@ -155,8 +179,8 @@ static void file_read(fs_work_t* work) {
 
 	CloseHandle(handle);
 
-	if (work->use_compression) {
-		// HOMEWORK 2: Queue file read work on decompression queue!
+	if (work->use_compression) { // HOMEWORK 2: Queue file read work on decompression queue!
+		queue_push(fs->decompressor->file_queue, work);
 	} else {
 		event_signal(work->done);
 	}
@@ -200,7 +224,7 @@ static int file_thread_func(void* user) {
 
 		switch (work->op) {
 		case k_fs_work_op_read:
-			file_read(work);
+			file_read(fs, work);
 			break;
 		case k_fs_work_op_write:
 			file_write(work);

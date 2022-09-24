@@ -4,12 +4,12 @@
 // Increment a number atomically.
 // Returns the old value of the number.
 // Performs the following operation atomically:
-int atomic_inc(int* address);
+int atomic_increment(int* address);
 
 // Decrement a number atomically.
 // Returns the old value of the number.
 // Performs the following operation atomically:
-int atomic_dec(int* address);
+int atomic_decrement(int* address);
 
 // Compare two numbers atomically and assign if equal.
 // Returns the old value of the number.

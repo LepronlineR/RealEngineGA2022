@@ -7,6 +7,7 @@
 
 // Homework includes
 #include "hw1.h"
+#include "hw2.h"
 
 static int thread_function(void* data) {
 	return 0;
@@ -17,7 +18,8 @@ int main(int argc, char** argv) {
 	debug_install_exception_handler();
 	debug_set_print_mask(k_print_error | k_print_warning);
 
-	homework1_test();
+	//homework1_test();
+	homework2_test();
 
 	heap_t* heap = heap_create(2 * 1024 * 1024);
 	wm_window_t* window = wm_create(heap);

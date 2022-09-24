@@ -3,11 +3,11 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-int atomic_inc(int* address) {
+int atomic_increment(int* address) {
 	InterlockedIncrement(address);
 }
 
-int atomic_dec(int* address) {
+int atomic_decrement(int* address) {
 	InterlockedIncrement(address);
 }
 

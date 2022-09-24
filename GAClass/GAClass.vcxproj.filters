@@ -60,6 +60,24 @@
     <ClCompile Include="include\tlsf\tlsf.c">
       <Filter>Includes</Filter>
     </ClCompile>
+    <ClCompile Include="include\lz4\lz4.c">
+      <Filter>Includes</Filter>
+    </ClCompile>
+    <ClCompile Include="include\lz4\lz4file.c">
+      <Filter>Includes</Filter>
+    </ClCompile>
+    <ClCompile Include="include\lz4\lz4frame.c">
+      <Filter>Includes</Filter>
+    </ClCompile>
+    <ClCompile Include="include\lz4\lz4hc.c">
+      <Filter>Includes</Filter>
+    </ClCompile>
+    <ClCompile Include="include\lz4\xxhash.c">
+      <Filter>Includes</Filter>
+    </ClCompile>
+    <ClCompile Include="hw2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wm.h">
@@ -94,6 +112,27 @@
     </ClInclude>
     <ClInclude Include="include\tlsf\tlsf.h">
       <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lz4\lz4.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lz4\lz4file.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lz4\lz4frame.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lz4\lz4frame_static.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lz4\lz4hc.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lz4\xxhash.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="hw2.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
