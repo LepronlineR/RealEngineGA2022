@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
-#include "tlsf.h"
+#include "include/tlsf/tlsf.h"
 #include "debug.h"
 
 #define WIN32_LEAN_AND_MEAN

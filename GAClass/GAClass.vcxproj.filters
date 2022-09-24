@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{29e0712b-7c77-471c-ab30-464f2de174d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -22,9 +25,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="heap.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tlsf.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="debug.c">
@@ -45,15 +45,27 @@
     <ClCompile Include="hw1.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="event.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="queue.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="semaphore.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\tlsf\tlsf.c">
+      <Filter>Includes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="heap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tlsf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="debug.h">
@@ -67,6 +79,21 @@
     </ClInclude>
     <ClInclude Include="hw1.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="semaphore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tlsf\tlsf.h">
+      <Filter>Includes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

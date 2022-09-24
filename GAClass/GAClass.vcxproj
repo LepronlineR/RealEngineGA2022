@@ -70,6 +70,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ExecutablePath>C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include;$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ExecutablePath>C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include;$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -77,11 +83,14 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;-lDbgHelp</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -107,11 +116,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;-lDbgHelp</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,22 +145,30 @@
   <ItemGroup>
     <ClCompile Include="atomic.c" />
     <ClCompile Include="debug.c" />
+    <ClCompile Include="event.c" />
+    <ClCompile Include="fs.c" />
     <ClCompile Include="heap.c" />
     <ClCompile Include="hw1.c" />
+    <ClCompile Include="include\tlsf\tlsf.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="atomic.h" />
     <ClCompile Include="mutex.c" />
+    <ClCompile Include="queue.c" />
+    <ClCompile Include="semaphore.c" />
     <ClCompile Include="thread.c" />
-    <ClCompile Include="tlsf.c" />
     <ClCompile Include="wm.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debug.h" />
+    <ClInclude Include="event.h" />
+    <ClInclude Include="fs.h" />
     <ClInclude Include="heap.h" />
     <ClInclude Include="hw1.h" />
+    <ClInclude Include="include\tlsf\tlsf.h" />
     <ClInclude Include="mutex.h" />
+    <ClInclude Include="queue.h" />
+    <ClInclude Include="semaphore.h" />
     <ClInclude Include="thread.h" />
-    <ClInclude Include="tlsf.h" />
     <ClInclude Include="wm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
