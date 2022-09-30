@@ -22,6 +22,10 @@ fs_t* fs_create(heap_t* heap, int queue_capacity);
 // Destroy a previously created file system.
 void fs_destroy(fs_t* fs);
 
+// if file compression is used, then send the 
+// compression size to the compression buffer.
+void file_read_compression_size(fs_work_t* work);
+
 // Queue a file read.
 // File at the specified path will be read in full.
 // Memory for the file will be allocated out of the provided heap.

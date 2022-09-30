@@ -134,5 +134,11 @@
     <ClInclude Include="hw2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="remath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vec3f.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
