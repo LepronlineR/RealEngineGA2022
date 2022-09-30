@@ -211,7 +211,7 @@ static void file_write(fs_work_t* work) {
 		return;
 	}
 
-	work->size = bytes_written + bytes_written_compression;
+	work->size = bytes_written;
 
 	CloseHandle(handle);
 
