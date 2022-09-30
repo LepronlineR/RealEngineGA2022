@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 	// homework1_test();
 	homework2_test();
 
-	/*
+	
 	heap_t* heap = heap_create(2 * 1024 * 1024);
 	wm_window_t* window = wm_create(heap);
 
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 
 	wm_destroy(window);
 	heap_destroy(heap);
-	*/
+	
 
 	return 0;
 }
