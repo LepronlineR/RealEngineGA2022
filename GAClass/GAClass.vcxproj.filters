@@ -78,6 +78,9 @@
     <ClCompile Include="hw2.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="timeofday.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wm.h">

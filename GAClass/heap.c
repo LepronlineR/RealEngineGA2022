@@ -154,12 +154,12 @@ void heap_destroy(heap_t* heap) {
 	if (heap->allocation->head != NULL && heap->allocation->size > 0) {
 		alloc_node_t* node = heap->allocation->head;
 		alloc_node_t* save_node = NULL;
-		//for (int x = 0; x < heap->allocation->size; x++) {
-		//	debug_backtrace(node->memory_size, node->frames, node->backtrace);
-		//	save_node = node->next;
-		//	VirtualFree(node, 0, MEM_RELEASE);
-		//	node = save_node;
-		//}
+		for (int x = 0; x < heap->allocation->size; x++) {
+			debug_backtrace(node->memory_size, node->frames, node->backtrace);
+			save_node = node->next;
+			VirtualFree(node, 0, MEM_RELEASE);
+			node = save_node;
+		}
 	}
 	// Free the tlsf
 	tlsf_destroy(heap->tlsf);

@@ -162,6 +162,7 @@
     <ClCompile Include="queue.c" />
     <ClCompile Include="semaphore.c" />
     <ClCompile Include="thread.c" />
+    <ClCompile Include="timeofday.c" />
     <ClCompile Include="wm.c" />
   </ItemGroup>
   <ItemGroup>
