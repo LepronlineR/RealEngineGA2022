@@ -2,6 +2,7 @@
 #include "heap.h"
 #include "timer.h"
 #include "timer_object.h"
+#include "queue.h"
 
 #include <stddef.h>
 #include <stdbool.h>
@@ -13,6 +14,7 @@ typedef struct trace_t {
 	heap_t* heap;
 	timer_object_t* root_time;
 	trace_object_t* trace_obj;
+	queue_t* trace_obj_queue;
 } trace_t;
 
 typedef struct trace_object_t {
@@ -30,6 +32,7 @@ trace_t* trace_create(heap_t* heap, int event_capacity) {
 	trace->started = false;
 	trace->max_duration = event_capacity;
 	trace->trace_obj = NULL;
+	trace->trace_obj_queue = queue_create(heap, 256);
 }
 
 void trace_destroy(trace_t* trace) {
@@ -45,6 +48,9 @@ void trace_duration_push(trace_t* trace, const char* name) {
 	object->pid = getpid();
 	object->event_type = 'B';
 	object->ts = timer_object_get_ms(trace->root_time);
+	
+	// push trace into the queue
+	queue_push(trace->trace_obj_queue, object);
 
 	// add trace object to the end of trace
 	trace_object_t* last_object = trace->trace_obj;

@@ -1,6 +1,8 @@
 #ifndef __QUEUE_H__
 #define __QUEUE_H__
 
+#pragma once
+
 // Thread-safe Queue container
 
 // Handle to a thread-safe queue.
