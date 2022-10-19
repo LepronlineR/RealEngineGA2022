@@ -7,10 +7,6 @@
 #include "include/tlsf/tlsf.h"
 #include "debug.h"
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <windowsx.h>
-
 typedef struct arena_t {
 	pool_t pool;
 	struct arena_t* next;

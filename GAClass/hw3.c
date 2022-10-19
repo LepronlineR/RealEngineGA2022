@@ -33,8 +33,8 @@ void homework3_test() {
 	trace_t* trace = trace_create(heap, 100);
 
 	// Capturing has *not* started so these calls can safely be ignored.
-	trace_duration_push(trace, "should be ignored");
-	trace_duration_pop(trace);
+	//trace_duration_push(trace, "should be ignored");
+	//trace_duration_pop(trace);
 
 	// Start capturing events.
 	// Eventually we will want to write events to a file -- "trace.json".

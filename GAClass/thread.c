@@ -19,3 +19,7 @@ int thread_destroy(thread_t* thread) {
 	CloseHandle(thread);
 	return code;
 }
+
+void thread_sleep(uint32_t ms) {
+	Sleep(ms);
+}

@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
 		uint32_t mask = wm_get_mouse_mask(window);
 
 		uint32_t now = timer_ticks_to_ms(timer_get_ticks());
-		debug_print(k_print_info, "T=%dms, MOUSE mask=%x move=%dx%d\n",
+		debug_print_line(k_print_info, "T=%dms, MOUSE mask=%x move=%dx%d\n",
 			timer_object_get_ms(root_time), mask, x, y);
 	}
 

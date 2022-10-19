@@ -150,6 +150,7 @@
     <ClCompile Include="heap.c" />
     <ClCompile Include="hw1.c" />
     <ClCompile Include="hw2.c" />
+    <ClCompile Include="hw3.c" />
     <ClCompile Include="include\lz4\lz4.c" />
     <ClCompile Include="include\lz4\lz4file.c" />
     <ClCompile Include="include\lz4\lz4frame.c" />
@@ -158,11 +159,16 @@
     <ClCompile Include="include\tlsf\tlsf.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="atomic.h" />
+    <ClCompile Include="mat4f.c" />
     <ClCompile Include="mutex.c" />
+    <ClCompile Include="quatf.c" />
     <ClCompile Include="queue.c" />
     <ClCompile Include="semaphore.c" />
     <ClCompile Include="thread.c" />
     <ClCompile Include="timeofday.c" />
+    <ClCompile Include="timer.c" />
+    <ClCompile Include="timer_object.c" />
+    <ClCompile Include="trace.c" />
     <ClCompile Include="wm.c" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +178,7 @@
     <ClInclude Include="heap.h" />
     <ClInclude Include="hw1.h" />
     <ClInclude Include="hw2.h" />
+    <ClInclude Include="hw3.h" />
     <ClInclude Include="include\lz4\lz4.h" />
     <ClInclude Include="include\lz4\lz4file.h" />
     <ClInclude Include="include\lz4\lz4frame.h" />
@@ -179,11 +186,17 @@
     <ClInclude Include="include\lz4\lz4hc.h" />
     <ClInclude Include="include\lz4\xxhash.h" />
     <ClInclude Include="include\tlsf\tlsf.h" />
+    <ClInclude Include="mat4f.h" />
+    <ClInclude Include="quatf.h" />
     <ClInclude Include="remath.h" />
     <ClInclude Include="mutex.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="semaphore.h" />
     <ClInclude Include="thread.h" />
+    <ClInclude Include="timeofday.h" />
+    <ClInclude Include="timer.h" />
+    <ClInclude Include="timer_object.h" />
+    <ClInclude Include="trace.h" />
     <ClInclude Include="vec3f.h" />
     <ClInclude Include="wm.h" />
   </ItemGroup>

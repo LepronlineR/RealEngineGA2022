@@ -81,6 +81,24 @@
     <ClCompile Include="timeofday.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="timer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="timer_object.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="trace.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mat4f.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="quatf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hw3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wm.h">
@@ -141,6 +159,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vec3f.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timeofday.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timer_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mat4f.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="quatf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hw3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

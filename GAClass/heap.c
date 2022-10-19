@@ -2,6 +2,10 @@
 
 #define MAIN_STRING_NAME "main"
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <windowsx.h>
+
 allocation_list_t* initialize_allocation_list() {
 	allocation_list_t* list = VirtualAlloc(NULL, sizeof(allocation_list_t),
 		MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
@@ -127,9 +131,9 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 	if (symbol) {
 		for (unsigned int x = 0; x < frames; x++) {
 			SymFromAddr(process, (DWORD64)(stack[x]), 0, symbol);
-			backtrace[x] = VirtualAlloc(NULL, 128 * sizeof(char),
+			backtrace[x] = VirtualAlloc(NULL, 256 * sizeof(char),
 				MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-			strcpy_s(backtrace[x], 128, symbol->Name);
+			strcpy_s(backtrace[x], 256, symbol->Name);
 			// manually check for main in order to stop the call stack
 			if (strcmp(MAIN_STRING_NAME, symbol->Name) == 0) {
 				frames = x + 1;
