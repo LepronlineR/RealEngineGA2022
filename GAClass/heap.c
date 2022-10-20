@@ -1,13 +1,51 @@
 #include "heap.h"
 
+#include "debug.h"
+#include "mutex.h"
+#include "include/tlsf/tlsf.h"
+
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #define MAIN_STRING_NAME "main"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 
+typedef struct arena_t {
+	pool_t pool;
+	struct arena_t* next;
+} arena_t;
+
+typedef struct alloc_node_t {
+	void* address;
+	// tracking the stack backtrace and memory size
+	char** backtrace;
+	unsigned short frames;
+	size_t memory_size;
+	// the list
+	struct alloc_node_t* next;
+	struct alloc_node_t* prev;
+} alloc_node_t;
+
+typedef struct allocation_list_t {
+	struct alloc_node_t* tail;
+	struct alloc_node_t* head;
+	int size;
+} allocation_list_t;
+
+typedef struct heap_t {
+	tlsf_t tlsf;
+	size_t grow_increment;
+	arena_t* arena;
+	allocation_list_t* allocation;
+	mutex_t* mutex;
+} heap_t;
+
 allocation_list_t* initialize_allocation_list() {
-	allocation_list_t* list = VirtualAlloc(NULL, sizeof(allocation_list_t),
+	allocation_list_t* list = VirtualAlloc(NULL, sizeof(allocation_list_t) + tlsf_size(),
 		MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	list->tail = NULL;
 	list->head = NULL;
@@ -16,7 +54,13 @@ allocation_list_t* initialize_allocation_list() {
 }
 
 void insert_to_list(void* address, size_t memory_size, unsigned short frames, char** backtrace, allocation_list_t* list) {
-	alloc_node_t* n = VirtualAlloc(NULL, sizeof(alloc_node_t),
+	
+	if (list == NULL) {
+		debug_print_line(k_print_error, "Called an insert to a list that is NULL\n");
+		return;
+	}
+	
+	alloc_node_t* n = VirtualAlloc(NULL, sizeof(alloc_node_t) + tlsf_size(),
 		MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	n->next = NULL;
 	n->prev = NULL;
@@ -93,10 +137,14 @@ heap_t* heap_create(size_t grow_increment) {
 	heap->grow_increment = grow_increment;
 	heap->tlsf = tlsf_create(heap + 1);
 	heap->arena = NULL;
+	heap->mutex = mutex_create();
 	return heap;
 }
 
 void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
+
+	mutex_lock(heap->mutex);
+
 	void* address = tlsf_memalign(heap->tlsf, alignment, size);
 	if (!address) { // memory has not been allocated yet
 		// create more virtual memory to store the arena
@@ -144,13 +192,17 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 	SymCleanup(process);
 
 	insert_to_list(address, size, frames, backtrace, heap->allocation);
+
+	mutex_unlock(heap->mutex);
 	
 	return address;
 }
 
 void heap_free(heap_t* heap, void* address) {
+	mutex_lock(heap->mutex);
 	remove_from_list(heap->allocation, address);
 	tlsf_free(heap->tlsf, address);
+	mutex_unlock(heap->mutex);
 }
 
 void heap_destroy(heap_t* heap) {
@@ -165,6 +217,8 @@ void heap_destroy(heap_t* heap) {
 			node = save_node;
 		}
 	}
+	// Free the mutex
+	mutex_destroy(heap->mutex);
 	// Free the tlsf
 	tlsf_destroy(heap->tlsf);
 	// Free the arena

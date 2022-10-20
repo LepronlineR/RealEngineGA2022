@@ -4,6 +4,10 @@
 #include "heap.h"
 #include "queue.h"
 #include "thread.h"
+#include "debug.h"
+
+#include <stddef.h>
+#include <stdio.h>
 #include "include/lz4/lz4.h"
 
 #include <string.h>

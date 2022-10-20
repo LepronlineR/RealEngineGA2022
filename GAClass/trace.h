@@ -4,7 +4,7 @@ typedef struct heap_t heap_t;
 
 typedef struct trace_t trace_t;
 
-typedef struct trace_object_t trace_object_t;
+typedef struct trace_event_t trace_event_t;
 
 // Creates a CPU performance tracing system.
 // Event capacity is the maximum number of durations that can be traced.

@@ -1,40 +1,16 @@
 #ifndef __HEAP_H__
 #define __HEAP_H__
 
-#include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
-#include "include/tlsf/tlsf.h"
-#include "debug.h"
 
-typedef struct arena_t {
-	pool_t pool;
-	struct arena_t* next;
-} arena_t;
+typedef struct arena_t arena_t;
 
-typedef struct alloc_node_t {
-	void* address;
-	// tracking the stack backtrace and memory size
-	char** backtrace;
-	unsigned short frames;
-	size_t memory_size;
-	// the list
-	struct alloc_node_t* next;
-	struct alloc_node_t* prev;
-} alloc_node_t;
+typedef struct alloc_node_t alloc_node_t;
 
-typedef struct allocation_list_t {
-	struct alloc_node_t* tail;
-	struct alloc_node_t* head;
-	int size;
-} allocation_list_t;
+typedef struct allocation_list_t allocation_list_t;
 
-typedef struct heap_t {
-	tlsf_t tlsf;
-	size_t grow_increment;
-	arena_t* arena;
-	allocation_list_t* allocation;
-} heap_t;
+typedef struct heap_t heap_t;
 
 // ================== HEAP ==================
 
