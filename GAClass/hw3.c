@@ -1,6 +1,7 @@
 #include "hw3.h"
 
 #include "thread.h"
+#include "trace.h"
 #include "heap.h"
 
 void homework3_slower_function(trace_t* trace) {
@@ -50,6 +51,69 @@ void homework3_test() {
 
 	// Call a function that will push/pop duration events.
 	homework3_slow_function(trace);
+
+	// Wait for thread to finish.
+	thread_destroy(thread);
+
+	// Finish capturing. Write the trace.json file in Chrome tracing format.
+	trace_capture_stop(trace);
+
+	trace_destroy(trace);
+
+	heap_destroy(heap);
+}
+
+// =======================================================================================
+//									   TRACE TESTING
+// =======================================================================================
+
+void test_function_2(trace_t* trace) {
+	trace_duration_push(trace, "test_function_2");
+	thread_sleep(10);
+	test_function_3(trace);
+	thread_sleep(20);
+	test_function_4(trace);
+	thread_sleep(30);
+	test_function_5(trace);
+	trace_duration_pop(trace);
+}
+
+void test_function_3(trace_t* trace) {
+	trace_duration_push(trace, "test_function_3");
+	thread_sleep(1000);
+	test_function_4(trace);
+	trace_duration_pop(trace);
+}
+
+void test_function_4(trace_t* trace) {
+	trace_duration_push(trace, "test_function_4");
+	thread_sleep(50);
+	test_function_5(trace);
+	trace_duration_pop(trace);
+}
+
+void test_function_5(trace_t* trace) {
+	trace_duration_push(trace, "test_function_5");
+	thread_sleep(10);
+	trace_duration_pop(trace);
+}
+
+int trace_test_func(void* data) {
+	trace_t* trace = data;
+	homework3_slow_function(trace);
+	return 0;
+}
+
+void trace_test() {
+	heap_t* heap = heap_create(4096);
+	trace_t* trace = trace_create(heap, 100);
+	trace_capture_start(trace, "trace_test.json");
+
+	// Create a thread that will push/pop duration events.
+	thread_t* thread = thread_create(test_function_2, trace);
+
+	// Call a function that will push/pop duration events.
+	test_function_2(trace);
 
 	// Wait for thread to finish.
 	thread_destroy(thread);

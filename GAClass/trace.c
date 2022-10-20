@@ -40,12 +40,14 @@ trace_t* trace_create(heap_t* heap, int event_capacity) {
 	trace->max_duration = event_capacity;
 	trace->trace_event_head = NULL;
 	trace->trace_event_queue = queue_create(heap, event_capacity);
+	trace->mutex = mutex_create();
 	return trace;
 }
 
 void trace_destroy(trace_t* trace) {
 	queue_destroy(trace->trace_event_queue);
 	mutex_destroy(trace->mutex);
+	heap_free(trace->heap, trace);
 }
 
 void trace_duration_push(trace_t* trace, const char* name) {
@@ -155,24 +157,24 @@ void trace_capture_stop(trace_t* trace) {
 		return;
 	}
 
-	while (trace_event != NULL) {
-		char compressed_size_str[2048];
+	while (trace_event != NULL) { // for every trace event write into the file
+		char event_str[2048];
 		if (trace_event->next != NULL) {
-			snprintf(compressed_size_str, sizeof(compressed_size_str),
+			snprintf(event_str, sizeof(event_str),
 				"\t\t{\"name\":\"%s\",\"ph\":\"%c\",\"pid\":%d,\"tid\":\"%lu\",\"ts\":\"%d\"},\n",
 				trace_event->name, trace_event->event_type, trace_event->pid, trace_event->tid, trace_event->ts);
-		}
-		else {
-			snprintf(compressed_size_str, sizeof(compressed_size_str),
+		} else {
+			snprintf(event_str, sizeof(event_str),
 				"\t\t{\"name\":\"%s\",\"ph\":\"%c\",\"pid\":%d,\"tid\":\"%lu\",\"ts\":\"%d\"}\n",
 				trace_event->name, trace_event->event_type, trace_event->pid, trace_event->tid, trace_event->ts);
 		}
 
-		if (!WriteFile(handle, (LPVOID)compressed_size_str, strlen(compressed_size_str), NULL, NULL)) {
+		if (!WriteFile(handle, (LPVOID)event_str, strlen(event_str), NULL, NULL)) {
 			debug_print_line(k_print_error, "In 'trace_capture_stop' unable to write to json file.\n");
 			CloseHandle(handle);
 			return;
 		}
+		
 		
 		trace_event_t* temp = trace_event;
 		trace_event = trace_event->next;
@@ -191,4 +193,5 @@ void trace_capture_stop(trace_t* trace) {
 	mutex_unlock(trace->mutex);
 
 	CloseHandle(handle);
+	
 }
