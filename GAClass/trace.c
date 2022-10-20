@@ -14,16 +14,31 @@
 #include <windows.h>
 #include <windowsx.h>
 
+/* A trace, defines a trace structure that can be use to trace processes
+
+A trace contains a path to the file, a heap, a definition for when the trace process begins, and a mutex
+- the first trace event element to add every recorded trace event
+- a trace event queue to push and pop elements
+*/
 typedef struct trace_t {
 	bool started;
 	const char* path;
-	int max_duration;
 	heap_t* heap;
 	trace_event_t* trace_event_head;
 	queue_t* trace_event_queue;
 	mutex_t* mutex;
 } trace_t;
 
+/* A trace event, in a single list format :
+
+A trace event contains:
+- name of function
+- process ID
+- thread ID
+- time
+- event type (supports B: Begin and E: End for now)
+- next trace event
+*/
 typedef struct trace_event_t {
 	const char* name;
 	int pid;
@@ -37,7 +52,6 @@ trace_t* trace_create(heap_t* heap, int event_capacity) {
 	trace_t* trace = heap_alloc(heap, sizeof(trace_t), 8);
 	trace->heap = heap;
 	trace->started = false;
-	trace->max_duration = event_capacity;
 	trace->trace_event_head = NULL;
 	trace->trace_event_queue = queue_create(heap, event_capacity);
 	trace->mutex = mutex_create();
@@ -56,7 +70,7 @@ void trace_duration_push(trace_t* trace, const char* name) {
 
 	mutex_lock(trace->mutex);
 
-	// create a new trace event
+	// create a new trace event that begins with the current name
 	trace_event_t* trace_event = heap_alloc(trace->heap, sizeof(trace_event_t), 8);
 	trace_event->name = name;
 	trace_event->pid = getpid();
@@ -89,28 +103,29 @@ void trace_duration_pop(trace_t* trace) {
 
 	mutex_lock(trace->mutex);
 
-	// pop first from the queue (active thread in that queue), copy it to a list to then parse into json
-	trace_event_t* first_object = queue_pop(trace->trace_event_queue);
-	trace_event_t* first_object_copy = heap_alloc(trace->heap, sizeof(trace_event_t), 8);
+	// pop first from the queue (active thread in that queue), 
+	// copy it to a list to then parse into json later
+	trace_event_t* first_event = queue_pop(trace->trace_event_queue);
+	trace_event_t* first_event_copy = heap_alloc(trace->heap, sizeof(trace_event_t), 8);
 
-	first_object_copy->name = first_object->name;
-	first_object_copy->pid = first_object->pid;
-	first_object_copy->event_type = 'E';
-	first_object_copy->tid = first_object->tid;
-	first_object_copy->ts = timer_ticks_to_ms(timer_get_ticks());
-	first_object_copy->next = NULL;
+	first_event_copy->name = first_event->name;
+	first_event_copy->pid = first_event->pid;
+	first_event_copy->event_type = 'E';
+	first_event_copy->tid = first_event->tid;
+	first_event_copy->ts = timer_ticks_to_ms(timer_get_ticks());
+	first_event_copy->next = NULL;
 
 	// add trace object to the end of trace
 	trace_event_t* last_event = trace->trace_event_head;
 	if (last_event == NULL) { // no trace objects are in trace_obj yet
-		trace->trace_event_head = first_object_copy;
+		trace->trace_event_head = first_event_copy;
 	}
 	else {
 		trace_event_t* event_tracker = trace->trace_event_head;
 		while (event_tracker->next != NULL) { // loop through the obj to find the last trace object
 			event_tracker = event_tracker->next;
 		}
-		event_tracker->next = first_object_copy; // add it to the end of the list
+		event_tracker->next = first_event_copy; // add it to the end of the list
 	}
 
 	mutex_unlock(trace->mutex);
@@ -159,11 +174,13 @@ void trace_capture_stop(trace_t* trace) {
 
 	while (trace_event != NULL) { // for every trace event write into the file
 		char event_str[2048];
-		if (trace_event->next != NULL) {
+		if (trace_event->next != NULL) { 
+			// events from start to last - 1
 			snprintf(event_str, sizeof(event_str),
 				"\t\t{\"name\":\"%s\",\"ph\":\"%c\",\"pid\":%d,\"tid\":\"%lu\",\"ts\":\"%d\"},\n",
 				trace_event->name, trace_event->event_type, trace_event->pid, trace_event->tid, trace_event->ts);
-		} else {
+		} else { 
+			// last event remove the , from the event str
 			snprintf(event_str, sizeof(event_str),
 				"\t\t{\"name\":\"%s\",\"ph\":\"%c\",\"pid\":%d,\"tid\":\"%lu\",\"ts\":\"%d\"}\n",
 				trace_event->name, trace_event->event_type, trace_event->pid, trace_event->tid, trace_event->ts);
