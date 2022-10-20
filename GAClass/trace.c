@@ -127,9 +127,38 @@ void trace_capture_stop(trace_t* trace) {
 	trace->started = false;
 	// timer_object_destroy(trace->root_time);
 	trace_event_t* trace_event = trace->trace_event_head;
-	while (trace_event != NULL) {
-		printf("name: %s, pid: %d, tid: %lu, ts:%d, type:%c\n", 
-			trace_event->name, trace_event->pid, trace_event->tid, trace_event->ts, trace_event->event_type);
-		trace_event = trace_event->next;
+
+	// write to JSON format for each saved trace event in the trace event list starting from head
+	wchar_t wide_path[1024];
+	if (MultiByteToWideChar(CP_UTF8, 0, trace->path, -1, wide_path, sizeof(wide_path)) <= 0) {
+		// error
+		return;
 	}
+	HANDLE handle = CreateFile(wide_path, GENERIC_WRITE, FILE_SHARE_WRITE, NULL,
+		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (handle == INVALID_HANDLE_VALUE) {
+		// error
+		return;
+	}
+
+	char compressed_size_str[256];
+	while (trace_event != NULL) {
+
+		snprintf(compressed_size_str, sizeof(compressed_size_str), "%zu ", work->compressed_size);
+
+		if (!WriteFile(handle, (LPVOID)compressed_size_str, strlen(compressed_size_str), &bytes_written_compression, NULL)) {
+			work->result = GetLastError();
+			CloseHandle(handle);
+			return;
+		}
+
+		//printf("name: %s, pid: %d, tid: %lu, ts:%d, type:%c\n", 
+		//	trace_event->name, trace_event->pid, trace_event->tid, trace_event->ts, trace_event->event_type);
+		trace_event_t* temp = trace_event;
+		trace_event = trace_event->next;
+		heap_free(trace->heap, temp);
+	}
+
+	CloseHandle(handle);
 }
