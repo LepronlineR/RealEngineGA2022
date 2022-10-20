@@ -2,8 +2,7 @@
 #include "heap.h"
 #include "semaphore.h"
 
-typedef struct queue_t
-{
+typedef struct queue_t {
 	heap_t* heap;
 	semaphore_t* used_items;
 	semaphore_t* free_items;
