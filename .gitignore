@@ -3,3 +3,11 @@ src/x86/*
 *.vcxproj.filters
 *.vcxproj.user
 src/.vs/*
+*.vsidx
+*.opendb
+*.db-wal
+*.db-shm
+*.db
+*.ipch
+*.ipch
+*.vsidx
