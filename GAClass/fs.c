@@ -34,7 +34,7 @@ typedef struct fs_work_t {
 	char path[1024];
 	bool null_terminate;
 	bool use_compression;
-	void* buffer;
+	char* buffer;
 	size_t size;
 	size_t compressed_size;
 	event_t* done;
@@ -88,7 +88,7 @@ fs_work_t* fs_write(fs_t* fs, const char* path, const void* buffer, size_t size,
 	work->heap = fs->heap;
 	work->op = k_fs_work_op_write;
 	strcpy_s(work->path, sizeof(work->path), path);
-	work->buffer = (void*)buffer;
+	work->buffer = (char*)buffer;
 	work->size = size;
 	work->compressed_size = 0;
 	work->done = event_create();
@@ -196,6 +196,7 @@ static void file_write(fs_work_t* work) {
 		return;
 	}
 
+	/*
 	// if compression is used, write the compression size into the file for reading
 	DWORD bytes_written_compression = 0;
 	char compressed_size_str[256];
@@ -207,6 +208,7 @@ static void file_write(fs_work_t* work) {
 			return;
 		}
 	}
+	*/
 
 	DWORD bytes_written = 0;
 	if (!WriteFile(handle, work->buffer, (DWORD)work->size, &bytes_written, NULL)) {
@@ -261,8 +263,10 @@ static void file_read_compressed(fs_work_t* work) {
 
 static void file_write_compressed(fs_t* fs, fs_work_t* work) {
 	int dst_buffer_size = LZ4_compressBound(work->size);
-	void* dst_buffer = heap_alloc(work->heap, dst_buffer_size, 0);
-	int compressed_size = LZ4_compress_default(work->buffer, dst_buffer, (int)work->size, dst_buffer_size);
+	char* dst_buffer = heap_alloc(work->heap, dst_buffer_size + sizeof(int), 8);
+	int compressed_size = LZ4_compress_default(work->buffer, dst_buffer + sizeof(int), (int)work->size, dst_buffer_size);
+	memcpy(dst_buffer, compressed_size, sizeof(int));
+	
 	work->buffer = dst_buffer;
 	work->compressed_size = compressed_size;
 	queue_push(fs->file_queue, work);
