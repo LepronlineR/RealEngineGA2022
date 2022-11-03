@@ -16,6 +16,9 @@
     <Filter Include="Includes">
       <UniqueIdentifier>{29e0712b-7c77-471c-ab30-464f2de174d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{c452c6af-9902-40ae-a070-c5a8cf7068a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -97,6 +100,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="hw3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gpu.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -182,5 +188,76 @@
     <ClInclude Include="hw3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\gpu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vk_platform.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_android.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_beta.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_core.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_directfb.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_fuchsia.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_ggp.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_ios.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_macos.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_metal.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_screen.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_vi.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_wayland.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_win32.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_xcb.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_xlib.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\vulkan\vulkan_xlib_xrandr.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\shaders\triangle.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\src\shaders\triangle.frag.spv">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\src\shaders\triangle.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\src\shaders\triangle.vert.spv">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

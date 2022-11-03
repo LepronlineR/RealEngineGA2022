@@ -1,7 +1,3 @@
-﻿  trace.c
-C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\trace.c(76,21): warning C4013: 'getpid' undefined; assuming extern returning int
-C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\trace.c(169,54): warning C4267: 'function': conversion from 'size_t' to 'DWORD', possible loss of data
-C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\trace.c(187,45): warning C4267: 'function': conversion from 'size_t' to 'DWORD', possible loss of data
-C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\trace.c(202,52): warning C4267: 'function': conversion from 'size_t' to 'DWORD', possible loss of data
-LINK : warning LNK4044: unrecognized option '/lDbgHelp'; ignored
-  GAClass.vcxproj -> C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe
+﻿x64\Debug\atomic.obj : warning LNK4042: object specified more than once; extras ignored
+queue.obj : error LNK2019: unresolved external symbol atomic_increment referenced in function queue_pop
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe : fatal error LNK1120: 1 unresolved externals

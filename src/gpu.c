@@ -168,7 +168,7 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 
 	if (!physical_device_count)
 	{
-		debug_print(k_print_error, "No device with Vulkan support found!\n");
+		debug_print_line(k_print_error, "No device with Vulkan support found!\n");
 		gpu_destroy(gpu);
 		return NULL;
 	}
@@ -206,7 +206,7 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 	}
 	if (queue_count == UINT32_MAX)
 	{
-		debug_print(k_print_error, "No device with graphics queue found!\n");
+		debug_print_line(k_print_error, "No device with graphics queue found!\n");
 		gpu_destroy(gpu);
 		return NULL;
 	}
@@ -621,7 +621,7 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 	return gpu;
 
 fail:
-	debug_print(k_print_error, "%s failed: %d\n", function, result);
+	debug_print_line(k_print_error, "%s failed: %d\n", function, result);
 	gpu_destroy(gpu);
 	return NULL;
 }
@@ -729,7 +729,7 @@ gpu_descriptor_t* gpu_descriptor_create(gpu_t* gpu, const gpu_descriptor_info_t*
 	VkResult result = vkAllocateDescriptorSets(gpu->logical_device, &alloc_info, &descriptor->set);
 	if (result)
 	{
-		debug_print(k_print_error, "vkAllocateDescriptorSets failed: %d\n", result);
+		debug_print_line(k_print_error, "vkAllocateDescriptorSets failed: %d\n", result);
 		gpu_descriptor_destroy(gpu, descriptor);
 		return NULL;
 	}
@@ -784,7 +784,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 		VkResult result = vkCreateBuffer(gpu->logical_device, &vertex_buffer_info, NULL, &mesh->vertex_buffer);
 		if (result)
 		{
-			debug_print(k_print_error, "vkCreateBuffer failed: %d\n", result);
+			debug_print_line(k_print_error, "vkCreateBuffer failed: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -801,7 +801,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 		result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &mesh->vertex_memory);
 		if (result)
 		{
-			debug_print(k_print_error, "vkAllocateMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -810,7 +810,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 		result = vkMapMemory(gpu->logical_device, mesh->vertex_memory, 0, mem_alloc.allocationSize, 0, &vertex_dest);
 		if (result)
 		{
-			debug_print(k_print_error, "vkMapMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkMapMemory failed: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -820,7 +820,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 		result = vkBindBufferMemory(gpu->logical_device, mesh->vertex_buffer, mesh->vertex_memory, 0);
 		if (result)
 		{
-			debug_print(k_print_error, "vkBindBufferMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkBindBufferMemory failed: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -837,7 +837,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 		VkResult result = vkCreateBuffer(gpu->logical_device, &index_buffer_info, NULL, &mesh->index_buffer);
 		if (result)
 		{
-			debug_print(k_print_error, "vkCreateBuffer failed: %d\n", result);
+			debug_print_line(k_print_error, "vkCreateBuffer failed: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -854,7 +854,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 		result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &mesh->index_memory);
 		if (result)
 		{
-			debug_print(k_print_error, "vkAllocateMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -863,7 +863,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 		result = vkMapMemory(gpu->logical_device, mesh->index_memory, 0, mem_alloc.allocationSize, 0, &index_dest);
 		if (result)
 		{
-			debug_print(k_print_error, "vkMapMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkMapMemory failed: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -873,7 +873,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 		result = vkBindBufferMemory(gpu->logical_device, mesh->index_buffer, mesh->index_memory, 0);
 		if (result)
 		{
-			debug_print(k_print_error, "vkBindBufferMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkBindBufferMemory failed: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -998,7 +998,7 @@ gpu_pipeline_t* gpu_pipeline_create(gpu_t* gpu, const gpu_pipeline_info_t* info)
 	VkResult result = vkCreatePipelineLayout(gpu->logical_device, &pipeline_layout_info, NULL, &pipeline->pipeline_layout);
 	if (result)
 	{
-		debug_print(k_print_error, "vkCreatePipelineLayout failed: %d\n", result);
+		debug_print_line(k_print_error, "vkCreatePipelineLayout failed: %d\n", result);
 		gpu_pipeline_destroy(gpu, pipeline);
 		return NULL;
 	}
@@ -1022,7 +1022,7 @@ gpu_pipeline_t* gpu_pipeline_create(gpu_t* gpu, const gpu_pipeline_info_t* info)
 	result = vkCreateGraphicsPipelines(gpu->logical_device, NULL, 1, &pipeline_info, NULL, &pipeline->pipe);
 	if (result)
 	{
-		debug_print(k_print_error, "vkCreateGraphicsPipelines failed: %d\n", result);
+		debug_print_line(k_print_error, "vkCreateGraphicsPipelines failed: %d\n", result);
 		gpu_pipeline_destroy(gpu, pipeline);
 		return NULL;
 	}
@@ -1060,7 +1060,7 @@ gpu_shader_t* gpu_shader_create(gpu_t* gpu, const gpu_shader_info_t* info)
 	VkResult result = vkCreateShaderModule(gpu->logical_device, &vertex_module_info, NULL, &shader->vertex_module);
 	if (result)
 	{
-		debug_print(k_print_error, "vkCreateShaderModule failed: %d\n", result);
+		debug_print_line(k_print_error, "vkCreateShaderModule failed: %d\n", result);
 		gpu_shader_destroy(gpu, shader);
 		return NULL;
 	}
@@ -1074,7 +1074,7 @@ gpu_shader_t* gpu_shader_create(gpu_t* gpu, const gpu_shader_info_t* info)
 	result = vkCreateShaderModule(gpu->logical_device, &fragment_module_info, NULL, &shader->fragment_module);
 	if (result)
 	{
-		debug_print(k_print_error, "vkCreateShaderModule failed: %d\n", result);
+		debug_print_line(k_print_error, "vkCreateShaderModule failed: %d\n", result);
 		gpu_shader_destroy(gpu, shader);
 		return NULL;
 	}
@@ -1100,7 +1100,7 @@ gpu_shader_t* gpu_shader_create(gpu_t* gpu, const gpu_shader_info_t* info)
 	result = vkCreateDescriptorSetLayout(gpu->logical_device, &descriptor_set_layout_info, NULL, &shader->descriptor_set_layout);
 	if (result)
 	{
-		debug_print(k_print_error, "vkCreateDescriptorSetLayout failed: %d\n", result);
+		debug_print_line(k_print_error, "vkCreateDescriptorSetLayout failed: %d\n", result);
 		gpu_shader_destroy(gpu, shader);
 		return NULL;
 	}
@@ -1142,7 +1142,7 @@ gpu_uniform_buffer_t* gpu_uniform_buffer_create(gpu_t* gpu, const gpu_uniform_bu
 	VkResult result = vkCreateBuffer(gpu->logical_device, &buffer_info, NULL, &uniform_buffer->buffer);
 	if (result)
 	{
-		debug_print(k_print_error, "vkCreateBuffer failed: %d\n", result);
+		debug_print_line(k_print_error, "vkCreateBuffer failed: %d\n", result);
 		gpu_uniform_buffer_destroy(gpu, uniform_buffer);
 		return NULL;
 	}
@@ -1159,7 +1159,7 @@ gpu_uniform_buffer_t* gpu_uniform_buffer_create(gpu_t* gpu, const gpu_uniform_bu
 	result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &uniform_buffer->memory);
 	if (result)
 	{
-		debug_print(k_print_error, "vkAllocateMemory failed: %d\n", result);
+		debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
 		gpu_uniform_buffer_destroy(gpu, uniform_buffer);
 		return NULL;
 	}
@@ -1167,7 +1167,7 @@ gpu_uniform_buffer_t* gpu_uniform_buffer_create(gpu_t* gpu, const gpu_uniform_bu
 	result = vkBindBufferMemory(gpu->logical_device, uniform_buffer->buffer, uniform_buffer->memory, 0);
 	if (result)
 	{
-		debug_print(k_print_error, "vkBindBufferMemory failed: %d\n", result);
+		debug_print_line(k_print_error, "vkBindBufferMemory failed: %d\n", result);
 		gpu_uniform_buffer_destroy(gpu, uniform_buffer);
 		return NULL;
 	}
@@ -1218,7 +1218,7 @@ gpu_cmd_buffer_t* gpu_frame_begin(gpu_t* gpu)
 	VkResult result = vkBeginCommandBuffer(frame->cmd_buffer->buffer, &begin_info);
 	if (result)
 	{
-		debug_print(k_print_error, "vkBeginCommandBuffer failed: %d\n", result);
+		debug_print_line(k_print_error, "vkBeginCommandBuffer failed: %d\n", result);
 		return NULL;
 	}
 
@@ -1267,25 +1267,25 @@ void gpu_frame_end(gpu_t* gpu)
 	VkResult result = vkEndCommandBuffer(frame->cmd_buffer->buffer);
 	if (result)
 	{
-		debug_print(k_print_error, "vkEndCommandBuffer failed: %d\n", result);
+		debug_print_line(k_print_error, "vkEndCommandBuffer failed: %d\n", result);
 	}
 
 	uint32_t image_index;
 	result = vkAcquireNextImageKHR(gpu->logical_device, gpu->swap_chain, UINT64_MAX, gpu->present_complete_sema, VK_NULL_HANDLE, &image_index);
 	if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
 	{
-		debug_print(k_print_error, "vkAcquireNextImageKHR failed: %d\n", result);
+		debug_print_line(k_print_error, "vkAcquireNextImageKHR failed: %d\n", result);
 	}
 
 	result = vkWaitForFences(gpu->logical_device, 1, &frame->fence, VK_TRUE, UINT64_MAX);
 	if (result)
 	{
-		debug_print(k_print_error, "vkWaitForFences failed: %d\n", result);
+		debug_print_line(k_print_error, "vkWaitForFences failed: %d\n", result);
 	}
 	result = vkResetFences(gpu->logical_device, 1, &frame->fence);
 	if (result)
 	{
-		debug_print(k_print_error, "vkResetFences failed: %d\n", result);
+		debug_print_line(k_print_error, "vkResetFences failed: %d\n", result);
 	}
 
 	VkPipelineStageFlags wait_stage_mask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
@@ -1303,7 +1303,7 @@ void gpu_frame_end(gpu_t* gpu)
 	result = vkQueueSubmit(gpu->queue, 1, &submit_info, frame->fence);
 	if (result)
 	{
-		debug_print(k_print_error, "vkQueueSubmit failed: %d\n", result);
+		debug_print_line(k_print_error, "vkQueueSubmit failed: %d\n", result);
 	}
 
 	VkPresentInfoKHR present_info =
@@ -1318,7 +1318,7 @@ void gpu_frame_end(gpu_t* gpu)
 	result = vkQueuePresentKHR(gpu->queue, &present_info);
 	if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
 	{
-		debug_print(k_print_error, "vkQueuePresentKHR failed: %d\n", result);
+		debug_print_line(k_print_error, "vkQueuePresentKHR failed: %d\n", result);
 	}
 }
 
@@ -1480,6 +1480,6 @@ static uint32_t get_memory_type_index(gpu_t* gpu, uint32_t bits, VkMemoryPropert
 			}
 		}
 	}
-	debug_print(k_print_error, "Unable to find memory of type: %x\n", bits);
+	debug_print_line(k_print_error, "Unable to find memory of type: %x\n", bits);
 	return 0;
 }

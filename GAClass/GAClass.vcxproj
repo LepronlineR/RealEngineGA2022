@@ -83,14 +83,13 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\vulkan;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;-lDbgHelp</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\vulkan;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -116,14 +115,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\vulkan;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;-lDbgHelp</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\vulkan;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\gpu.c" />
     <ClCompile Include="atomic.c" />
     <ClCompile Include="debug.c" />
     <ClCompile Include="event.c" />
@@ -172,6 +171,25 @@
     <ClCompile Include="wm.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\gpu.h" />
+    <ClInclude Include="..\src\vulkan\vk_platform.h" />
+    <ClInclude Include="..\src\vulkan\vulkan.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_android.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_beta.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_core.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_directfb.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_fuchsia.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_ggp.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_ios.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_macos.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_metal.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_screen.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_vi.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_wayland.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_win32.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_xcb.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_xlib.h" />
+    <ClInclude Include="..\src\vulkan\vulkan_xlib_xrandr.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="event.h" />
     <ClInclude Include="fs.h" />
@@ -199,6 +217,12 @@
     <ClInclude Include="trace.h" />
     <ClInclude Include="vec3f.h" />
     <ClInclude Include="wm.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\shaders\triangle.frag" />
+    <None Include="..\src\shaders\triangle.frag.spv" />
+    <None Include="..\src\shaders\triangle.vert" />
+    <None Include="..\src\shaders\triangle.vert.spv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,14 +1,14 @@
 #pragma once
 
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "remath.h"
-#include "debug.h"
 
-typedef struct vec3f_t {
-	union { // accessible by array and xyz
-		float x, y, z;
+typedef struct vec3f_t
+{
+	union
+	{
+		struct { float x, y, z; };
 		float a[3];
 	};
 } vec3f_t;
@@ -58,8 +58,8 @@ __forceinline vec3f_t vec3f_negate(vec3f_t v)
 	return (vec3f_t)
 	{
 		.x = -v.x,
-			.x = -v.y,
-			.x = -v.z,
+			.y = -v.y,
+			.z = -v.z,
 	};
 }
 
@@ -185,11 +185,3 @@ __forceinline vec3f_t vec3f_cross(vec3f_t a, vec3f_t b)
 			.z = a.x * b.y - a.y * b.x,
 	};
 }
-
-__forceinline void vec3f_print(vec3f_t v) {
-	printf("<%.3f,%.3f,%.3f>\n", v.x, v.y, v.z);
-}
-
-__forceinline void vec3f_debug(vec3f_t v) {
-	debug_print_line(k_print_info, "<%.3f,%.3f,%.3f>\n", v.x, v.y, v.z);
-} 
