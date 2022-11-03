@@ -251,6 +251,8 @@ static void file_read_compressed(fs_work_t* work) {
 		*((char*)dst_buffer+x) = '\0';
 	}
 
+	heap_free(work->heap, work->buffer);
+
 	work->buffer = dst_buffer;
 	work->size = decompressed_size;
 
