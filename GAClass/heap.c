@@ -69,7 +69,8 @@ void insert_to_list(void* address, size_t memory_size, unsigned short frames, ch
 	n->backtrace = backtrace;
 	n->memory_size = memory_size;
 	if (list->size == 0) {  // (N)
-		list->head = n;     //      <-     <-
+		list->head = n;    
+		list->tail = n;		//      <-     <-
 	} else {                // <- X -> (N) -> Z ->
 		alloc_node_t* tail = list->tail;
 		n->next = tail->next;

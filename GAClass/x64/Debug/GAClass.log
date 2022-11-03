@@ -1,3 +1,2 @@
-﻿x64\Debug\atomic.obj : warning LNK4042: object specified more than once; extras ignored
-queue.obj : error LNK2019: unresolved external symbol atomic_increment referenced in function queue_pop
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe : fatal error LNK1120: 1 unresolved externals
+﻿  heap.c
+  GAClass.vcxproj -> C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe

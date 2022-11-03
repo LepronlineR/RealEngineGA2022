@@ -105,6 +105,18 @@
     <ClCompile Include="..\src\gpu.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ecs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="render.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_game.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="transform.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wm.h">
@@ -244,6 +256,18 @@
     </ClInclude>
     <ClInclude Include="..\src\vulkan\vulkan_xlib_xrandr.h">
       <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="ecs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="transform.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
