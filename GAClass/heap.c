@@ -68,19 +68,19 @@ void insert_to_list(void* address, size_t memory_size, unsigned short frames, ch
 	n->address = address;
 	n->backtrace = backtrace;
 	n->memory_size = memory_size;
-	if (list->size == 0) {  // (N)
-		list->head = n;    
-		list->tail = n;		//      <-     <-
-	} else {                // <- X -> (N) -> Z ->
+
+	if (list->head == NULL) {
+		list->head = n;
+	} else { // send it to the back
 		alloc_node_t* tail = list->tail;
-		n->next = tail->next;
-		tail->next = n;
-		n->prev = tail;
-		if (n->next != NULL) {
-			n->next->prev = n;
+		if (tail == NULL) {
+			list->tail = n;
+		} else {
+			n->prev = tail;
+			tail->next = n;
+			list->tail = n;
 		}
 	}
-	list->tail = n;
 	list->size += 1;
 }
 
@@ -207,7 +207,8 @@ void heap_free(heap_t* heap, void* address) {
 }
 
 void heap_destroy(heap_t* heap) {
-	// Check for any leaked memory
+	// Check for any leaked memory (currently broken)
+	/*
 	if (heap->allocation->head != NULL && heap->allocation->size > 0) {
 		alloc_node_t* node = heap->allocation->head;
 		alloc_node_t* save_node = NULL;
@@ -218,6 +219,7 @@ void heap_destroy(heap_t* heap) {
 			node = save_node;
 		}
 	}
+	*/
 	// Free the mutex
 	mutex_destroy(heap->mutex);
 	// Free the tlsf

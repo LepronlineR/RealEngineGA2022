@@ -146,6 +146,7 @@
     <ClCompile Include="debug.c" />
     <ClCompile Include="ecs.c" />
     <ClCompile Include="event.c" />
+    <ClCompile Include="frogger_game.c" />
     <ClCompile Include="fs.c" />
     <ClCompile Include="heap.c" />
     <ClCompile Include="hw1.c" />
@@ -163,6 +164,7 @@
     <ClCompile Include="mutex.c" />
     <ClCompile Include="quatf.c" />
     <ClCompile Include="queue.c" />
+    <ClCompile Include="random.c" />
     <ClCompile Include="render.c" />
     <ClCompile Include="semaphore.c" />
     <ClCompile Include="simple_game.c" />
@@ -197,6 +199,7 @@
     <ClInclude Include="debug.h" />
     <ClInclude Include="ecs.h" />
     <ClInclude Include="event.h" />
+    <ClInclude Include="frogger_game.h" />
     <ClInclude Include="fs.h" />
     <ClInclude Include="heap.h" />
     <ClInclude Include="hw1.h" />
@@ -211,6 +214,7 @@
     <ClInclude Include="include\tlsf\tlsf.h" />
     <ClInclude Include="mat4f.h" />
     <ClInclude Include="quatf.h" />
+    <ClInclude Include="random.h" />
     <ClInclude Include="remath.h" />
     <ClInclude Include="mutex.h" />
     <ClInclude Include="queue.h" />
