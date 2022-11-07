@@ -40,7 +40,7 @@ typedef struct heap_t {
 	tlsf_t tlsf;
 	size_t grow_increment;
 	arena_t* arena;
-	allocation_list_t* allocation;
+	// allocation_list_t* allocation;
 	mutex_t* mutex;
 } heap_t;
 
@@ -134,7 +134,7 @@ heap_t* heap_create(size_t grow_increment) {
 		debug_print_line(k_print_error, "System is out of memory");
 		return NULL;
 	}
-	heap->allocation = initialize_allocation_list();
+	//heap->allocation = initialize_allocation_list();
 	heap->grow_increment = grow_increment;
 	heap->tlsf = tlsf_create(heap + 1);
 	heap->arena = NULL;
@@ -146,11 +146,9 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 
 	mutex_lock(heap->mutex);
 
-	/*
 	size_t size_plus_callstack = size + 64;
-	*/
 
-	void* address = tlsf_memalign(heap->tlsf, alignment, size);
+	void* address = tlsf_memalign(heap->tlsf, alignment, size_plus_callstack);
 	if (!address) { // memory has not been allocated yet
 		// create more virtual memory to store the arena
 		size_t arena_size = __max(heap->grow_increment, size * 2) + sizeof(arena_t);
@@ -164,15 +162,15 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 		arena->pool = tlsf_add_pool(heap->tlsf, arena+1, arena_size);
 		arena->next = heap->arena;
 		heap->arena = arena;
-		address = tlsf_memalign(heap->tlsf, alignment, size);
+		address = tlsf_memalign(heap->tlsf, alignment, size_plus_callstack);
 	}
 
-	/*
+	
 	if(address){
 		char* callstack = (char*) address + size;
 		CaptureStackBackTrace(0, 8, callstack, NULL);
 	}
-	*/
+	
 
 	// Records the back trace and stores it into the allocation node
 	/*
@@ -222,26 +220,15 @@ static void leak_check(void* ptr, size_t size, int used, void* usert) {
 	if (used) {
 		void* callstack = (char*)ptr + (size - 64);
 		// symbolicate callstack
+		HANDLE process = GetCurrentProcess();
+		SymInitialize(process, NULL, TRUE);
+		
 		// print
+		debug_print_line(k_print_warning, "%s", ptr);
 	}
 }
 
 void heap_destroy(heap_t* heap) {
-	// Check for any leaked memory (currently broken)
-	/*
-	if (heap->allocation->head != NULL && heap->allocation->size > 0) {
-		alloc_node_t* node = heap->allocation->head;
-		alloc_node_t* save_node = NULL;
-		for (int x = 0; x < heap->allocation->size; x++) {
-			debug_backtrace(node->memory_size, node->frames, node->backtrace);
-			save_node = node->next;
-			VirtualFree(node, 0, MEM_RELEASE);
-			node = save_node;
-		}
-	}
-	*/
-
-
 	// Free the mutex
 	mutex_destroy(heap->mutex);
 	// Free the tlsf
@@ -249,7 +236,7 @@ void heap_destroy(heap_t* heap) {
 	// Free the arena
 	arena_t* arena = heap->arena;
 	while (arena) {
-		//tlsf_walk_pool(arena->pool, leak_check, NULL);
+		tlsf_walk_pool(arena->pool, leak_check, NULL);
 		arena_t* next = arena->next;
 		VirtualFree(arena, 0, MEM_RELEASE);
 		arena = next;

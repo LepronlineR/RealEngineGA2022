@@ -26,8 +26,7 @@ int main(int argc, const char* argv[])
 
 	frogger_game_t* game = frogger_game_create(heap, fs, window, render);
 
-	while (!wm_pump(window))
-	{
+	while (!wm_pump(window)) {
 		frogger_game_update(game);
 	}
 

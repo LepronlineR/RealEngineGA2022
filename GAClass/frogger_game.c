@@ -12,6 +12,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <string.h>
+#include <stdint.h>
 
 typedef struct boundary_t {
 	float x_pos;
@@ -77,11 +78,10 @@ typedef struct collider_component_t {
 	float z_size;
 } collider_component_t;
 
-//typedef struct gpu_info_list_t {
-//	gpu_mesh_info_t mesh;
-//	gpu_shader_info_t shader;
-//	gpu_info_list_t* next;
-//} gpu_info_list_t;
+typedef struct timer_component_t {
+	uint32_t time_tracker;
+	float interval;
+} timer_component_t;
 
 typedef struct frogger_game_t
 {
@@ -101,9 +101,12 @@ typedef struct frogger_game_t
 	int enemy_type;
 	int win_type;
 	int collider_type;
+	int timer_type;
+
 	ecs_entity_ref_t enemy_ent;
 	ecs_entity_ref_t player_ent;
 	ecs_entity_ref_t camera_ent;
+	ecs_entity_ref_t timer_ent;
 
 	gpu_mesh_info_t player_mesh;
 	gpu_shader_info_t player_shader;
@@ -111,19 +114,22 @@ typedef struct frogger_game_t
 	gpu_mesh_info_t enemy_mesh;
 	gpu_shader_info_t enemy_shader;
 
-	// gpu_info_list_t enemies;
-
 	fs_work_t* vertex_shader_work;
 	fs_work_t* fragment_shader_work;
 } frogger_game_t;
 
+// general
+static void draw_models(frogger_game_t* game);
+static void initialize_timer(frogger_game_t* game, float interval);
+
+// camera
+static void spawn_camera(frogger_game_t* game);
+
+// player
 static void load_player_resources(frogger_game_t* game);
 static void unload_player_resources(frogger_game_t* game);
 static void spawn_player(frogger_game_t* game, int index);
-static void spawn_camera(frogger_game_t* game);
 static void update_players(frogger_game_t* game);
-static void draw_models(frogger_game_t* game);
-
 
 // boundary
 static bool in_boundary(boundary_t boundary, transform_t transform);
@@ -133,10 +139,14 @@ static void create_boundaries(boundary_t* boundary, float x_pos, float y_pos, fl
 static bool check_collision(collider_component_t one, collider_component_t two);
 
 // enemies
-static void spawn_timer(frogger_game_t* game, float interval);
+static void spawn_enemy_with_timer(frogger_game_t* game);
 static void load_enemy_resources(frogger_game_t* game);
 static void spawn_car(frogger_game_t* game);
 static void update_enemies(frogger_game_t* game);
+
+// ===========================================================================================
+//                                           GENERAL
+// ===========================================================================================
 
 frogger_game_t* frogger_game_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* render)
 {
@@ -157,9 +167,11 @@ frogger_game_t* frogger_game_create(heap_t* heap, fs_t* fs, wm_window_t* window,
 	game->enemy_type = ecs_register_component_type(game->ecs, "enemy", sizeof(enemy_component_t), _Alignof(enemy_component_t));
 	game->win_type = ecs_register_component_type(game->ecs, "win", sizeof(win_component_t), _Alignof(win_component_t));
 	game->collider_type = ecs_register_component_type(game->ecs, "collider", sizeof(collider_component_t), _Alignof(collider_component_t));
+	game->timer_type = ecs_register_component_type(game->ecs, "timer", sizeof(timer_component_t), _Alignof(timer_component_t));
 
 	load_player_resources(game);
 	load_enemy_resources(game, 2);
+	initialize_timer(game, 1.5f);
 	spawn_player(game, 0);
 	spawn_camera(game);
 
@@ -177,47 +189,97 @@ void frogger_game_destroy(frogger_game_t* game)
 void frogger_game_update(frogger_game_t* game) {
 	timer_object_update(game->timer);
 	ecs_update(game->ecs);
+
+	spawn_enemy_with_timer(game);
+
 	update_players(game);
-
-	// spawn enemies on every 3 seconds
-	debug_print_line(k_print_info, "%f : %s\n", timer_object_get_ms(game->timer)/100.0f,
-		((timer_object_get_ms(game->timer) / 10) % 30 == 0 ? "true" : "false"));
-	//if ((timer_object_get_ms(game->timer) / 10) % 30 == 0) {
-	//	spawn_car(game);
-	//}
-
-	// spawns an enemy with a timer
-	spawn_timer(game, 1.5f);
-
 	update_enemies(game);
 
 	draw_models(game);
 	render_push_done(game->render);
 }
 
-static void create_boundaries(boundary_t* boundary, float x_pos, float y_pos, float x_neg, float y_neg, float z_pos, float z_neg) {
-	boundary->x_pos = x_pos;
-	boundary->y_pos = y_pos;
-	boundary->x_neg = x_neg;
-	boundary->y_neg = y_neg;
-	boundary->z_pos = z_pos;
-	boundary->z_neg = z_neg;
+static void draw_models(frogger_game_t* game)
+{
+	uint64_t k_camera_query_mask = (1ULL << game->camera_type);
+	for (ecs_query_t camera_query = ecs_query_create(game->ecs, k_camera_query_mask);
+		ecs_query_is_valid(game->ecs, &camera_query);
+		ecs_query_next(game->ecs, &camera_query))
+	{
+		camera_component_t* camera_comp = ecs_query_get_component(game->ecs, &camera_query, game->camera_type);
+
+		uint64_t k_model_query_mask = (1ULL << game->transform_type) | (1ULL << game->model_type);
+		for (ecs_query_t query = ecs_query_create(game->ecs, k_model_query_mask);
+			ecs_query_is_valid(game->ecs, &query);
+			ecs_query_next(game->ecs, &query))
+		{
+			transform_component_t* transform_comp = ecs_query_get_component(game->ecs, &query, game->transform_type);
+			model_component_t* model_comp = ecs_query_get_component(game->ecs, &query, game->model_type);
+			ecs_entity_ref_t entity_ref = ecs_query_get_entity(game->ecs, &query);
+
+			struct
+			{
+				mat4f_t projection;
+				mat4f_t model;
+				mat4f_t view;
+			} uniform_data;
+			uniform_data.projection = camera_comp->projection;
+			uniform_data.view = camera_comp->view;
+			transform_to_matrix(&transform_comp->transform, &uniform_data.model);
+			gpu_uniform_buffer_info_t uniform_info = { .data = &uniform_data, sizeof(uniform_data) };
+
+			render_push_model(game->render, &entity_ref, model_comp->mesh_info, model_comp->shader_info, &uniform_info);
+		}
+	}
 }
 
-static bool check_collision(collider_component_t one, collider_component_t two) {
-	// collision x
-	bool col_x = one.transform.translation.x + one.x_size >= two.transform.translation.x &&
-		two.transform.translation.x + two.x_size >= one.transform.translation.x;
-	// collision y
-	bool col_y = one.transform.translation.y + one.y_size >= two.transform.translation.y &&
-		two.transform.translation.y + two.y_size >= one.transform.translation.y;
-	// collision z
-	bool col_z = one.transform.translation.z + one.z_size >= two.transform.translation.z &&
-		two.transform.translation.z + two.z_size >= one.transform.translation.z;
-	
-	// collision only if on all axes
-	return col_x && col_y && col_z;
+static void initialize_timer(frogger_game_t* game, float interval) {
+	uint64_t k_timer_ent_mask =
+		(1ULL << game->timer_type) |
+		(1ULL << game->name_type);
+	game->timer_ent = ecs_entity_add(game->ecs, k_timer_ent_mask);
+
+	name_component_t* name_comp = ecs_entity_get_component(game->ecs, game->timer_ent, game->name_type, true);
+	strcpy_s(name_comp->name, sizeof(name_comp->name), "timer");
+
+	timer_component_t* timer_comp = ecs_entity_get_component(game->ecs, game->timer_ent, game->timer_type, true);
+	timer_comp->time_tracker = 0;
+	timer_comp->interval = interval;
 }
+
+// ===========================================================================================
+//                                           CAMERA
+// ===========================================================================================
+
+static void spawn_camera(frogger_game_t* game)
+{
+	uint64_t k_camera_ent_mask =
+		(1ULL << game->camera_type) |
+		(1ULL << game->name_type);
+	game->camera_ent = ecs_entity_add(game->ecs, k_camera_ent_mask);
+
+	name_component_t* name_comp = ecs_entity_get_component(game->ecs, game->camera_ent, game->name_type, true);
+	strcpy_s(name_comp->name, sizeof(name_comp->name), "orthographic camera");
+
+	// adjust due to aspect ratio
+	float aspect_width = 16.0f;
+	float aspect_height = 9.0f;
+	float aspect_ratio = aspect_width / aspect_height; // aspect ratio w/h
+
+	camera_component_t* camera_comp = ecs_entity_get_component(game->ecs, game->camera_ent, game->camera_type, true);
+
+	mat4f_make_orthographic(&camera_comp->projection, -aspect_ratio, aspect_ratio,
+		-1.0f, 1.0f, 0.1f, 100.0f);
+
+	vec3f_t eye_pos = vec3f_scale(vec3f_forward(), -5.0f);
+	vec3f_t forward = vec3f_forward();
+	vec3f_t up = vec3f_up();
+	mat4f_make_lookat(&camera_comp->view, &eye_pos, &forward, &up);
+}
+
+// ===========================================================================================
+//                                           PLAYER
+// ===========================================================================================
 
 static void load_player_resources(frogger_game_t* game)
 {
@@ -259,52 +321,6 @@ static void load_player_resources(frogger_game_t* game)
 		6, 7, 3
 	};
 	game->player_mesh = (gpu_mesh_info_t)
-	{
-		.layout = k_gpu_mesh_layout_tri_p444_c444_i2,
-		.vertex_data = cube_verts,
-		.vertex_data_size = sizeof(cube_verts),
-		.index_data = cube_indices,
-		.index_data_size = sizeof(cube_indices),
-	};
-}
-
-static void load_enemy_resources(frogger_game_t* game) {
-	game->enemy_shader = (gpu_shader_info_t)
-	{
-		.vertex_shader_data = fs_work_get_buffer(game->vertex_shader_work),
-		.vertex_shader_size = fs_work_get_size(game->vertex_shader_work),
-		.fragment_shader_data = fs_work_get_buffer(game->fragment_shader_work),
-		.fragment_shader_size = fs_work_get_size(game->fragment_shader_work),
-		.uniform_buffer_count = 1,
-	};
-
-	static vec3f_t cube_verts[] =
-	{
-		{ -0.5f, -1.0f,  0.5f }, { 1.0f, 0.0f,  0.0f },
-		{  0.5f, -1.0f,  0.5f }, { 1.0f, 0.0f,  0.0f },
-		{  0.5f,  1.0f,  0.5f }, { 1.0f, 0.0f,  0.0f },
-		{ -0.5f,  1.0f,  0.5f }, { 1.0f, 0.0f,  0.0f },
-		{ -0.5f, -1.0f, -0.5f }, { 1.0f, 0.0f,  0.0f },
-		{  0.5f, -1.0f, -0.5f }, { 1.0f, 0.0f,  0.0f },
-		{  0.5f,  1.0f, -0.5f }, { 1.0f, 0.0f,  0.0f },
-		{ -0.5f,  1.0f, -0.5f }, { 1.0f, 0.0f,  0.0f },
-	};
-	static uint16_t cube_indices[] =
-	{
-		0, 1, 2,
-		2, 3, 0,
-		1, 5, 6,
-		6, 2, 1,
-		7, 6, 5,
-		5, 4, 7,
-		4, 0, 3,
-		3, 7, 4,
-		4, 5, 1,
-		1, 0, 4,
-		3, 2, 6,
-		6, 7, 3
-	};
-	game->enemy_mesh = (gpu_mesh_info_t)
 	{
 		.layout = k_gpu_mesh_layout_tri_p444_c444_i2,
 		.vertex_data = cube_verts,
@@ -360,83 +376,6 @@ static void spawn_player(frogger_game_t* game, int index) {
 	win_comp->respawn_location = respawn_loc;
 }
 
-static void spawn_timer(frogger_game_t* game, float interval) {
-
-}
-
-static void spawn_car(frogger_game_t* game) {
-	uint64_t k_enemy_ent_mask =
-		(1ULL << game->transform_type) |
-		(1ULL << game->model_type) |
-		(1ULL << game->enemy_type) |
-		(1ULL << game->name_type) |
-		(1ULL << game->collider_type);
-	game->enemy_ent = ecs_entity_add(game->ecs, k_enemy_ent_mask);
-
-	// choose random lane
-	int lane = random_i(0, 2);
-	lane_direction direction = (lane % 2 == 0 ? right_lane : left_lane);
-	float starting_area = (direction == right_lane ? -11.0f : 11.0f);
-
-	transform_component_t* transform_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->transform_type, true);
-	transform_identity(&transform_comp->transform);
-	transform_comp->transform.translation.y = starting_area;
-	transform_comp->transform.translation.z = lane * 3 - 5;
-	transform_comp->transform.translation.x = 0.0f;
-
-	name_component_t* name_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->name_type, true);
-	strcpy_s(name_comp->name, sizeof(name_comp->name), "enemy");
-
-	enemy_component_t* enemy_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->enemy_type, true);
-	enemy_comp->direction = direction;
-	enemy_comp->lane = lane;
-	create_boundaries(&enemy_comp->boundary, 12.0f, 12.0f, -12.0f, -12.0f, 12.0f, -12.0f);
-
-	model_component_t* model_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->model_type, true);
-	model_comp->mesh_info = &game->enemy_mesh;
-	model_comp->shader_info = &game->enemy_shader;
-
-	collider_component_t* col_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->collider_type, true);
-	col_comp->transform = transform_comp->transform;
-	col_comp->x_size = 1.0f;
-	col_comp->y_size = 2.0f;
-	col_comp->z_size = 1.0f;
-}
-
-static void spawn_camera(frogger_game_t* game)
-{
-	uint64_t k_camera_ent_mask =
-		(1ULL << game->camera_type) |
-		(1ULL << game->name_type);
-	game->camera_ent = ecs_entity_add(game->ecs, k_camera_ent_mask);
-
-	name_component_t* name_comp = ecs_entity_get_component(game->ecs, game->camera_ent, game->name_type, true);
-	strcpy_s(name_comp->name, sizeof(name_comp->name), "orthographic camera");
-
-	camera_component_t* camera_comp = ecs_entity_get_component(game->ecs, game->camera_ent, game->camera_type, true);
-	mat4f_make_perspective(&camera_comp->projection, (float)M_PI / 2.0f, 16.0f / 9.0f, 0.1f, 100.0f);
-	
-	// adjust orthographic due to aspect ratio
-	float aspect_width = 16.f;
-	float aspect_height = 9.0f;
-	float aspect_ratio = aspect_width / aspect_height; // target aspect ratio 
-
-	//mat4f_make_orthographic(&camera_comp->projection, -aspect_ratio, 0.1f, 100.0f);
-
-	vec3f_t eye_pos = vec3f_scale(vec3f_forward(), -5.0f);
-	vec3f_t forward = vec3f_forward();
-	vec3f_t up = vec3f_up();
-	mat4f_make_lookat(&camera_comp->view, &eye_pos, &forward, &up);
-}
-
-static bool in_boundary(boundary_t boundary, transform_t transform) {
-	if (boundary.x_pos < transform.translation.x || boundary.x_neg > transform.translation.x ||
-		boundary.y_pos < transform.translation.y || boundary.y_neg > transform.translation.y ||
-		boundary.z_pos < transform.translation.z || boundary.z_neg > transform.translation.z)
-		return false;
-	return true;
-}
-
 static void update_players(frogger_game_t* game)
 {
 	float dt = (float)timer_object_get_delta_ms(game->timer) * 0.001f;
@@ -481,7 +420,7 @@ static void update_players(frogger_game_t* game)
 		transform_component_t temp = *transform_comp;
 		transform_multiply(&temp, &move);
 
-		if(in_boundary(player_comp->boundary, temp.transform))
+		if (in_boundary(player_comp->boundary, temp.transform))
 			transform_multiply(&transform_comp->transform, &move);
 
 		// win condition if the player is outside of the winning boundary
@@ -496,6 +435,153 @@ static void update_players(frogger_game_t* game)
 		col_comp->transform = transform_comp->transform;
 	}
 }
+
+// ===========================================================================================
+//                                           BOUNDARY
+// ===========================================================================================
+
+static void create_boundaries(boundary_t* boundary, float x_pos, float y_pos, float x_neg, float y_neg, float z_pos, float z_neg) {
+	boundary->x_pos = x_pos;
+	boundary->y_pos = y_pos;
+	boundary->x_neg = x_neg;
+	boundary->y_neg = y_neg;
+	boundary->z_pos = z_pos;
+	boundary->z_neg = z_neg;
+}
+
+static bool in_boundary(boundary_t boundary, transform_t transform) {
+	if (boundary.x_pos < transform.translation.x || boundary.x_neg > transform.translation.x ||
+		boundary.y_pos < transform.translation.y || boundary.y_neg > transform.translation.y ||
+		boundary.z_pos < transform.translation.z || boundary.z_neg > transform.translation.z)
+		return false;
+	return true;
+}
+
+// ===========================================================================================
+//                                           COLLIDERS
+// ===========================================================================================
+
+static bool check_collision(collider_component_t one, collider_component_t two) {
+	// collision x
+	bool col_x = one.transform.translation.x + one.x_size >= two.transform.translation.x &&
+		two.transform.translation.x + two.x_size >= one.transform.translation.x;
+	// collision y
+	bool col_y = one.transform.translation.y + one.y_size >= two.transform.translation.y &&
+		two.transform.translation.y + two.y_size >= one.transform.translation.y;
+	// collision z
+	bool col_z = one.transform.translation.z + one.z_size >= two.transform.translation.z &&
+		two.transform.translation.z + two.z_size >= one.transform.translation.z;
+
+	// collision only if on all axes
+	return col_x && col_y && col_z;
+}
+
+// ===========================================================================================
+//                                           ENEMIES
+// ===========================================================================================
+
+static void load_enemy_resources(frogger_game_t* game) {
+	game->enemy_shader = (gpu_shader_info_t)
+	{
+		.vertex_shader_data = fs_work_get_buffer(game->vertex_shader_work),
+		.vertex_shader_size = fs_work_get_size(game->vertex_shader_work),
+		.fragment_shader_data = fs_work_get_buffer(game->fragment_shader_work),
+		.fragment_shader_size = fs_work_get_size(game->fragment_shader_work),
+		.uniform_buffer_count = 1,
+	};
+
+	static vec3f_t cube_verts[] =
+	{
+		{ -0.5f, -1.0f,  0.5f }, { 1.0f, 0.0f,  0.0f },
+		{  0.5f, -1.0f,  0.5f }, { 1.0f, 0.0f,  0.0f },
+		{  0.5f,  1.0f,  0.5f }, { 1.0f, 0.0f,  0.0f },
+		{ -0.5f,  1.0f,  0.5f }, { 1.0f, 0.0f,  0.0f },
+		{ -0.5f, -1.0f, -0.5f }, { 1.0f, 0.0f,  0.0f },
+		{  0.5f, -1.0f, -0.5f }, { 1.0f, 0.0f,  0.0f },
+		{  0.5f,  1.0f, -0.5f }, { 1.0f, 0.0f,  0.0f },
+		{ -0.5f,  1.0f, -0.5f }, { 1.0f, 0.0f,  0.0f },
+	};
+	static uint16_t cube_indices[] =
+	{
+		0, 1, 2,
+		2, 3, 0,
+		1, 5, 6,
+		6, 2, 1,
+		7, 6, 5,
+		5, 4, 7,
+		4, 0, 3,
+		3, 7, 4,
+		4, 5, 1,
+		1, 0, 4,
+		3, 2, 6,
+		6, 7, 3
+	};
+	game->enemy_mesh = (gpu_mesh_info_t)
+	{
+		.layout = k_gpu_mesh_layout_tri_p444_c444_i2,
+		.vertex_data = cube_verts,
+		.vertex_data_size = sizeof(cube_verts),
+		.index_data = cube_indices,
+		.index_data_size = sizeof(cube_indices),
+	};
+}
+
+static void spawn_car(frogger_game_t* game) {
+	uint64_t k_enemy_ent_mask =
+		(1ULL << game->transform_type) |
+		(1ULL << game->model_type) |
+		(1ULL << game->enemy_type) |
+		(1ULL << game->name_type) |
+		(1ULL << game->collider_type);
+	game->enemy_ent = ecs_entity_add(game->ecs, k_enemy_ent_mask);
+
+	// choose random lane
+	int lane = random_i(0, 2);
+	lane_direction direction = (lane % 2 == 0 ? right_lane : left_lane);
+	float starting_area = (direction == right_lane ? -11.0f : 11.0f);
+
+	transform_component_t* transform_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->transform_type, true);
+	transform_identity(&transform_comp->transform);
+	transform_comp->transform.translation.y = starting_area;
+	transform_comp->transform.translation.z = lane * 3 - 5;
+	transform_comp->transform.translation.x = 0.0f;
+
+	name_component_t* name_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->name_type, true);
+	strcpy_s(name_comp->name, sizeof(name_comp->name), "enemy");
+
+	enemy_component_t* enemy_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->enemy_type, true);
+	enemy_comp->direction = direction;
+	enemy_comp->lane = lane;
+	create_boundaries(&enemy_comp->boundary, 12.0f, 12.0f, -12.0f, -12.0f, 12.0f, -12.0f);
+
+	model_component_t* model_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->model_type, true);
+	model_comp->mesh_info = &game->enemy_mesh;
+	model_comp->shader_info = &game->enemy_shader;
+
+	collider_component_t* col_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->collider_type, true);
+	col_comp->transform = transform_comp->transform;
+	col_comp->x_size = 1.0f;
+	col_comp->y_size = 2.0f;
+	col_comp->z_size = 1.0f;
+}
+
+static void spawn_enemy_with_timer(frogger_game_t* game) {
+	uint64_t k_query_mask = (1ULL << game->name_type) | (1ULL << game->timer_type);
+
+	for (ecs_query_t query = ecs_query_create(game->ecs, k_query_mask);
+		ecs_query_is_valid(game->ecs, &query);
+		ecs_query_next(game->ecs, &query)) {
+		
+		timer_component_t* timer_comp = ecs_query_get_component(game->ecs, &query, game->timer_type);
+		timer_comp->time_tracker += timer_object_get_delta_ms(game->timer);
+
+		if ((float) timer_comp->time_tracker/1000 >= timer_comp->interval) { // correct time passed in the interval (spawn enemy)
+			timer_comp->time_tracker = 0;
+			spawn_car(game);
+		}
+	}
+}
+
 
 static void update_enemies(frogger_game_t* game) {
 	float dt = (float)timer_object_get_delta_ms(game->timer) * 0.001f;
@@ -542,11 +628,14 @@ static void update_enemies(frogger_game_t* game) {
 				ecs_query_get_component(game->ecs, &player_query, game->collider_type);
 
 			if (check_collision(*player_col_comp, *col_comp)) {
+
+				/* UNCOMMENT TO PRINT THE COLLISION WHEN IT HAPPENS
 				name_component_t* player_name_comp =
 					ecs_query_get_component(game->ecs, &player_query, game->name_type);
 				name_component_t* enemy_name_comp =
 					ecs_query_get_component(game->ecs, &query, game->name_type);
 				debug_print_line(k_print_info, "collided %s with %s\n", player_name_comp->name, enemy_name_comp->name);
+				*/
 
 				win_component_t* player_win_comp = ecs_query_get_component(game->ecs, &player_query, game->win_type);
 				transform_component_t* player_transform_comp = ecs_query_get_component(game->ecs, &player_query, game->transform_type);
@@ -555,40 +644,6 @@ static void update_enemies(frogger_game_t* game) {
 				player_transform_comp->transform = player_win_comp->respawn_location;
 			}
 
-		}
-	}
-}
-
-static void draw_models(frogger_game_t* game)
-{
-	uint64_t k_camera_query_mask = (1ULL << game->camera_type);
-	for (ecs_query_t camera_query = ecs_query_create(game->ecs, k_camera_query_mask);
-		ecs_query_is_valid(game->ecs, &camera_query);
-		ecs_query_next(game->ecs, &camera_query))
-	{
-		camera_component_t* camera_comp = ecs_query_get_component(game->ecs, &camera_query, game->camera_type);
-
-		uint64_t k_model_query_mask = (1ULL << game->transform_type) | (1ULL << game->model_type);
-		for (ecs_query_t query = ecs_query_create(game->ecs, k_model_query_mask);
-			ecs_query_is_valid(game->ecs, &query);
-			ecs_query_next(game->ecs, &query))
-		{
-			transform_component_t* transform_comp = ecs_query_get_component(game->ecs, &query, game->transform_type);
-			model_component_t* model_comp = ecs_query_get_component(game->ecs, &query, game->model_type);
-			ecs_entity_ref_t entity_ref = ecs_query_get_entity(game->ecs, &query);
-
-			struct
-			{
-				mat4f_t projection;
-				mat4f_t model;
-				mat4f_t view;
-			} uniform_data;
-			uniform_data.projection = camera_comp->projection;
-			uniform_data.view = camera_comp->view;
-			transform_to_matrix(&transform_comp->transform, &uniform_data.model);
-			gpu_uniform_buffer_info_t uniform_info = { .data = &uniform_data, sizeof(uniform_data) };
-
-			render_push_model(game->render, &entity_ref, model_comp->mesh_info, model_comp->shader_info, &uniform_info);
 		}
 	}
 }
