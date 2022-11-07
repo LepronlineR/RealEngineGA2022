@@ -219,6 +219,40 @@ void mat4f_make_perspective(mat4f_t* m, float angle, float aspect, float z_near,
 	m->data[3][3] = 0.0f;
 }
 
+// sources: https://en.wikipedia.org/wiki/Orthographic_projection
+void mat4f_make_orthographic(mat4f_t* m, float left, float right, float down, float up, float near, float far) {
+	
+	/*
+	left = __max(FLT_EPSILON, left);
+	right = __max(FLT_EPSILON, right);
+	down = __max(FLT_EPSILON, down);
+	up = __max(FLT_EPSILON, up);
+	near = __max(FLT_EPSILON, near);
+	far = __max(FLT_EPSILON, far);
+	*/
+
+	// get origin
+	m->data[0][0] = (right - left) / 2;
+	m->data[0][1] = 0.0f;
+	m->data[0][2] = 0.0f;
+	m->data[0][3] = (left + right) / 2;;
+
+	m->data[1][0] = 0.0f;
+	m->data[1][1] = (up - down)/2;
+	m->data[1][2] = 0.0f;
+	m->data[1][3] = (down + up) / 2;
+
+	m->data[2][0] = 0.0f;
+	m->data[2][1] = 0.0f;
+	m->data[2][2] = (far - near)/2;
+	m->data[2][3] = (near + far) / 2;
+
+	m->data[3][0] = 0.0f;
+	m->data[3][1] = 0.0f;
+	m->data[3][2] = 0.0f;
+	m->data[3][3] = 1.0f;
+}
+
 void mat4f_make_lookat(mat4f_t* m, const vec3f_t* eye, const vec3f_t* dir, const vec3f_t* up)
 {
 	vec3f_t z_vec = vec3f_negate(vec3f_norm(*dir));

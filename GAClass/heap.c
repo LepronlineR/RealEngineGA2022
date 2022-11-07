@@ -146,6 +146,10 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 
 	mutex_lock(heap->mutex);
 
+	/*
+	size_t size_plus_callstack = size + 64;
+	*/
+
 	void* address = tlsf_memalign(heap->tlsf, alignment, size);
 	if (!address) { // memory has not been allocated yet
 		// create more virtual memory to store the arena
@@ -163,7 +167,15 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 		address = tlsf_memalign(heap->tlsf, alignment, size);
 	}
 
+	/*
+	if(address){
+		char* callstack = (char*) address + size;
+		CaptureStackBackTrace(0, 8, callstack, NULL);
+	}
+	*/
+
 	// Records the back trace and stores it into the allocation node
+	/*
 	unsigned short frames = 0;
 	void* stack[128];
 	HANDLE process = GetCurrentProcess();
@@ -191,8 +203,8 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 		}
 	}
 	SymCleanup(process);
-
 	insert_to_list(address, size, frames, backtrace, heap->allocation);
+	*/
 
 	mutex_unlock(heap->mutex);
 	
@@ -201,9 +213,17 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 
 void heap_free(heap_t* heap, void* address) {
 	mutex_lock(heap->mutex);
-	remove_from_list(heap->allocation, address);
+	//remove_from_list(heap->allocation, address);
 	tlsf_free(heap->tlsf, address);
 	mutex_unlock(heap->mutex);
+}
+
+static void leak_check(void* ptr, size_t size, int used, void* usert) {
+	if (used) {
+		void* callstack = (char*)ptr + (size - 64);
+		// symbolicate callstack
+		// print
+	}
 }
 
 void heap_destroy(heap_t* heap) {
@@ -220,6 +240,8 @@ void heap_destroy(heap_t* heap) {
 		}
 	}
 	*/
+
+
 	// Free the mutex
 	mutex_destroy(heap->mutex);
 	// Free the tlsf
@@ -227,6 +249,7 @@ void heap_destroy(heap_t* heap) {
 	// Free the arena
 	arena_t* arena = heap->arena;
 	while (arena) {
+		//tlsf_walk_pool(arena->pool, leak_check, NULL);
 		arena_t* next = arena->next;
 		VirtualFree(arena, 0, MEM_RELEASE);
 		arena = next;

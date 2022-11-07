@@ -1,7 +1,6 @@
 ﻿  frogger_game.c
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\frogger_game.c(149,29): warning C4020: 'load_enemy_resources': too many actual parameters
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\frogger_game.c(338,53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\frogger_game.c(423,27): warning C4133: 'function': incompatible types - from 'transform_component_t *' to 'transform_t *'
-  main.c
-  Generating Code...
-  GAClass.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe
+C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\frogger_game.c(161,29): warning C4020: 'load_enemy_resources': too many actual parameters
+C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\frogger_game.c(376,53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\frogger_game.c(474,27): warning C4133: 'function': incompatible types - from 'transform_component_t *' to 'transform_t *'
+x64\Debug\atomic.obj : warning LNK4042: object specified more than once; extras ignored
+  GAClass.vcxproj -> C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe

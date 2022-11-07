@@ -66,9 +66,16 @@ typedef struct win_component_t {
 	transform_t respawn_location;
 } win_component_t;
 
-//typedef struct collider_component_t {
-
-//};
+// Axis Aligned Bounding Boxes
+typedef struct collider_component_t {
+	// Note that we are using transform without a pointer or in its own component, so colliders can have
+	// their own behavior when outside of any component that it is supposed to use
+	// i.e. player components will have to control the transform of the collider
+	transform_t transform;
+	float x_size;
+	float y_size;
+	float z_size;
+} collider_component_t;
 
 //typedef struct gpu_info_list_t {
 //	gpu_mesh_info_t mesh;
@@ -93,6 +100,7 @@ typedef struct frogger_game_t
 	int name_type;
 	int enemy_type;
 	int win_type;
+	int collider_type;
 	ecs_entity_ref_t enemy_ent;
 	ecs_entity_ref_t player_ent;
 	ecs_entity_ref_t camera_ent;
@@ -121,7 +129,11 @@ static void draw_models(frogger_game_t* game);
 static bool in_boundary(boundary_t boundary, transform_t transform);
 static void create_boundaries(boundary_t* boundary, float x_pos, float y_pos, float x_neg, float y_neg, float z_pos, float z_neg);
 
+// colliders
+static bool check_collision(collider_component_t one, collider_component_t two);
+
 // enemies
+static void spawn_timer(frogger_game_t* game, float interval);
 static void load_enemy_resources(frogger_game_t* game);
 static void spawn_car(frogger_game_t* game);
 static void update_enemies(frogger_game_t* game);
@@ -144,6 +156,7 @@ frogger_game_t* frogger_game_create(heap_t* heap, fs_t* fs, wm_window_t* window,
 	game->name_type = ecs_register_component_type(game->ecs, "name", sizeof(name_component_t), _Alignof(name_component_t));
 	game->enemy_type = ecs_register_component_type(game->ecs, "enemy", sizeof(enemy_component_t), _Alignof(enemy_component_t));
 	game->win_type = ecs_register_component_type(game->ecs, "win", sizeof(win_component_t), _Alignof(win_component_t));
+	game->collider_type = ecs_register_component_type(game->ecs, "collider", sizeof(collider_component_t), _Alignof(collider_component_t));
 
 	load_player_resources(game);
 	load_enemy_resources(game, 2);
@@ -166,9 +179,15 @@ void frogger_game_update(frogger_game_t* game) {
 	ecs_update(game->ecs);
 	update_players(game);
 
-	// spawn enemies on every randomized 3 to 6 seconds
-	if(timer_object_get_delta_ms(game->timer) % 100 * (random_i(100, 200)))
-		spawn_car(game);
+	// spawn enemies on every 3 seconds
+	debug_print_line(k_print_info, "%f : %s\n", timer_object_get_ms(game->timer)/100.0f,
+		((timer_object_get_ms(game->timer) / 10) % 30 == 0 ? "true" : "false"));
+	//if ((timer_object_get_ms(game->timer) / 10) % 30 == 0) {
+	//	spawn_car(game);
+	//}
+
+	// spawns an enemy with a timer
+	spawn_timer(game, 1.5f);
 
 	update_enemies(game);
 
@@ -183,6 +202,21 @@ static void create_boundaries(boundary_t* boundary, float x_pos, float y_pos, fl
 	boundary->y_neg = y_neg;
 	boundary->z_pos = z_pos;
 	boundary->z_neg = z_neg;
+}
+
+static bool check_collision(collider_component_t one, collider_component_t two) {
+	// collision x
+	bool col_x = one.transform.translation.x + one.x_size >= two.transform.translation.x &&
+		two.transform.translation.x + two.x_size >= one.transform.translation.x;
+	// collision y
+	bool col_y = one.transform.translation.y + one.y_size >= two.transform.translation.y &&
+		two.transform.translation.y + two.y_size >= one.transform.translation.y;
+	// collision z
+	bool col_z = one.transform.translation.z + one.z_size >= two.transform.translation.z &&
+		two.transform.translation.z + two.z_size >= one.transform.translation.z;
+	
+	// collision only if on all axes
+	return col_x && col_y && col_z;
 }
 
 static void load_player_resources(frogger_game_t* game)
@@ -292,12 +326,13 @@ static void spawn_player(frogger_game_t* game, int index) {
 		(1ULL << game->model_type) |
 		(1ULL << game->player_type) |
 		(1ULL << game->name_type) |
-		(1ULL << game->win_type);
+		(1ULL << game->win_type) |
+		(1ULL << game->collider_type);
 	game->player_ent = ecs_entity_add(game->ecs, k_player_ent_mask);
 
 	transform_component_t* transform_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->transform_type, true);
 	transform_identity(&transform_comp->transform);
-	transform_comp->transform.translation.z = -5.0f;
+	transform_comp->transform.translation.z = 5.0f;
 
 	name_component_t* name_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->name_type, true);
 	strcpy_s(name_comp->name, sizeof(name_comp->name), "player");
@@ -310,6 +345,12 @@ static void spawn_player(frogger_game_t* game, int index) {
 	model_comp->mesh_info = &game->player_mesh;
 	model_comp->shader_info = &game->player_shader;
 
+	collider_component_t* col_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->collider_type, true);
+	col_comp->transform = transform_comp->transform;
+	col_comp->x_size = 1.0f;
+	col_comp->y_size = 1.0f;
+	col_comp->z_size = 1.0f;
+
 	win_component_t* win_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->win_type, true);
 	create_boundaries(&win_comp->boundary, 99.0f, 99.0f, -99.0f, -99.0f, 99.0f, -5.0f);
 	win_comp->total_wins = 0;
@@ -319,12 +360,17 @@ static void spawn_player(frogger_game_t* game, int index) {
 	win_comp->respawn_location = respawn_loc;
 }
 
+static void spawn_timer(frogger_game_t* game, float interval) {
+
+}
+
 static void spawn_car(frogger_game_t* game) {
 	uint64_t k_enemy_ent_mask =
 		(1ULL << game->transform_type) |
 		(1ULL << game->model_type) |
 		(1ULL << game->enemy_type) |
-		(1ULL << game->name_type);
+		(1ULL << game->name_type) |
+		(1ULL << game->collider_type);
 	game->enemy_ent = ecs_entity_add(game->ecs, k_enemy_ent_mask);
 
 	// choose random lane
@@ -349,6 +395,12 @@ static void spawn_car(frogger_game_t* game) {
 	model_component_t* model_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->model_type, true);
 	model_comp->mesh_info = &game->enemy_mesh;
 	model_comp->shader_info = &game->enemy_shader;
+
+	collider_component_t* col_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->collider_type, true);
+	col_comp->transform = transform_comp->transform;
+	col_comp->x_size = 1.0f;
+	col_comp->y_size = 2.0f;
+	col_comp->z_size = 1.0f;
 }
 
 static void spawn_camera(frogger_game_t* game)
@@ -359,10 +411,17 @@ static void spawn_camera(frogger_game_t* game)
 	game->camera_ent = ecs_entity_add(game->ecs, k_camera_ent_mask);
 
 	name_component_t* name_comp = ecs_entity_get_component(game->ecs, game->camera_ent, game->name_type, true);
-	strcpy_s(name_comp->name, sizeof(name_comp->name), "camera");
+	strcpy_s(name_comp->name, sizeof(name_comp->name), "orthographic camera");
 
 	camera_component_t* camera_comp = ecs_entity_get_component(game->ecs, game->camera_ent, game->camera_type, true);
 	mat4f_make_perspective(&camera_comp->projection, (float)M_PI / 2.0f, 16.0f / 9.0f, 0.1f, 100.0f);
+	
+	// adjust orthographic due to aspect ratio
+	float aspect_width = 16.f;
+	float aspect_height = 9.0f;
+	float aspect_ratio = aspect_width / aspect_height; // target aspect ratio 
+
+	//mat4f_make_orthographic(&camera_comp->projection, -aspect_ratio, 0.1f, 100.0f);
 
 	vec3f_t eye_pos = vec3f_scale(vec3f_forward(), -5.0f);
 	vec3f_t forward = vec3f_forward();
@@ -431,6 +490,10 @@ static void update_players(frogger_game_t* game)
 			win_comp->total_wins += 1;
 			transform_comp->transform = win_comp->respawn_location;
 		}
+
+		// update collider transform
+		collider_component_t* col_comp = ecs_query_get_component(game->ecs, &query, game->collider_type);
+		col_comp->transform = transform_comp->transform;
 	}
 }
 
@@ -442,6 +505,7 @@ static void update_enemies(frogger_game_t* game) {
 	for (ecs_query_t query = ecs_query_create(game->ecs, k_query_mask);
 		ecs_query_is_valid(game->ecs, &query);
 		ecs_query_next(game->ecs, &query)){
+
 		transform_component_t* transform_comp = ecs_query_get_component(game->ecs, &query, game->transform_type);
 		enemy_component_t* enemy_comp = ecs_query_get_component(game->ecs, &query, game->enemy_type);
 
@@ -459,6 +523,38 @@ static void update_enemies(frogger_game_t* game) {
 		// remove the enemy if it is out of the boundary
 		if (!in_boundary(enemy_comp->boundary, transform_comp->transform)) {
 			ecs_entity_remove(game->ecs, ecs_query_get_entity(game->ecs, &query), true);
+		}
+
+		collider_component_t* col_comp =
+			ecs_query_get_component(game->ecs, &query, game->collider_type);
+
+		// update collision
+		col_comp->transform = transform_comp->transform;
+
+		// check for player collision
+		uint64_t k_query_player_mask = (1ULL << game->transform_type) | (1ULL << game->player_type);
+
+		for (ecs_query_t player_query = ecs_query_create(game->ecs, k_query_player_mask);
+			ecs_query_is_valid(game->ecs, &player_query);
+			ecs_query_next(game->ecs, &player_query)){ // for each player check if there is a collision
+
+			collider_component_t* player_col_comp = 
+				ecs_query_get_component(game->ecs, &player_query, game->collider_type);
+
+			if (check_collision(*player_col_comp, *col_comp)) {
+				name_component_t* player_name_comp =
+					ecs_query_get_component(game->ecs, &player_query, game->name_type);
+				name_component_t* enemy_name_comp =
+					ecs_query_get_component(game->ecs, &query, game->name_type);
+				debug_print_line(k_print_info, "collided %s with %s\n", player_name_comp->name, enemy_name_comp->name);
+
+				win_component_t* player_win_comp = ecs_query_get_component(game->ecs, &player_query, game->win_type);
+				transform_component_t* player_transform_comp = ecs_query_get_component(game->ecs, &player_query, game->transform_type);
+
+				// respawn the player back at the respawn location at collision
+				player_transform_comp->transform = player_win_comp->respawn_location;
+			}
+
 		}
 	}
 }
