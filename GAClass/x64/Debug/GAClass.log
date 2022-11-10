@@ -1,4 +1,4 @@
 ﻿  frogger_game.c
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\frogger_game.c(187,29): warning C4020: 'load_enemy_resources': too many actual parameters
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\frogger_game.c(612,53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\frogger_game.c(186,29): warning C4020: 'load_enemy_resources': too many actual parameters
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\frogger_game.c(599,53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   GAClass.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe

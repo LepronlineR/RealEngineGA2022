@@ -188,8 +188,6 @@ frogger_game_t* frogger_game_create(heap_t* heap, fs_t* fs, wm_window_t* window,
 	spawn_player(game, 0);
 	spawn_camera(game);
 
-	spawn_empty_car(game);
-
 	return game;
 }
 
@@ -205,7 +203,7 @@ void frogger_game_update(frogger_game_t* game) {
 	timer_object_update(game->timer);
 	ecs_update(game->ecs);
 
-	// spawn_enemy_with_timer(game);
+	spawn_enemy_with_timer(game);
 
 	update_players(game);
 	update_enemies(game);
@@ -501,6 +499,7 @@ static bool in_boundary(boundary_t boundary, transform_t transform) {
 //                                           COLLIDERS
 // ===========================================================================================
 
+// get the minimum point of the collision aligned bounding box
 static vec3f_t get_collision_min(collider_component_t col) {
 	return (vec3f_t) {
 			.x = min(col.transform.translation.x + col.component_size.x, col.transform.translation.x - col.component_size.x),
@@ -509,6 +508,7 @@ static vec3f_t get_collision_min(collider_component_t col) {
 	};
 }
 
+// get the maximum point of the collision aligned bounding box
 static vec3f_t get_collision_max(collider_component_t col) {
 	return (vec3f_t) {
 		.x = max(col.transform.translation.x + col.component_size.x, col.transform.translation.x - col.component_size.x),
@@ -517,6 +517,7 @@ static vec3f_t get_collision_max(collider_component_t col) {
 	};
 }
 
+// from the minimum and maximum collision points, determine if there is a collision between two colliders
 static bool check_collision(collider_component_t one, collider_component_t two) {
 	vec3f_t one_min = get_collision_min(one);
 	vec3f_t two_min = get_collision_min(two);
@@ -711,15 +712,15 @@ static void update_enemies(frogger_game_t* game) {
 
 			if (check_collision(*player_col_comp, *col_comp)) {
 
+				transform_component_t* player_transform_comp =
+					ecs_query_get_component(game->ecs, &player_query, game->transform_type);
+
 				/* UNCOMMENT TO PRINT THE COLLISION WHEN IT HAPPENS
 				
 				name_component_t* player_name_comp =
 					ecs_query_get_component(game->ecs, &player_query, game->name_type);
 				name_component_t* enemy_name_comp =
 					ecs_query_get_component(game->ecs, &query, game->name_type);
-
-				transform_component_t* player_transform_comp =
-					ecs_query_get_component(game->ecs, &player_query, game->transform_type);
 
 				debug_print_line(k_print_info, "collided %s with %s at \n", player_name_comp->name, enemy_name_comp->name);
 				debug_translate(player_name_comp->name, player_transform_comp->transform);
