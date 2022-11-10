@@ -246,6 +246,7 @@ void mat4f_make_orthographic(mat4f_t* m, float left, float right, float down, fl
 	m->data[3][3] = 1.0f;
 }
 
+
 void mat4f_make_lookat(mat4f_t* m, const vec3f_t* eye, const vec3f_t* dir, const vec3f_t* up)
 {
 	vec3f_t z_vec = vec3f_negate(vec3f_norm(*dir));

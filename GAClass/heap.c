@@ -168,41 +168,8 @@ void* heap_alloc(heap_t* heap, size_t size, size_t alignment) {
 	
 	if(address){
 		char* callstack = (char*) address + size;
-		CaptureStackBackTrace(0, 8, callstack, NULL);
+		CaptureStackBackTrace(1, 8, callstack, NULL);
 	}
-	
-
-	// Records the back trace and stores it into the allocation node
-	/*
-	unsigned short frames = 0;
-	void* stack[128];
-	HANDLE process = GetCurrentProcess();
-	SymInitialize(process, NULL, TRUE);
-	frames = CaptureStackBackTrace(1, 128, stack, NULL);
-
-	char** backtrace = VirtualAlloc(NULL, frames * sizeof(char*),
-		MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-
-	char buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TCHAR)];
-	SYMBOL_INFO* symbol = (SYMBOL_INFO*) buffer;	
-	symbol->MaxNameLen = 255;
-	symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
-	if (symbol) {
-		for (unsigned int x = 0; x < frames; x++) {
-			SymFromAddr(process, (DWORD64)(stack[x]), 0, symbol);
-			backtrace[x] = VirtualAlloc(NULL, 256 * sizeof(char),
-				MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-			strcpy_s(backtrace[x], 256, symbol->Name);
-			// manually check for main in order to stop the call stack
-			if (strcmp(MAIN_STRING_NAME, symbol->Name) == 0) {
-				frames = x + 1;
-				break;
-			}
-		}
-	}
-	SymCleanup(process);
-	insert_to_list(address, size, frames, backtrace, heap->allocation);
-	*/
 
 	mutex_unlock(heap->mutex);
 	
@@ -224,7 +191,9 @@ static void leak_check(void* ptr, size_t size, int used, void* usert) {
 		SymInitialize(process, NULL, TRUE);
 		
 		// print
-		debug_print_line(k_print_warning, "%s", ptr);
+		debug_print_line(k_print_warning, "%s\n", (char*) callstack);
+
+		SymCleanup(process);
 	}
 }
 
