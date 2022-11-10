@@ -1,6 +1,6 @@
-#ifndef __ATOMIC_H__
-#define __ATOMIC_H__
-//#pragma once
+//#ifndef __ATOMIC_H__
+//#define __ATOMIC_H__
+#pragma once
 
 // Increment a number atomically.
 // Returns the old value of the number.
@@ -25,4 +25,4 @@ int atomic_load(int* address);
 // Paired with an atomic_load, can guarantee ordering and visibility.
 void atomic_store(int* address, int value);
 
-#endif
+//#endif
