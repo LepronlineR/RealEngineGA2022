@@ -8,11 +8,13 @@
 #include "wm.h"
 #include "random.h"
 #include "debug.h"
+#include "vec3f.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 typedef struct boundary_t {
 	float x_pos;
@@ -74,9 +76,7 @@ typedef struct collider_component_t {
 	// their own behavior when outside of any component that it is supposed to use
 	// i.e. player components will have to control the transform of the collider
 	transform_t transform;
-	float x_size;
-	float y_size;
-	float z_size;
+	vec3f_t component_size;
 } collider_component_t;
 
 typedef struct timer_component_t {
@@ -122,6 +122,7 @@ typedef struct frogger_game_t
 // general
 static void draw_models(frogger_game_t* game);
 static void initialize_timer(frogger_game_t* game, float interval);
+static void debug_translate(char* who, transform_t transform);
 
 // camera
 static void spawn_camera(frogger_game_t* game);
@@ -146,12 +147,13 @@ static bool in_boundary_neg_z(boundary_t boundary, transform_t transform);
 
 // colliders
 static bool check_collision(collider_component_t one, collider_component_t two);
-static bool debug_collision(name_component_t name_one, name_component_t name_two, 
-	collider_component_t one, collider_component_t two);
+static vec3f_t get_collision_min(collider_component_t col);
+static vec3f_t get_collision_max(collider_component_t col);
 
 // enemies
 static void spawn_enemy_with_timer(frogger_game_t* game);
 static void load_enemy_resources(frogger_game_t* game);
+static void spawn_empty_car(frogger_game_t* game);
 static void spawn_car(frogger_game_t* game);
 static void update_enemies(frogger_game_t* game);
 
@@ -244,6 +246,7 @@ static void draw_models(frogger_game_t* game)
 	}
 }
 
+// initialize a timer entity with a set interval, which gets called on every interval
 static void initialize_timer(frogger_game_t* game, float interval) {
 	uint64_t k_timer_ent_mask =
 		(1ULL << game->timer_type) |
@@ -258,10 +261,17 @@ static void initialize_timer(frogger_game_t* game, float interval) {
 	timer_comp->interval = interval;
 }
 
+// debug print a translate information from a transform
+static void debug_translate(char* who, transform_t transform) {
+	debug_print_line(k_print_info, "%s: <%0.3f, %0.3f, %0.3f>\n", who, 
+		transform.translation.x, transform.translation.y, transform.translation.z);
+}
+
 // ===========================================================================================
 //                                           CAMERA
 // ===========================================================================================
 
+// generate a camera with an orthographic projection
 static void spawn_camera(frogger_game_t* game)
 {
 	uint64_t k_camera_ent_mask =
@@ -359,14 +369,14 @@ static void spawn_player(frogger_game_t* game, int index) {
 
 	transform_component_t* transform_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->transform_type, true);
 	transform_identity(&transform_comp->transform);
-	transform_comp->transform.translation.z = 5.0f;
+	transform_comp->transform.translation.z = 9.0f;
 
 	name_component_t* name_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->name_type, true);
 	strcpy_s(name_comp->name, sizeof(name_comp->name), "player");
 
 	player_component_t* player_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->player_type, true);
 	player_comp->index = index;
-	create_boundaries(&player_comp->boundary, 12.0f, 12.0f, -12.0f, -12.0f, 12.0f, -12.0f);
+	create_boundaries(&player_comp->boundary, 9.0f, 9.0f, -9.0f, -9.0f, 9.0f, -9.0f);
 
 	model_component_t* model_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->model_type, true);
 	model_comp->mesh_info = &game->player_mesh;
@@ -374,22 +384,22 @@ static void spawn_player(frogger_game_t* game, int index) {
 
 	collider_component_t* col_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->collider_type, true);
 	col_comp->transform = transform_comp->transform;
-	col_comp->x_size = 1.0f;
-	col_comp->y_size = 1.0f;
-	col_comp->z_size = 1.0f;
+	col_comp->component_size = (vec3f_t) { .x = 1.0f, .y = 1.0f, .z = 1.0f };
 
 	win_component_t* win_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->win_type, true);
-	create_boundaries(&win_comp->boundary, 99.0f, 99.0f, -99.0f, -99.0f, 99.0f, -11.0f);
+	create_boundaries(&win_comp->boundary, 99.0f, 99.0f, -99.0f, -99.0f, 99.0f, -9.0f);
 	win_comp->total_wins = 0;
 	transform_t respawn_loc;
 	transform_identity(&respawn_loc);
-	respawn_loc.translation.z = 5.0f;
+	respawn_loc.translation.z = 9.0f;
 	win_comp->respawn_location = respawn_loc;
 }
 
 static void update_players(frogger_game_t* game)
 {
 	float dt = (float)timer_object_get_delta_ms(game->timer) * 0.001f;
+
+	dt *= 2.0f;
 
 	uint32_t key_mask = wm_get_key_mask(game->window);
 
@@ -410,19 +420,19 @@ static void update_players(frogger_game_t* game)
 
 		transform_t move;
 		transform_identity(&move);
-		if (key_mask & k_key_up && in_boundary_pos_z(player_comp->boundary, transform_comp->transform))
+		if (key_mask & k_key_up && in_boundary_neg_z(player_comp->boundary, transform_comp->transform))
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_up(), -dt));
 		}
-		if (key_mask & k_key_down && in_boundary_neg_z(player_comp->boundary, transform_comp->transform))
+		if (key_mask & k_key_down && in_boundary_pos_z(player_comp->boundary, transform_comp->transform))
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_up(), dt));
 		}
-		if (key_mask & k_key_left && in_boundary_pos_y(player_comp->boundary, transform_comp->transform))
+		if (key_mask & k_key_left && in_boundary_neg_y(player_comp->boundary, transform_comp->transform))
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_right(), -dt));
 		}
-		if (key_mask & k_key_right && in_boundary_neg_y(player_comp->boundary, transform_comp->transform))
+		if (key_mask & k_key_right && in_boundary_pos_y(player_comp->boundary, transform_comp->transform))
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_right(), dt));
 		}
@@ -456,70 +466,67 @@ static void create_boundaries(boundary_t* boundary, float x_pos, float y_pos, fl
 }
 
 static bool in_boundary_pos_x(boundary_t boundary, transform_t transform) {
-	return !(boundary.x_neg > transform.translation.x);
+	return boundary.x_pos > transform.translation.x;
 }
 
 static bool in_boundary_neg_x(boundary_t boundary, transform_t transform) {
-	return !(boundary.x_pos < transform.translation.x);
+	return boundary.x_neg < transform.translation.x;
 }
 
 static bool in_boundary_pos_y(boundary_t boundary, transform_t transform) {
-	return !(boundary.y_neg > transform.translation.y);
+	return boundary.y_pos > transform.translation.y;
 }
 
 static bool in_boundary_neg_y(boundary_t boundary, transform_t transform) {
-	return !(boundary.y_pos < transform.translation.y);
+	return boundary.y_neg < transform.translation.y;
 }
 
 static bool in_boundary_pos_z(boundary_t boundary, transform_t transform) {
-	return !(boundary.z_neg > transform.translation.z);
+	return boundary.z_pos > transform.translation.z;
 }
 
 static bool in_boundary_neg_z(boundary_t boundary, transform_t transform) {
-	return !(boundary.z_pos < transform.translation.z);
+	return boundary.z_neg < transform.translation.z;
 }
 
 static bool in_boundary(boundary_t boundary, transform_t transform) {
-	return (in_boundary_pos_x(boundary, transform) || in_boundary_neg_x(boundary, transform) ||
-		in_boundary_pos_y(boundary, transform) || in_boundary_neg_y(boundary, transform) ||
-		in_boundary_pos_z(boundary, transform) || in_boundary_neg_z(boundary, transform));
+	return (in_boundary_pos_x(boundary, transform) && in_boundary_neg_x(boundary, transform)) &&
+		(in_boundary_pos_y(boundary, transform) && in_boundary_neg_y(boundary, transform)) &&
+		(in_boundary_pos_z(boundary, transform) && in_boundary_neg_z(boundary, transform));
 }
 
 // ===========================================================================================
 //                                           COLLIDERS
 // ===========================================================================================
 
-static bool check_collision(collider_component_t one, collider_component_t two) {
-	// collision x
-	bool col_x = one.transform.translation.x + one.x_size >= two.transform.translation.x &&
-		two.transform.translation.x + two.x_size >= one.transform.translation.x;
-	// collision y
-	bool col_y = one.transform.translation.y + one.y_size >= two.transform.translation.y &&
-		two.transform.translation.y + two.y_size >= one.transform.translation.y;
-	// collision z
-	bool col_z = one.transform.translation.z + one.z_size >= two.transform.translation.z &&
-		two.transform.translation.z + two.z_size >= one.transform.translation.z;
-
-	// collision only if on all axes
-	return col_x && col_y && col_z;
+// get the minimum point of the collision aligned bounding box
+static vec3f_t get_collision_min(collider_component_t col) {
+	return (vec3f_t) {
+			.x = min(col.transform.translation.x + col.component_size.x, col.transform.translation.x - col.component_size.x),
+			.y = min(col.transform.translation.y + col.component_size.y, col.transform.translation.y - col.component_size.y),
+			.z = min(col.transform.translation.z + col.component_size.z, col.transform.translation.z - col.component_size.z),
+	};
 }
 
-static bool debug_collision(name_component_t name_one, name_component_t name_two,
-	collider_component_t one, collider_component_t two) {
-	// collision x
-	bool col_x = one.transform.translation.x + one.x_size >= two.transform.translation.x &&
-		two.transform.translation.x + two.x_size >= one.transform.translation.x;
-	// collision y
-	bool col_y = one.transform.translation.y + one.y_size >= two.transform.translation.y &&
-		two.transform.translation.y + two.y_size >= one.transform.translation.y;
-	// collision z
-	bool col_z = one.transform.translation.z + one.z_size >= two.transform.translation.z &&
-		two.transform.translation.z + two.z_size >= one.transform.translation.z;
+// get the maximum point of the collision aligned bounding box
+static vec3f_t get_collision_max(collider_component_t col) {
+	return (vec3f_t) {
+		.x = max(col.transform.translation.x + col.component_size.x, col.transform.translation.x - col.component_size.x),
+		.y = max(col.transform.translation.y + col.component_size.y, col.transform.translation.y - col.component_size.y),
+		.z = max(col.transform.translation.z + col.component_size.z, col.transform.translation.z - col.component_size.z),
+	};
+}
 
-	debug_print_line(k_print_info, "%s collided with %s at: <%> <>");
+// from the minimum and maximum collision points, determine if there is a collision between two colliders
+static bool check_collision(collider_component_t one, collider_component_t two) {
+	vec3f_t one_min = get_collision_min(one);
+	vec3f_t two_min = get_collision_min(two);
+	vec3f_t one_max = get_collision_max(one);
+	vec3f_t two_max = get_collision_max(two);
 
-	// collision only if on all axes
-	return col_x && col_y && col_z;
+	return ((one_min.x <= two_max.x) && (one_max.x >= two_min.x) &&
+		(one_min.y <= two_max.y) && (one_max.y >= two_min.y) &&
+		(one_min.z <= two_max.z) && (one_max.z >= two_min.z));
 }
 
 // ===========================================================================================
@@ -589,7 +596,7 @@ static void spawn_car(frogger_game_t* game) {
 	transform_component_t* transform_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->transform_type, true);
 	transform_identity(&transform_comp->transform);
 	transform_comp->transform.translation.y = starting_area;
-	transform_comp->transform.translation.z = lane * 3 - 5;
+	transform_comp->transform.translation.z = lane * 6 - 7;
 	transform_comp->transform.translation.x = 0.0f;
 
 	name_component_t* name_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->name_type, true);
@@ -598,7 +605,7 @@ static void spawn_car(frogger_game_t* game) {
 	enemy_component_t* enemy_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->enemy_type, true);
 	enemy_comp->direction = direction;
 	enemy_comp->lane = lane;
-	create_boundaries(&enemy_comp->boundary, 16.0f, 16.0f, -16.0f, -16.0f, 16.0f, -16.0f);
+	create_boundaries(&enemy_comp->boundary, 23.0f, 23.0f, -23.0f, -23.0f, 23.0f, -23.0f);
 
 	model_component_t* model_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->model_type, true);
 	model_comp->mesh_info = &game->enemy_mesh;
@@ -606,9 +613,7 @@ static void spawn_car(frogger_game_t* game) {
 
 	collider_component_t* col_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->collider_type, true);
 	col_comp->transform = transform_comp->transform;
-	col_comp->x_size = 1.0f;
-	col_comp->y_size = 2.0f;
-	col_comp->z_size = 1.0f;
+	col_comp->component_size = (vec3f_t){ .x = 1.0f, .y = 2.0f, .z = 1.0f };
 }
 
 static void spawn_enemy_with_timer(frogger_game_t* game) {
@@ -628,9 +633,41 @@ static void spawn_enemy_with_timer(frogger_game_t* game) {
 	}
 }
 
+static void spawn_empty_car(frogger_game_t* game) {
+	uint64_t k_enemy_ent_mask =
+		(1ULL << game->transform_type) |
+		(1ULL << game->model_type) |
+		(1ULL << game->enemy_type) |
+		(1ULL << game->name_type) |
+		(1ULL << game->collider_type);
+	game->enemy_ent = ecs_entity_add(game->ecs, k_enemy_ent_mask);
+
+	// choose random lane
+	lane_direction direction = empty_lane;
+
+	transform_component_t* transform_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->transform_type, true);
+	transform_identity(&transform_comp->transform);
+
+	name_component_t* name_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->name_type, true);
+	strcpy_s(name_comp->name, sizeof(name_comp->name), "enemy");
+
+	enemy_component_t* enemy_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->enemy_type, true);
+	enemy_comp->direction = direction;
+	enemy_comp->lane = 0;
+	create_boundaries(&enemy_comp->boundary, 23.0f, 23.0f, -23.0f, -23.0f, 23.0f, -23.0f);
+
+	model_component_t* model_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->model_type, true);
+	model_comp->mesh_info = &game->enemy_mesh;
+	model_comp->shader_info = &game->enemy_shader;
+
+	collider_component_t* col_comp = ecs_entity_get_component(game->ecs, game->enemy_ent, game->collider_type, true);
+	col_comp->transform = transform_comp->transform;
+	col_comp->component_size = (vec3f_t){ .x = 1.0f, .y = 2.0f, .z = 1.0f };
+}
 
 static void update_enemies(frogger_game_t* game) {
 	float dt = (float)timer_object_get_delta_ms(game->timer) * 0.001f;
+	dt *= 2.0f;
 
 	uint64_t k_query_mask = (1ULL << game->transform_type) | (1ULL << game->enemy_type);
 
@@ -675,17 +712,23 @@ static void update_enemies(frogger_game_t* game) {
 
 			if (check_collision(*player_col_comp, *col_comp)) {
 
-				///* UNCOMMENT TO PRINT THE COLLISION WHEN IT HAPPENS
+				transform_component_t* player_transform_comp =
+					ecs_query_get_component(game->ecs, &player_query, game->transform_type);
+
+				/* UNCOMMENT TO PRINT THE COLLISION WHEN IT HAPPENS
 				
 				name_component_t* player_name_comp =
 					ecs_query_get_component(game->ecs, &player_query, game->name_type);
 				name_component_t* enemy_name_comp =
 					ecs_query_get_component(game->ecs, &query, game->name_type);
-				debug_print_line(k_print_info, "collided %s with %s\n", player_name_comp->name, enemy_name_comp->name);
-				//*/
+
+				debug_print_line(k_print_info, "collided %s with %s at \n", player_name_comp->name, enemy_name_comp->name);
+				debug_translate(player_name_comp->name, player_transform_comp->transform);
+				debug_translate(enemy_name_comp->name, transform_comp->transform);
+				debug_print_line(k_print_info, "\n");
+				*/
 
 				win_component_t* player_win_comp = ecs_query_get_component(game->ecs, &player_query, game->win_type);
-				transform_component_t* player_transform_comp = ecs_query_get_component(game->ecs, &player_query, game->transform_type);
 
 				// respawn the player back at the respawn location at collision
 				player_transform_comp->transform = player_win_comp->respawn_location;
