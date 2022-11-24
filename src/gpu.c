@@ -7,6 +7,9 @@
 #define VK_USE_PLATFORM_WIN32_KHR
 #include "vulkan/vulkan.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb/stb_image.h"
+
 #include <malloc.h>
 #include <string.h>
 
@@ -64,6 +67,32 @@ typedef struct gpu_frame_t
 	gpu_cmd_buffer_t* cmd_buffer;
 } gpu_frame_t;
 
+typedef struct gpu_buffer_info_t {
+	VkDeviceSize size;
+	VkBufferUsageFlags usage;
+	VkMemoryPropertyFlags properties;
+	VkBuffer* buffer;
+	VkDeviceMemory* buffer_memory;
+} gpu_buffer_info_t;
+
+typedef struct gpu_image_info_t {
+	uint32_t width;
+	uint32_t height;
+	VkFormat format;
+	VkImageTiling tiling;
+	VkImageUsageFlags usage;
+	VkMemoryPropertyFlags properties;
+	VkImage* image;
+	VkDeviceMemory* image_memory;
+} gpu_image_info_t;
+
+typedef struct gpu_image_layout_t {
+	VkImage image;
+	VkFormat format; 
+	VkImageLayout old_layout; 
+	VkImageLayout new_layout
+} gpu_image_layout_t;
+
 typedef struct gpu_t
 {
 	heap_t* heap;
@@ -104,6 +133,8 @@ typedef struct gpu_t
 static void create_mesh_layouts(gpu_t* gpu);
 static void destroy_mesh_layouts(gpu_t* gpu);
 static uint32_t get_memory_type_index(gpu_t* gpu, uint32_t bits, VkMemoryPropertyFlags properties);
+static VkCommandBuffer create_command_buffer(gpu_t* gpu);
+static void end_command_buffer(gpu_t* gpu, VkCommandBuffer command_buffer);
 
 gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 {
@@ -722,6 +753,38 @@ int gpu_get_frame_count(gpu_t* gpu)
 void gpu_wait_until_idle(gpu_t* gpu)
 {
 	vkQueueWaitIdle(gpu->queue);
+}
+
+void gpu_generate_buffer(gpu_t* gpu, gpu_buffer_info_t* r_buffer_info) {
+	VkBufferCreateInfo buffer_info =
+	{
+		.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+		.size = r_buffer_info->size,
+		.usage = r_buffer_info->usage,
+		.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+	};
+
+	VkResult result = vkCreateBuffer(gpu->logical_device, &buffer_info, NULL, &r_buffer_info->buffer);
+	if (result != VK_SUCCESS) {
+		debug_print_line(k_print_error, "vkCreateBuffer failed: %d\n", result);
+	}
+
+	VkMemoryRequirements memory_requirements;
+	vkGetBufferMemoryRequirements(gpu->logical_device, r_buffer_info->buffer, &memory_requirements);
+	
+	VkMemoryAllocateInfo allocation_info =
+	{
+		.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+		.allocationSize = memory_requirements.size,
+		.memoryTypeIndex = get_memory_type_index(gpu, memory_requirements.memoryTypeBits, r_buffer_info->properties)
+	};
+
+	result = vkAllocateMemory(gpu->logical_device, &allocation_info, NULL, &r_buffer_info->buffer_memory);
+	if (result != VK_SUCCESS) {
+		debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
+	}
+
+	vkBindBufferMemory(gpu->logical_device, r_buffer_info->buffer, r_buffer_info->buffer_memory, 0);
 }
 
 gpu_descriptor_t* gpu_descriptor_create(gpu_t* gpu, const gpu_descriptor_info_t* info)
@@ -1492,4 +1555,175 @@ static uint32_t get_memory_type_index(gpu_t* gpu, uint32_t bits, VkMemoryPropert
 	}
 	debug_print_line(k_print_error, "Unable to find memory of type: %x\n", bits);
 	return 0;
+}
+
+static VkCommandBuffer create_command_buffer(gpu_t* gpu) {
+	VkCommandBufferAllocateInfo allocation_info =
+	{
+		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+		.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+		.commandPool = gpu->cmd_pool,
+		.commandBufferCount = 1
+	};
+
+	VkCommandBuffer command_buffer;
+	vkAllocateCommandBuffers(gpu->logical_device, &allocation_info, &command_buffer);
+
+	VkCommandBufferBeginInfo begin_info = 
+	{
+		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+		.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT
+	};
+
+	vkBeginCommandBuffer(command_buffer, &begin_info);
+
+	return command_buffer;
+}
+
+static void end_command_buffer(gpu_t* gpu, VkCommandBuffer command_buffer) {
+	vkEndCommandBuffer(command_buffer);
+
+	VkSubmitInfo submit_info = {
+		.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+		.commandBufferCount = 1,
+		.pCommandBuffers = &command_buffer
+	};
+
+	vkQueueSubmit(gpu->queue, 1, &submit_info, VK_NULL_HANDLE);
+	vkQueueWaitIdle(gpu->queue);
+
+	vkFreeCommandBuffers(gpu->logical_device, gpu->cmd_pool, 1, &command_buffer);
+}
+
+void gpu_create_image_layout(gpu_t* gpu, gpu_image_layout_t* image_layout) {
+	VkCommandBuffer command_buffer = create_command_buffer(gpu);
+	
+	VkImageMemoryBarrier image_memory_barrier =
+	{
+		.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+		.oldLayout = image_layout->old_layout,
+		.newLayout = image_layout->new_layout,
+		.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+		.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+		.image = image_layout->image,
+		.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+		.subresourceRange.baseMipLevel = 0,
+		.subresourceRange.levelCount = 1,
+		.subresourceRange.baseArrayLayer = 0,
+		.subresourceRange.layerCount = 1
+	};
+
+	VkPipelineStageFlags sourceStage;
+	VkPipelineStageFlags destinationStage;
+
+	if (image_layout->old_layout == VK_IMAGE_LAYOUT_UNDEFINED && image_layout->new_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
+		image_memory_barrier.srcAccessMask = 0;
+		image_memory_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+
+		sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+		destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+	} else if (image_layout->old_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && image_layout->new_layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
+		image_memory_barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		image_memory_barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+		sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+	} else {
+		debug_print_line(k_print_error, "image layout swap invalid\n");
+	}
+
+	vkCmdPipelineBarrier(command_buffer, sourceStage, destinationStage, 0, 0, NULL, 0, NULL, 1, &image_memory_barrier);
+
+	end_command_buffer(gpu, command_buffer);
+}
+
+void gpu_create_image(gpu_t* gpu, gpu_image_info_t* image_info) {
+	VkImageCreateInfo image_info =
+	{
+		.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+		.imageType = VK_IMAGE_TYPE_2D,
+		.extent.width = image_info->width,
+		.extent.height = image_info->height,
+		.extent.depth = 1,
+		.mipLevels = 1,
+		.arrayLayers = 1,
+		.format = image_info->format,
+		.tiling = image_info->tiling,
+		.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+		.usage = image_info->usage,
+		.samples = VK_SAMPLE_COUNT_1_BIT,
+		.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+	};
+
+	VkResult result = vkCreateImage(gpu->logical_device, &image_info, NULL, image_info->image);
+
+	if (result != VK_SUCCESS) {
+		debug_print_line(k_print_error, "vkCreateImage failed for creating images: %d\n", result);
+	}
+
+	VkMemoryRequirements memory_requirements;
+	vkGetImageMemoryRequirements(gpu->logical_device, image_info->image, &memory_requirements);
+
+	VkMemoryAllocateInfo allocation_info =
+	{
+		.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+		.allocationSize = memory_requirements.size,
+		.memoryTypeIndex = get_memory_type_index(gpu, memory_requirements.memoryTypeBits, image_info->properties)
+	};
+
+	result = vkAllocateMemory(gpu->logical_device, &allocation_info, NULL, &image_info->image_memory);
+
+	if (result != VK_SUCCESS) {
+		debug_print_line(k_print_error, "vkAllocateMemory failed for creating images: %d\n", result);
+	}
+
+	vkBindImageMemory(gpu->logical_device, image_info->image, image_info->image_memory, 0);
+}
+
+void gpu_generate_texture(gpu_t* gpu, const char* image_location) {
+	int texture_width, texture_height, texture_channels;
+	stbi_uc* image = stbi_load(image_location,
+		&texture_width, &texture_height, &texture_channels, STBI_rgb_alpha);
+
+	if (!image) {
+		debug_print_line(k_print_error, "stbi_uc failed for loading images\n");
+	}
+
+	VkDeviceSize img_size = texture_width * texture_height * 4;
+
+	gpu_buffer_info_t* buffer = heap_alloc(gpu->heap, sizeof(gpu_buffer_info_t), 8);
+	memset(buffer, 0, sizeof(*buffer));
+	buffer->size = img_size;
+	buffer->usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+	buffer->properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+	buffer->buffer = heap_alloc(gpu->heap, sizeof(VkBuffer), 8);
+	buffer->buffer_memory = heap_alloc(gpu->heap, sizeof(VkDeviceMemory), 8);
+
+	gpu_generate_buffer(gpu, buffer);
+
+	void* data;
+	vkMapMemory(gpu->logical_device, buffer->buffer_memory, 0, img_size, 0, &data);
+	memcpy(data, image, (size_t) (img_size));
+	vkUnmapMemory(gpu->logical_device, buffer->buffer_memory);
+
+	stbi_image_free(image);
+
+	gpu_image_info_t* image_info = heap_alloc(gpu->heap, sizeof(gpu_image_info_t), 8);
+	memset(image_info, 0, sizeof(*image_info));
+	image_info->height = texture_height;
+	image_info->width = texture_width;
+	image_info->format = VK_FORMAT_R8G8B8A8_SRGB;
+	image_info->tiling = VK_IMAGE_TILING_OPTIMAL;
+	image_info->usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	image_info->properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+	//image_info->image = 
+	//image_info->imageMemory = 
+
+	gpu_image_layout_t* image_layout_1 = heap_alloc(gpu->heap, sizeof(gpu_image_layout_t), 8);
+	image_layout_1->format = VK_FORMAT_R8G8B8A8_SRGB;
+	image_layout_1->new_layout = VK_IMAGE_LAYOUT_UNDEFINED;
+	image_layout_1->old_layout = VK_IMAGE_LAYOUT_UNDEFINED;
+	//gpu_create_image_layout();
+
+	//createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
 }
