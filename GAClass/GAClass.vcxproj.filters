@@ -281,6 +281,9 @@
     <ClInclude Include="random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\stb\stb_image.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\shaders\triangle.frag">

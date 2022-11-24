@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\GAClass"
+    "\\GAClass",
+    "\\src"
   ],
-  "SelectedNode": "\\GAClass\\frogger_game.c",
+  "SelectedNode": "\\src\\gpu.c",
   "PreviewInSolutionExplorer": false
 }
