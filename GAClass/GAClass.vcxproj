@@ -141,13 +141,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\gpu.c" />
     <ClCompile Include="atomic.c" />
     <ClCompile Include="debug.c" />
     <ClCompile Include="ecs.c" />
     <ClCompile Include="event.c" />
     <ClCompile Include="frogger_game.c" />
     <ClCompile Include="fs.c" />
+    <ClCompile Include="gpu.c" />
     <ClCompile Include="heap.c" />
     <ClCompile Include="hw1.c" />
     <ClCompile Include="hw2.c" />
@@ -166,6 +166,7 @@
     <ClCompile Include="queue.c" />
     <ClCompile Include="random.c" />
     <ClCompile Include="render.c" />
+    <ClCompile Include="scene.c" />
     <ClCompile Include="semaphore.c" />
     <ClCompile Include="simple_game.c" />
     <ClCompile Include="thread.c" />
@@ -177,7 +178,6 @@
     <ClCompile Include="wm.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\gpu.h" />
     <ClInclude Include="..\src\vulkan\vk_platform.h" />
     <ClInclude Include="..\src\vulkan\vulkan.h" />
     <ClInclude Include="..\src\vulkan\vulkan_android.h" />
@@ -196,11 +196,13 @@
     <ClInclude Include="..\src\vulkan\vulkan_xcb.h" />
     <ClInclude Include="..\src\vulkan\vulkan_xlib.h" />
     <ClInclude Include="..\src\vulkan\vulkan_xlib_xrandr.h" />
+    <ClInclude Include="cimgui.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="ecs.h" />
     <ClInclude Include="event.h" />
     <ClInclude Include="frogger_game.h" />
     <ClInclude Include="fs.h" />
+    <ClInclude Include="gpu.h" />
     <ClInclude Include="heap.h" />
     <ClInclude Include="hw1.h" />
     <ClInclude Include="hw2.h" />
@@ -220,6 +222,7 @@
     <ClInclude Include="mutex.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="render.h" />
+    <ClInclude Include="scene.h" />
     <ClInclude Include="semaphore.h" />
     <ClInclude Include="simple_game.h" />
     <ClInclude Include="thread.h" />
@@ -232,10 +235,10 @@
     <ClInclude Include="wm.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\shaders\triangle.frag" />
-    <None Include="..\src\shaders\triangle.frag.spv" />
-    <None Include="..\src\shaders\triangle.vert" />
-    <None Include="..\src\shaders\triangle.vert.spv" />
+    <None Include="shaders\default.frag" />
+    <None Include="shaders\default.vert" />
+    <None Include="shaders\ui-frag.spv" />
+    <None Include="shaders\ui-vert.spv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

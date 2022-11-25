@@ -17,7 +17,7 @@
       <UniqueIdentifier>{29e0712b-7c77-471c-ab30-464f2de174d2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shaders">
-      <UniqueIdentifier>{c452c6af-9902-40ae-a070-c5a8cf7068a5}</UniqueIdentifier>
+      <UniqueIdentifier>{fe4abb36-80fc-4971-89c5-692b7a9d7fe6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -102,9 +102,6 @@
     <ClCompile Include="hw3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\gpu.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ecs.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -121,6 +118,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="random.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gpu.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -206,9 +209,6 @@
     <ClInclude Include="hw3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\gpu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\vulkan\vk_platform.h">
       <Filter>Includes</Filter>
     </ClInclude>
@@ -284,18 +284,27 @@
     <ClInclude Include="include\stb\stb_image.h">
       <Filter>Includes</Filter>
     </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cimgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\shaders\triangle.frag">
+    <None Include="shaders\default.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\src\shaders\triangle.frag.spv">
+    <None Include="shaders\default.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\src\shaders\triangle.vert">
+    <None Include="shaders\ui-frag.spv">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\src\shaders\triangle.vert.spv">
+    <None Include="shaders\ui-vert.spv">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

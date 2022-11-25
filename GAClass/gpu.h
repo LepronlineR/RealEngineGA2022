@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <stdbool.h>
 
 typedef struct gpu_t gpu_t;
@@ -9,6 +10,9 @@ typedef struct gpu_mesh_t gpu_mesh_t;
 typedef struct gpu_pipeline_t gpu_pipeline_t;
 typedef struct gpu_shader_t gpu_shader_t;
 typedef struct gpu_uniform_buffer_t gpu_uniform_buffer_t;
+typedef struct gpu_image_info_t gpu_image_info_t;
+typedef struct gpu_buffer_info_t gpu_buffer_info_t;
+typedef struct gpu_image_layout_t gpu_image_layout_t;
 
 typedef struct heap_t heap_t;
 typedef struct wm_window_t wm_window_t;
@@ -64,6 +68,12 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window);
 // Destroy the previously created Vulkan.
 void gpu_destroy(gpu_t* gpu);
 
+// Get the number of frames in the swapchain.
+int gpu_get_frame_count(gpu_t* gpu);
+
+// Wait for the GPU to be done all queued work.
+void gpu_wait_until_idle(gpu_t* gpu);
+
 // Binds uniform buffers (and textures if we had them) to a given shader layout.
 gpu_descriptor_t* gpu_descriptor_create(gpu_t* gpu, const gpu_descriptor_info_t* info);
 
@@ -116,3 +126,16 @@ void gpu_cmd_descriptor_bind(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer, gpu_descr
 
 // Draw given current pipeline, mesh, and descriptor.
 void gpu_cmd_draw(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer);
+
+// Create an image layout
+void gpu_create_image_layout(gpu_t* gpu, gpu_image_layout_t* image_layout);
+
+// Generate a texture given a target image location
+void gpu_generate_texture(gpu_t* gpu, const char* image_location);
+
+// Create an image for a texture
+void gpu_create_image(gpu_t* gpu, gpu_image_info_t* image_info);
+
+// Generate a buffer and store it in the buffer info
+void gpu_generate_buffer(gpu_t* gpu, gpu_buffer_info_t* buffer_info);
+

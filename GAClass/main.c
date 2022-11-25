@@ -1,16 +1,10 @@
-// Homework includes
-#include "hw1.h"
-#include "hw2.h"
-#include "hw3.h"
-#include "frogger_game.h"
-
 #include "debug.h"
 #include "fs.h"
 #include "heap.h"
 #include "render.h"
-// #include "simple_game.h"
 #include "timer.h"
 #include "wm.h"
+#include "scene.h"
 
 int main(int argc, const char* argv[])
 {
@@ -24,16 +18,16 @@ int main(int argc, const char* argv[])
 	wm_window_t* window = wm_create(heap);
 	render_t* render = render_create(heap, window);
 
-	frogger_game_t* game = frogger_game_create(heap, fs, window, render);
+	scene_t* scene = scene_create(heap, fs, window, render);
 
 	while (!wm_pump(window)) {
-		frogger_game_update(game);
+		scene_update(scene);
 	}
 
 	/* XXX: Shutdown render before the game. Render uses game resources. */
 	render_destroy(render);
 
-	frogger_game_destroy(game);
+	scene_destroy(scene);
 
 	wm_destroy(window);
 	fs_destroy(fs);

@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\GAClass",
-    "\\src"
+    "\\GAClass"
   ],
-  "SelectedNode": "\\src\\gpu.c",
+  "SelectedNode": "\\GAClass\\render.c",
   "PreviewInSolutionExplorer": false
 }

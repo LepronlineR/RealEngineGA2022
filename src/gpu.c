@@ -4,6 +4,8 @@
 #include "heap.h"
 #include "wm.h"
 
+#include "cimgui.h"
+
 #define VK_USE_PLATFORM_WIN32_KHR
 #include "vulkan/vulkan.h"
 
@@ -90,7 +92,7 @@ typedef struct gpu_image_layout_t {
 	VkImage image;
 	VkFormat format; 
 	VkImageLayout old_layout; 
-	VkImageLayout new_layout
+	VkImageLayout new_layout;
 } gpu_image_layout_t;
 
 typedef struct gpu_t
@@ -135,6 +137,8 @@ static void destroy_mesh_layouts(gpu_t* gpu);
 static uint32_t get_memory_type_index(gpu_t* gpu, uint32_t bits, VkMemoryPropertyFlags properties);
 static VkCommandBuffer create_command_buffer(gpu_t* gpu);
 static void end_command_buffer(gpu_t* gpu, VkCommandBuffer command_buffer);
+static void copy_buffer_to_image(gpu_t* gpu, VkBuffer buffer, gpu_image_info_t* image_info);
+static void init_imgui(gpu_t* gpu);
 
 gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 {
@@ -1595,6 +1599,27 @@ static void end_command_buffer(gpu_t* gpu, VkCommandBuffer command_buffer) {
 	vkFreeCommandBuffers(gpu->logical_device, gpu->cmd_pool, 1, &command_buffer);
 }
 
+static void copy_buffer_to_image(gpu_t* gpu, VkBuffer buffer, gpu_image_info_t* image_info) {
+	VkCommandBuffer command_buffer = create_command_buffer(gpu);
+
+	VkBufferImageCopy image_copy = {
+		.bufferOffset = 0,
+		.bufferRowLength = 0,
+		.bufferImageHeight = 0,
+		.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+		.imageSubresource.mipLevel = 0,
+		.imageSubresource.baseArrayLayer = 0,
+		.imageSubresource.layerCount = 1,
+		.imageOffset = {0, 0, 0},
+		.imageExtent = { image_info->width, image_info->height, 1 }
+	};
+
+	vkCmdCopyBufferToImage(command_buffer, buffer, image_info->image,
+		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &image_copy);
+
+	end_command_buffer(gpu, command_buffer);
+}
+
 void gpu_create_image_layout(gpu_t* gpu, gpu_image_layout_t* image_layout) {
 	VkCommandBuffer command_buffer = create_command_buffer(gpu);
 	
@@ -1638,7 +1663,7 @@ void gpu_create_image_layout(gpu_t* gpu, gpu_image_layout_t* image_layout) {
 }
 
 void gpu_create_image(gpu_t* gpu, gpu_image_info_t* image_info) {
-	VkImageCreateInfo image_info =
+	VkImageCreateInfo image =
 	{
 		.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
 		.imageType = VK_IMAGE_TYPE_2D,
@@ -1655,7 +1680,7 @@ void gpu_create_image(gpu_t* gpu, gpu_image_info_t* image_info) {
 		.sharingMode = VK_SHARING_MODE_EXCLUSIVE
 	};
 
-	VkResult result = vkCreateImage(gpu->logical_device, &image_info, NULL, image_info->image);
+	VkResult result = vkCreateImage(gpu->logical_device, &image, NULL, image_info->image);
 
 	if (result != VK_SUCCESS) {
 		debug_print_line(k_print_error, "vkCreateImage failed for creating images: %d\n", result);
@@ -1708,6 +1733,7 @@ void gpu_generate_texture(gpu_t* gpu, const char* image_location) {
 
 	stbi_image_free(image);
 
+	// Create an image
 	gpu_image_info_t* image_info = heap_alloc(gpu->heap, sizeof(gpu_image_info_t), 8);
 	memset(image_info, 0, sizeof(*image_info));
 	image_info->height = texture_height;
@@ -1716,14 +1742,62 @@ void gpu_generate_texture(gpu_t* gpu, const char* image_location) {
 	image_info->tiling = VK_IMAGE_TILING_OPTIMAL;
 	image_info->usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 	image_info->properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-	//image_info->image = 
-	//image_info->imageMemory = 
 
+	gpu_create_image(gpu, image_info);
+
+	// format the image layouts and then copy the buffer to the image
 	gpu_image_layout_t* image_layout_1 = heap_alloc(gpu->heap, sizeof(gpu_image_layout_t), 8);
 	image_layout_1->format = VK_FORMAT_R8G8B8A8_SRGB;
 	image_layout_1->new_layout = VK_IMAGE_LAYOUT_UNDEFINED;
-	image_layout_1->old_layout = VK_IMAGE_LAYOUT_UNDEFINED;
-	//gpu_create_image_layout();
+	image_layout_1->old_layout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+	image_layout_1->image = image_info->image;
 
-	//createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
+	gpu_create_image_layout(gpu, image_layout_1);
+
+	copy_buffer_to_image(gpu, buffer->buffer, image_info);
+
+	gpu_image_layout_t* image_layout_2 = heap_alloc(gpu->heap, sizeof(gpu_image_layout_t), 8);
+	image_layout_1->format = VK_FORMAT_R8G8B8A8_SRGB;
+	image_layout_1->new_layout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+	image_layout_1->old_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	image_layout_1->image = image_info->image;
+
+	gpu_create_image_layout(gpu, image_layout_2);
+
+	vkDestroyBuffer(gpu->logical_device, image_info->image, NULL);
+	vkFreeMemory(gpu->logical_device, image_info->image_memory, NULL);
+}
+
+static void init_imgui(gpu_t* gpu) {
+
+	// descriptor pool setup (VULKAN)
+
+	VkDescriptorPoolSize pool_sizes[] = {
+		{ VK_DESCRIPTOR_TYPE_SAMPLER, 512 },
+		{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 512 },
+		{ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 512 },
+		{ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 512 },
+		{ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 512 },
+		{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 512 },
+		{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 512 },
+		{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 512 },
+		{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 512 },
+		{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 512 },
+		{ VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 512 }
+	};
+
+	VkDescriptorPoolCreateInfo pool_info = {
+		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+		.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
+		.maxSets = 512,
+		.poolSizeCount = sizeof(pool_sizes) / sizeof(pool_sizes[0]),
+		.pPoolSizes = pool_sizes
+	};
+
+	VkDescriptorPool imgui_pool;
+	VK_CHECK(vkCreateDescriptorPool(gpu->logical_device, &pool_info, NULL, &imgui_pool));
+
+	// ImGui setup
+
+	igCreateContext
 }
