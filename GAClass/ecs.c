@@ -185,3 +185,7 @@ void ecs_add_component_mask(ecs_t* ecs, ecs_entity_ref_t ref, uint64_t new_add_c
 		ecs->component_masks[ref.entity] |= new_add_component_mask;
 	}
 }
+
+bool ecs_entity_is_dummy_entity(ecs_entity_ref_t ref) {
+	return ref.entity == -1 && ref.sequence == -1;
+}

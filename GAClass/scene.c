@@ -85,7 +85,8 @@ typedef struct scene_t
 	int name_type;
 	int collider_type;
 
-	ecs_entity_ref_t* current_entity;
+	ecs_entity_ref_t camera_ent;
+	ecs_entity_ref_t current_entity;
 
 	ecs_entity_ref_t all_ent[k_max_entities];
 	int next_free_entity;
@@ -165,15 +166,14 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	scene->name_type = ecs_register_component_type(scene->ecs, "name", sizeof(name_component_t), _Alignof(name_component_t));
 	scene->collider_type = ecs_register_component_type(scene->ecs, "collider", sizeof(collider_component_t), _Alignof(collider_component_t));
 
-	load_scene_hierarchy_resources(scene);
+	// load_scene_hierarchy_resources(scene);
+	load_object_scene_resources(scene);
 
 	spawn_scene_hierarchy(scene);
 
 	spawn_camera(scene);
 
-	// generate an entity at the start
-	scene->current_entity = heap_alloc(heap, sizeof(ecs_entity_ref_t), 8);
-	*scene->current_entity = add_object_to_scene(scene);
+	scene->current_entity = dummy_entity;
 
 	return scene;
 }
@@ -250,20 +250,18 @@ static void spawn_camera(scene_t* scene)
 	uint64_t k_camera_ent_mask =
 		(1ULL << scene->camera_type) |
 		(1ULL << scene->name_type);
-	scene->all_ent[scene->next_free_entity] = ecs_entity_add(scene->ecs, k_camera_ent_mask);
+	scene->camera_ent = ecs_entity_add(scene->ecs, k_camera_ent_mask);
 
-	name_component_t* name_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->name_type, true);
+	name_component_t* name_comp = ecs_entity_get_component(scene->ecs, scene->camera_ent, scene->name_type, true);
 	strcpy_s(name_comp->name, sizeof(name_comp->name), "camera");
 
-	camera_component_t* camera_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->camera_type, true);
+	camera_component_t* camera_comp = ecs_entity_get_component(scene->ecs, scene->camera_ent, scene->camera_type, true);
 	mat4f_make_perspective(&camera_comp->projection, (float)M_PI / 2.0f, 16.0f / 9.0f, 0.1f, 100.0f);
 
 	vec3f_t eye_pos = vec3f_scale(vec3f_forward(), -5.0f);
 	vec3f_t forward = vec3f_forward();
 	vec3f_t up = vec3f_up();
 	mat4f_make_lookat(&camera_comp->view, &eye_pos, &forward, &up);
-
-	update_next_entity_location(scene);
 }
 
 
@@ -485,31 +483,31 @@ static void scene_interaction(scene_t* scene)
 	uint32_t key_mask = wm_get_key_mask(scene->window);
 
 	if (key_mask & k_key_zero) { // add object to the scene
-		*scene->current_entity = add_object_to_scene(scene);
+		scene->current_entity = add_object_to_scene(scene);
 	}
 
 	/*
 	*	USED FOR MOVING THE CURRENT SELECTED ENTITY
 	*	(ARROW KEYS TO MOVE IN THOSE DIRECTIONS)
 	*/
-	{	
-		transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, *scene->current_entity, scene->transform_type, true);
+	if(!ecs_entity_is_dummy_entity(scene->current_entity)) {
+		transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
 
 		transform_t move;
 		transform_identity(&move);
-		if (key_mask & k_key_up && scene->current_entity != NULL)
+		if (key_mask & k_key_up)
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_up(), -dt));
 		}
-		if (key_mask & k_key_down && scene->current_entity != NULL)
+		if (key_mask & k_key_down)
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_up(), dt));
 		}
-		if (key_mask & k_key_left && scene->current_entity != NULL)
+		if (key_mask & k_key_left)
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_right(), -dt));
 		}
-		if (key_mask & k_key_right && scene->current_entity != NULL)
+		if (key_mask & k_key_right)
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_right(), dt));
 		}

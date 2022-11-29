@@ -18,6 +18,12 @@ typedef struct ecs_entity_ref_t
 	int sequence;
 } ecs_entity_ref_t;
 
+static ecs_entity_ref_t dummy_entity =
+{
+	.entity = -1,
+	.sequence = -1,
+};
+
 // Working data for an active entity query.
 typedef struct ecs_query_t
 {
@@ -70,3 +76,5 @@ ecs_entity_ref_t ecs_query_get_entity(ecs_t* ecs, ecs_query_t* query);
 
 // Find the current component mask with the entity, and add a new component mask to the previous mask
 void ecs_add_component_mask(ecs_t* ecs, ecs_entity_ref_t ref, uint64_t new_add_component_mask);
+
+bool ecs_entity_is_dummy_entity(ecs_entity_ref_t ref);
