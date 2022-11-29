@@ -6,7 +6,6 @@
 #include "timer_object.h"
 #include "transform.h"
 #include "wm.h"
-#include "random.h"
 #include "debug.h"
 #include "vec3f.h"
 #include "scene.h"
@@ -83,12 +82,10 @@ typedef struct scene_t
 	int transform_type;
 	int camera_type;
 	int model_type;
-	int player_type;
 	int name_type;
-	int enemy_type;
-	int win_type;
 	int collider_type;
-	int timer_type;
+
+	ecs_entity_ref_t* current_entity;
 
 	ecs_entity_ref_t all_ent[k_max_entities];
 	int next_free_entity;
@@ -99,24 +96,35 @@ typedef struct scene_t
 	gpu_mesh_info_t object_mesh;
 	gpu_shader_info_t object_shader;
 
+	gpu_mesh_info_t cube_mesh;
+	gpu_shader_info_t cube_shader;
+
 	fs_work_t* vertex_shader_work;
 	fs_work_t* fragment_shader_work;
 } scene_t;
 
 // general
 static void draw_models(scene_t* scene);
+static void unload_shader_resources(scene_t* scene);
 
 // camera
 static void spawn_camera(scene_t* scene);
 
 // scene hierarchy
 static void load_scene_hierarchy_resources(scene_t* scene);
-static void unload_scene_hierarchy_resources(scene_t* scene);
 static void spawn_scene_hierarchy(scene_t* scene);
 static void update_scene_hierarchy(scene_t* scene);
 
+static void scene_interaction(scene_t* scene);
+
+// component editing/adding
+static void replace_name(scene_t* scene, ecs_entity_ref_t entity, const char* new_name);
+static void add_collider(scene_t* scene, ecs_entity_ref_t entity);
+
 // add a blank object
-static void add_object_to_scene(scene_t* scene);
+static void load_object_scene_resources(scene_t* scene);
+static ecs_entity_ref_t add_object_to_scene(scene_t* scene);
+static void add_entity_type_to_object(scene_t* scene, ecs_entity_ref_t entity, int entity_type);
 
 // boundary
 static bool in_boundary(boundary_t boundary, transform_t transform);
@@ -154,7 +162,6 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	scene->transform_type = ecs_register_component_type(scene->ecs, "transform", sizeof(transform_component_t), _Alignof(transform_component_t));
 	scene->camera_type = ecs_register_component_type(scene->ecs, "camera", sizeof(camera_component_t), _Alignof(camera_component_t));
 	scene->model_type = ecs_register_component_type(scene->ecs, "model", sizeof(model_component_t), _Alignof(model_component_t));
-	scene->player_type = ecs_register_component_type(scene->ecs, "player", sizeof(player_component_t), _Alignof(player_component_t));
 	scene->name_type = ecs_register_component_type(scene->ecs, "name", sizeof(name_component_t), _Alignof(name_component_t));
 	scene->collider_type = ecs_register_component_type(scene->ecs, "collider", sizeof(collider_component_t), _Alignof(collider_component_t));
 
@@ -163,6 +170,10 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	spawn_scene_hierarchy(scene);
 
 	spawn_camera(scene);
+
+	// generate an entity at the start
+	scene->current_entity = heap_alloc(heap, sizeof(ecs_entity_ref_t), 8);
+	*scene->current_entity = add_object_to_scene(scene);
 
 	return scene;
 }
@@ -175,15 +186,12 @@ void update_next_entity_location(scene_t* scene) {
 	}
 }
 
-
-
 void scene_destroy(scene_t* scene)
 {
 	ecs_destroy(scene->ecs);
 	timer_object_destroy(scene->timer);
 
-	// unload_player_resources(scene);
-	unload_scene_hierarchy_resources(scene);
+	unload_shader_resources(scene);
 
 	heap_free(scene->heap, scene);
 }
@@ -192,7 +200,7 @@ void scene_update(scene_t* scene) {
 	timer_object_update(scene->timer);
 	ecs_update(scene->ecs);
 
-	// 
+	scene_interaction(scene);
 
 	draw_models(scene);
 	render_push_done(scene->render);
@@ -299,12 +307,6 @@ static void load_scene_hierarchy_resources(scene_t* scene) {
 	};
 }
 
-static void unload_scene_hierarchy_resources(scene_t* scene)
-{
-	fs_work_destroy(scene->fragment_shader_work);
-	fs_work_destroy(scene->vertex_shader_work);
-}
-
 static void spawn_scene_hierarchy(scene_t* scene) {
 	// igCreateContext();
 	// igGetIO()->ConfigFlags |= ImGuiConfigFlags_;
@@ -317,13 +319,82 @@ static void update_scene_hierarchy(scene_t* scene) {
 }
 
 // ===========================================================================================
+//                                   COMPONENT ADD/REPLACE/ETC
+// ===========================================================================================
+
+static void replace_name(scene_t* scene, ecs_entity_ref_t entity, const char* new_name) {
+	name_component_t* name_comp = ecs_entity_get_component(scene->ecs, entity, scene->name_type, true);
+	strcpy_s(name_comp->name, sizeof(name_comp->name), new_name);
+}
+
+static void add_collider(scene_t* scene, ecs_entity_ref_t entity) {
+	add_entity_type_to_object(scene, entity, scene->collider_type);
+	collider_component_t* col_comp = ecs_entity_get_component(scene->ecs, entity, scene->collider_type, true);
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, entity, scene->transform_type, true);
+
+	col_comp->transform = transform_comp->transform;
+	col_comp->component_size = (vec3f_t){ .x = 1.0f, .y = 1.0f, .z = 1.0f };
+}
+
+// ===========================================================================================
 //                                           OBJECTS
 // ===========================================================================================
 
-static void add_object_to_scene(scene_t* scene) {
+static void load_object_scene_resources(scene_t* scene) {
+	scene->vertex_shader_work = fs_read(scene->fs, "shaders/triangle-vert.spv", scene->heap, false, false);
+	scene->fragment_shader_work = fs_read(scene->fs, "shaders/triangle-frag.spv", scene->heap, false, false);
+	scene->object_shader = (gpu_shader_info_t)
+	{
+		.vertex_shader_data = fs_work_get_buffer(scene->vertex_shader_work),
+		.vertex_shader_size = fs_work_get_size(scene->vertex_shader_work),
+		.fragment_shader_data = fs_work_get_buffer(scene->fragment_shader_work),
+		.fragment_shader_size = fs_work_get_size(scene->fragment_shader_work),
+		.uniform_buffer_count = 1,
+	};
+
+	static vec3f_t cube_verts[] =
+	{
+		{ -1.0f, -1.0f,  1.0f }, { 0.0f, 1.0f,  0.0f },
+		{  1.0f, -1.0f,  1.0f }, { 0.0f, 1.0f,  0.0f },
+		{  1.0f,  1.0f,  1.0f }, { 0.0f, 1.0f,  0.0f },
+		{ -1.0f,  1.0f,  1.0f }, { 0.0f, 1.0f,  0.0f },
+		{ -1.0f, -1.0f, -1.0f }, { 0.0f, 1.0f,  0.0f },
+		{  1.0f, -1.0f, -1.0f }, { 0.0f, 1.0f,  0.0f },
+		{  1.0f,  1.0f, -1.0f }, { 0.0f, 1.0f,  0.0f },
+		{ -1.0f,  1.0f, -1.0f }, { 0.0f, 1.0f,  0.0f },
+	};
+	static uint16_t cube_indices[] =
+	{
+		0, 1, 2,
+		2, 3, 0,
+		1, 5, 6,
+		6, 2, 1,
+		7, 6, 5,
+		5, 4, 7,
+		4, 0, 3,
+		3, 7, 4,
+		4, 5, 1,
+		1, 0, 4,
+		3, 2, 6,
+		6, 7, 3
+	};
+
+	scene->object_mesh = (gpu_mesh_info_t)
+	{
+		.layout = k_gpu_mesh_layout_tri_p444_c444_i2,
+		.vertex_data = cube_verts,
+		.vertex_data_size = sizeof(cube_verts),
+		.index_data = cube_indices,
+		.index_data_size = sizeof(cube_indices),
+	};
+}
+
+// add a simple blank object to the scene
+static ecs_entity_ref_t add_object_to_scene(scene_t* scene) {
 	uint64_t k_object_ent_mask =
 		(1ULL << scene->transform_type) |
-		(1ULL << scene->name_type);
+		(1ULL << scene->name_type) |
+		(1ULL << scene->model_type);
 	scene->all_ent[scene->next_free_entity] = ecs_entity_add(scene->ecs, k_object_ent_mask);
 
 	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->transform_type, true);
@@ -332,16 +403,21 @@ static void add_object_to_scene(scene_t* scene) {
 	name_component_t* name_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->name_type, true);
 	strcpy_s(name_comp->name, sizeof(name_comp->name), "player");
 
+	model_component_t* model_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->model_type, true);
+	model_comp->mesh_info = &scene->object_mesh;
+	model_comp->shader_info = &scene->object_shader;
+
 	update_next_entity_location(scene);
+
+	return scene->all_ent[scene->next_free_entity];
 }
 
+// add an entity type to an existing entity (given an entity and the new added entity type)
 static void add_entity_type_to_object(scene_t* scene, ecs_entity_ref_t entity, int entity_type) {
-	uint64_t k_object_ent_mask =
-		(1ULL << scene->transform_type) |
-		(1ULL << scene->name_type);
+	uint64_t add_ent_mask = (1ULL << entity_type);
+	ecs_add_component_mask(scene->ecs, entity, add_ent_mask);
 }
 
-/*
 static void load_object_resources(scene_t* scene)
 {
 	scene->vertex_shader_work = fs_read(scene->fs, "shaders/default.vert.spv", scene->heap, false, false);
@@ -381,7 +457,8 @@ static void load_object_resources(scene_t* scene)
 		3, 2, 6,
 		6, 7, 3
 	};
-	game->player_mesh = (gpu_mesh_info_t)
+
+	scene->cube_mesh = (gpu_mesh_info_t)
 	{
 		.layout = k_gpu_mesh_layout_tri_p444_c444_i2,
 		.vertex_data = cube_verts,
@@ -391,107 +468,56 @@ static void load_object_resources(scene_t* scene)
 	};
 }
 
-static void unload_player_resources(frogger_game_t* game)
+// unload all the shader resources used for the frag/vertex shader work
+static void unload_shader_resources(scene_t* scene)
 {
-	fs_work_destroy(game->fragment_shader_work);
-	fs_work_destroy(game->vertex_shader_work);
+	fs_work_destroy(scene->fragment_shader_work);
+	fs_work_destroy(scene->vertex_shader_work);
 }
 
-static void spawn_player(frogger_game_t* game, int index) {
-	uint64_t k_player_ent_mask =
-		(1ULL << game->transform_type) |
-		(1ULL << game->model_type) |
-		(1ULL << game->player_type) |
-		(1ULL << game->name_type) |
-		(1ULL << game->win_type) |
-		(1ULL << game->collider_type);
-	game->player_ent = ecs_entity_add(game->ecs, k_player_ent_mask);
 
-	transform_component_t* transform_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->transform_type, true);
-	transform_identity(&transform_comp->transform);
-	transform_comp->transform.translation.z = 9.0f;
-
-	name_component_t* name_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->name_type, true);
-	strcpy_s(name_comp->name, sizeof(name_comp->name), "player");
-
-	player_component_t* player_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->player_type, true);
-	player_comp->index = index;
-	create_boundaries(&player_comp->boundary, 9.0f, 9.0f, -9.0f, -9.0f, 9.0f, -9.0f);
-
-	model_component_t* model_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->model_type, true);
-	model_comp->mesh_info = &game->player_mesh;
-	model_comp->shader_info = &game->player_shader;
-
-	collider_component_t* col_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->collider_type, true);
-	col_comp->transform = transform_comp->transform;
-	col_comp->component_size = (vec3f_t){ .x = 1.0f, .y = 1.0f, .z = 1.0f };
-
-	win_component_t* win_comp = ecs_entity_get_component(game->ecs, game->player_ent, game->win_type, true);
-	create_boundaries(&win_comp->boundary, 99.0f, 99.0f, -99.0f, -99.0f, 99.0f, -9.0f);
-	win_comp->total_wins = 0;
-	transform_t respawn_loc;
-	transform_identity(&respawn_loc);
-	respawn_loc.translation.z = 9.0f;
-	win_comp->respawn_location = respawn_loc;
-}
-
-static void update_players(frogger_game_t* game)
+static void scene_interaction(scene_t* scene)
 {
-	float dt = (float)timer_object_get_delta_ms(game->timer) * 0.001f;
+	float dt = (float)timer_object_get_delta_ms(scene->timer) * 0.001f;
 
-	dt *= 2.0f;
+	dt *= 1.0f;
 
-	uint32_t key_mask = wm_get_key_mask(game->window);
+	uint32_t key_mask = wm_get_key_mask(scene->window);
 
-	uint64_t k_query_mask = (1ULL << game->transform_type) | (1ULL << game->player_type);
+	if (key_mask & k_key_zero) { // add object to the scene
+		*scene->current_entity = add_object_to_scene(scene);
+	}
 
-	for (ecs_query_t query = ecs_query_create(game->ecs, k_query_mask);
-		ecs_query_is_valid(game->ecs, &query);
-		ecs_query_next(game->ecs, &query))
-	{
-		transform_component_t* transform_comp = ecs_query_get_component(game->ecs, &query, game->transform_type);
-		player_component_t* player_comp = ecs_query_get_component(game->ecs, &query, game->player_type);
-		win_component_t* win_comp = ecs_query_get_component(game->ecs, &query, game->win_type);
-
-		if (player_comp->index && transform_comp->transform.translation.z > 1.0f)
-		{
-			ecs_entity_remove(game->ecs, ecs_query_get_entity(game->ecs, &query), false);
-		}
+	/*
+	*	USED FOR MOVING THE CURRENT SELECTED ENTITY
+	*	(ARROW KEYS TO MOVE IN THOSE DIRECTIONS)
+	*/
+	{	
+		transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, *scene->current_entity, scene->transform_type, true);
 
 		transform_t move;
 		transform_identity(&move);
-		if (key_mask & k_key_up && in_boundary_neg_z(player_comp->boundary, transform_comp->transform))
+		if (key_mask & k_key_up && scene->current_entity != NULL)
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_up(), -dt));
 		}
-		if (key_mask & k_key_down && in_boundary_pos_z(player_comp->boundary, transform_comp->transform))
+		if (key_mask & k_key_down && scene->current_entity != NULL)
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_up(), dt));
 		}
-		if (key_mask & k_key_left && in_boundary_neg_y(player_comp->boundary, transform_comp->transform))
+		if (key_mask & k_key_left && scene->current_entity != NULL)
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_right(), -dt));
 		}
-		if (key_mask & k_key_right && in_boundary_pos_y(player_comp->boundary, transform_comp->transform))
+		if (key_mask & k_key_right && scene->current_entity != NULL)
 		{
 			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_right(), dt));
 		}
 
 		transform_multiply(&transform_comp->transform, &move);
-
-		// win condition if the player is outside of the winning boundary
-		if (!in_boundary(win_comp->boundary, transform_comp->transform)) {
-			// respawn the player
-			win_comp->total_wins += 1;
-			transform_comp->transform = win_comp->respawn_location;
-		}
-
-		// update collider transform
-		collider_component_t* col_comp = ecs_query_get_component(game->ecs, &query, game->collider_type);
-		col_comp->transform = transform_comp->transform;
 	}
+
 }
-*/
 
 // ===========================================================================================
 //                                           BOUNDARY

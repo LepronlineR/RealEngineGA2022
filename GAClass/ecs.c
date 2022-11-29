@@ -179,3 +179,9 @@ ecs_entity_ref_t ecs_query_get_entity(ecs_t* ecs, ecs_query_t* query)
 {
 	return (ecs_entity_ref_t) { .entity = query->entity, .sequence = ecs->sequences[query->entity] };
 }
+
+void ecs_add_component_mask(ecs_t* ecs, ecs_entity_ref_t ref, uint64_t new_add_component_mask) {
+	if (ecs_is_entity_ref_valid(ecs, ref, false)) {
+		ecs->component_masks[ref.entity] |= new_add_component_mask;
+	}
+}

@@ -1,5 +1,1 @@
-﻿  scene.c
-  simple_game.c
-  Generating Code...
-x64\Debug\atomic.obj : warning LNK4042: object specified more than once; extras ignored
-  GAClass.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe
+﻿  GAClass.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe

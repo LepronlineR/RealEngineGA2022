@@ -27,6 +27,16 @@ enum
 	k_key_down = 1 << 1,
 	k_key_left = 1 << 2,
 	k_key_right = 1 << 3,
+	k_key_zero = 1 << 4,
+	k_key_one = 1 << 5,
+	k_key_two = 1 << 6,
+	k_key_three = 1 << 7,
+	k_key_four = 1 << 8,
+	k_key_five = 1 << 9,
+	k_key_six = 1 << 10,
+	k_key_seven = 1 << 11,
+	k_key_eight = 1 << 12,
+	k_key_nine = 1 << 13,
 };
 
 

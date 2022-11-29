@@ -67,3 +67,6 @@ void* ecs_query_get_component(ecs_t* ecs, ecs_query_t* query, int component_type
 
 // Get a entity reference for the current query location.
 ecs_entity_ref_t ecs_query_get_entity(ecs_t* ecs, ecs_query_t* query);
+
+// Find the current component mask with the entity, and add a new component mask to the previous mask
+void ecs_add_component_mask(ecs_t* ecs, ecs_entity_ref_t ref, uint64_t new_add_component_mask);
