@@ -64,6 +64,12 @@ typedef struct collider_component_t {
 	vec3f_t component_size;
 } collider_component_t;
 
+// from ecs.c (max entities = 512)
+enum
+{
+	k_max_entities = 512,
+};
+
 typedef struct scene_t
 {
 	heap_t* heap;
@@ -84,17 +90,14 @@ typedef struct scene_t
 	int collider_type;
 	int timer_type;
 
-	ecs_entity_ref_t cube_ent;
-	ecs_entity_ref_t camera_ent;
+	ecs_entity_ref_t all_ent[k_max_entities];
+	int next_free_entity;
 
 	gpu_mesh_info_t ui_mesh;
 	gpu_shader_info_t ui_shader;
 
 	gpu_mesh_info_t object_mesh;
 	gpu_shader_info_t object_shader;
-
-	gpu_mesh_info_t sceneui_mesh;
-	gpu_shader_info_t sceneui_shader;
 
 	fs_work_t* vertex_shader_work;
 	fs_work_t* fragment_shader_work;
@@ -111,6 +114,9 @@ static void load_scene_hierarchy_resources(scene_t* scene);
 static void unload_scene_hierarchy_resources(scene_t* scene);
 static void spawn_scene_hierarchy(scene_t* scene);
 static void update_scene_hierarchy(scene_t* scene);
+
+// add a blank object
+static void add_object_to_scene(scene_t* scene);
 
 // boundary
 static bool in_boundary(boundary_t boundary, transform_t transform);
@@ -140,6 +146,7 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	scene->fs = fs;
 	scene->window = window;
 	scene->render = render;
+	scene->next_free_entity = 0;
 
 	scene->timer = timer_object_create(heap, NULL);
 
@@ -159,6 +166,16 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 
 	return scene;
 }
+
+void update_next_entity_location(scene_t* scene) {
+	while (!ecs_is_entity_ref_valid(scene->ecs,
+		scene->all_ent[scene->next_free_entity],
+		true)) {
+		scene->next_free_entity = wrapi(scene->next_free_entity, 0, k_max_entities) + 1;
+	}
+}
+
+
 
 void scene_destroy(scene_t* scene)
 {
@@ -219,32 +236,29 @@ static void draw_models(scene_t* scene)
 //                                           CAMERA
 // ===========================================================================================
 
-// generate a camera with an orthographic projection
+// generate a camera
 static void spawn_camera(scene_t* scene)
 {
 	uint64_t k_camera_ent_mask =
 		(1ULL << scene->camera_type) |
 		(1ULL << scene->name_type);
-	scene->camera_ent = ecs_entity_add(scene->ecs, k_camera_ent_mask);
+	scene->all_ent[scene->next_free_entity] = ecs_entity_add(scene->ecs, k_camera_ent_mask);
 
-	name_component_t* name_comp = ecs_entity_get_component(scene->ecs, scene->camera_ent, scene->name_type, true);
-	strcpy_s(name_comp->name, sizeof(name_comp->name), "orthographic camera");
+	name_component_t* name_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->name_type, true);
+	strcpy_s(name_comp->name, sizeof(name_comp->name), "camera");
 
-	// adjust due to aspect ratio
-	float aspect_width = 16.0f;
-	float aspect_height = 9.0f;
-	float aspect_ratio = aspect_width / aspect_height; // aspect ratio w/h
+	camera_component_t* camera_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->camera_type, true);
+	mat4f_make_perspective(&camera_comp->projection, (float)M_PI / 2.0f, 16.0f / 9.0f, 0.1f, 100.0f);
 
-	camera_component_t* camera_comp = ecs_entity_get_component(scene->ecs, scene->camera_ent, scene->camera_type, true);
-
-	mat4f_make_orthographic(&camera_comp->projection, -aspect_ratio, aspect_ratio,
-		-1.0f, 1.0f, 0.1f, 100.0f);
-
-	vec3f_t eye_pos = vec3f_scale(vec3f_forward(), -10.0f);
+	vec3f_t eye_pos = vec3f_scale(vec3f_forward(), -5.0f);
 	vec3f_t forward = vec3f_forward();
 	vec3f_t up = vec3f_up();
 	mat4f_make_lookat(&camera_comp->view, &eye_pos, &forward, &up);
+
+	update_next_entity_location(scene);
 }
+
+
 
 // ===========================================================================================
 //                                       SCENE HIERARCHY
@@ -305,6 +319,27 @@ static void update_scene_hierarchy(scene_t* scene) {
 // ===========================================================================================
 //                                           OBJECTS
 // ===========================================================================================
+
+static void add_object_to_scene(scene_t* scene) {
+	uint64_t k_object_ent_mask =
+		(1ULL << scene->transform_type) |
+		(1ULL << scene->name_type);
+	scene->all_ent[scene->next_free_entity] = ecs_entity_add(scene->ecs, k_object_ent_mask);
+
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->transform_type, true);
+	transform_identity(&transform_comp->transform);
+
+	name_component_t* name_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->name_type, true);
+	strcpy_s(name_comp->name, sizeof(name_comp->name), "player");
+
+	update_next_entity_location(scene);
+}
+
+static void add_entity_type_to_object(scene_t* scene, ecs_entity_ref_t entity, int entity_type) {
+	uint64_t k_object_ent_mask =
+		(1ULL << scene->transform_type) |
+		(1ULL << scene->name_type);
+}
 
 /*
 static void load_object_resources(scene_t* scene)

@@ -1804,7 +1804,7 @@ static void init_imgui(gpu_t* gpu) {
 	igCreateContext(NULL);
 	ImGuiIO io = *igGetIO();
 	
-	 init_info = {
+	//init_info = {
 
-	};
+	//};
 }

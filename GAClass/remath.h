@@ -26,4 +26,14 @@ __forceinline float lerpf(float start, float end, float distance) {
 	return start * (1.0f - distance) + end * distance;
 }
 
+// Given an input with a min and max number, get the wrapped index of a given input
+// i.e. Wrap(7, 0, 4) -> 3
+__forceinline int wrapi(int input, int min, int max) {
+	if (input < min) {
+		return max - (min - input) % (max - min);
+	} else {
+		return min + (input - min) % (max - min);
+	}
+}
+
 #endif
