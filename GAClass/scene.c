@@ -491,7 +491,7 @@ static void scene_interaction(scene_t* scene)
 
 	uint32_t key_mask = wm_get_key_mask(scene->window);
 
-	if (key_mask & k_key_zero) { // add object to the scene
+	if (key_mask & k_key_zero && scene->current_entity) { // add object to the scene
 		scene->current_entity = add_object_to_scene(scene);
 	}
 

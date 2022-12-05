@@ -7,7 +7,7 @@ typedef struct gpu_t gpu_t;
 typedef struct gpu_cmd_buffer_t gpu_cmd_buffer_t;
 typedef struct gpu_descriptor_t gpu_descriptor_t;
 typedef struct gpu_mesh_t gpu_mesh_t;
-typedef struct gpu_texture_t gpu_texture_t;
+typedef struct gpu_texture_mesh_t gpu_texture_mesh_t;
 typedef struct gpu_pipeline_t gpu_pipeline_t;
 typedef struct gpu_shader_t gpu_shader_t;
 typedef struct gpu_uniform_buffer_t gpu_uniform_buffer_t;
@@ -29,6 +29,7 @@ typedef enum gpu_mesh_layout_t
 {
 	k_gpu_mesh_layout_tri_p444_i2,
 	k_gpu_mesh_layout_tri_p444_c444_i2,
+	k_gpu_mesh_layout_tri_p44_c444_t44_i2,
 
 	k_gpu_mesh_layout_count,
 } gpu_mesh_layout_t;
@@ -49,7 +50,10 @@ typedef struct gpu_image_mesh_info_t
 	size_t vertex_data_size;
 	void* index_data;
 	size_t index_data_size;
+
+	void* image_data;
 	const char* image_location;
+	size_t image_data_size;
 } gpu_image_mesh_info_t;
 
 typedef struct gpu_pipeline_info_t
@@ -98,7 +102,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info);
 void gpu_mesh_destroy(gpu_t* gpu, gpu_mesh_t* mesh);
 
 // Create a drawable piece of geometry with vertex and index data.
-gpu_texture_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* info);
+gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* info);
 
 // Destroy some geometry.
 void gpu_mesh_destroy(gpu_t* gpu, gpu_mesh_t* mesh);
@@ -155,4 +159,3 @@ void gpu_create_image(gpu_t* gpu, gpu_image_info_t* image_info);
 
 // Generate a buffer and store it in the buffer info
 void gpu_generate_buffer(gpu_t* gpu, gpu_buffer_info_t* buffer_info);
-

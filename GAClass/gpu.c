@@ -40,8 +40,21 @@ typedef struct gpu_mesh_t
 	int vertex_count;
 } gpu_mesh_t;
 
-typedef struct gpu_texture_t
+typedef struct gpu_texture_mesh_t
 {
+	// For textures
+	VkImage image;
+	VkDeviceMemory image_memory;
+
+	VkSampler sampler;
+	VkImageLayout image_layout;
+
+	VkImageView view;
+	uint32_t width, height;
+	uint32_t mip_levels;
+
+	// For Mesh
+
 	VkBuffer index_buffer;
 	VkDeviceMemory index_memory;
 	int index_count;
@@ -50,15 +63,7 @@ typedef struct gpu_texture_t
 	VkBuffer vertex_buffer;
 	VkDeviceMemory vertex_memory;
 	int vertex_count;
-
-	VkSampler sampler;
-	VkImage image;
-	VkImageLayout imageLayout;
-
-	VkImageView view;
-	uint32_t width, height;
-	uint32_t mipLevels;
-} gpu_texture_t;
+} gpu_texture_mesh_t;
 
 typedef struct gpu_pipeline_t
 {
@@ -96,26 +101,6 @@ typedef struct gpu_buffer_info_t {
 	VkBuffer* buffer;
 	VkDeviceMemory* buffer_memory;
 } gpu_buffer_info_t;
-
-/*
-typedef struct gpu_image_info_t {
-	uint32_t width;
-	uint32_t height;
-	VkFormat format;
-	VkImageTiling tiling;
-	VkImageUsageFlags usage;
-	VkMemoryPropertyFlags properties;
-	VkImage* image;
-	VkDeviceMemory* image_memory;
-} gpu_image_info_t;
-
-typedef struct gpu_image_layout_t {
-	VkImage image;
-	VkFormat format;
-	VkImageLayout old_layout;
-	VkImageLayout new_layout;
-} gpu_image_layout_t;
-*/
 
 typedef struct gpu_t
 {
@@ -156,8 +141,12 @@ typedef struct gpu_t
 
 static void create_mesh_layouts(gpu_t* gpu);
 static void destroy_mesh_layouts(gpu_t* gpu);
+static void create_texture_mesh_layouts(gpu_t* gpu);
+static void destroy_texture_mesh_layouts(gpu_t* gpu);
 static uint32_t get_memory_type_index(gpu_t* gpu, uint32_t bits, VkMemoryPropertyFlags properties);
-static VkCommandBuffer create_command_buffer(gpu_t* gpu);
+static VkCommandBuffer create_command_buffer(gpu_t* gpu, VkCommandBufferLevel level, bool begin);
+static void flush_command_buffer(gpu_t* gpu, VkCommandBuffer cmd_buffer, bool free);
+
 static void end_command_buffer(gpu_t* gpu, VkCommandBuffer command_buffer);
 static void copy_buffer_to_image(gpu_t* gpu, VkBuffer buffer, gpu_image_info_t* image_info);
 static void init_imgui(gpu_t* gpu);
@@ -674,6 +663,7 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 	}
 
 	create_mesh_layouts(gpu);
+	create_texture_mesh_layouts(gpu);
 
 	return gpu;
 
@@ -981,8 +971,8 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 	return mesh;
 }
 
-gpu_texture_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* info) {
-	gpu_mesh_t* mesh = heap_alloc(gpu->heap, sizeof(gpu_mesh_t), 8);
+gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* info) {
+	gpu_texture_mesh_t* mesh = heap_alloc(gpu->heap, sizeof(gpu_texture_mesh_t), 8);
 	memset(mesh, 0, sizeof(*mesh));
 
 	mesh->index_type = gpu->mesh_index_type[info->layout];
@@ -1092,6 +1082,175 @@ gpu_texture_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* info) {
 			debug_print_line(k_print_error, "vkBindBufferMemory failed: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
+		}
+	}
+
+	// Texture data
+	{
+		// Texture data contains 4 channels (RGBA) with unnormalized 8-bit values, this is the most commonly supported format
+		VkFormat format = VK_FORMAT_R8G8B8A8_UNORM;
+
+		int texture_width, texture_height, texture_channels;
+		stbi_uc* image = stbi_load(info->image_location,
+			&texture_width, &texture_height, &texture_channels, STBI_rgb_alpha);
+
+		if (!image) {
+			debug_print_line(k_print_error, "stbi_uc failed for loading images\n");
+		};
+
+		VkImageCreateInfo image_info =
+		{
+			.imageType = VK_IMAGE_TYPE_2D,
+			.format = format,
+			.mipLevels = 1,
+			.arrayLayers = 1,
+			.samples = VK_SAMPLE_COUNT_1_BIT,
+			.tiling = VK_IMAGE_TILING_LINEAR,
+			.usage = VK_IMAGE_USAGE_SAMPLED_BIT,
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+			.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED,
+			.extent = { texture_width, texture_height, 1 },
+		};
+
+		VkResult result = vkCreateBuffer(gpu->logical_device, &image_info, NULL, &mesh->image);
+		if (result)
+		{
+			debug_print_line(k_print_error, "VkImageCreateInfo failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+
+
+
+		VkMemoryRequirements mem_reqs;
+		vkGetBufferMemoryRequirements(gpu->logical_device, mesh->image, &mem_reqs);
+
+		VkMemoryAllocateInfo mem_alloc =
+		{
+			.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+			.allocationSize = mem_reqs.size,
+			.memoryTypeIndex = get_memory_type_index(gpu, mem_reqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT),
+		};
+		result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &mesh->image_memory);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+
+		result = vkBindImageMemory(gpu->logical_device, mesh->image, mesh->image_memory, 0);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkBindImageMemory failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+
+		void* data = NULL;
+		result = vkMapMemory(gpu->logical_device, mesh->image_memory, 0, mem_alloc.allocationSize, 0, &data);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkMapMemory failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+		memcpy(data, info->image_data, mem_reqs.size);
+		vkUnmapMemory(gpu->logical_device, mesh->image_memory);
+
+		mesh->image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+		VkCommandBuffer copy_cmd = create_command_buffer(gpu, VK_COMMAND_BUFFER_LEVEL_PRIMARY, true);
+
+		// The sub resource range describes the regions of the image we will be transition
+		VkImageSubresourceRange subresourceRange;
+		subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		subresourceRange.baseMipLevel = 0;
+		subresourceRange.levelCount = 1;
+		subresourceRange.layerCount = 1;
+
+		// Transition the texture image layout to shader read, so it can be sampled from
+		VkImageMemoryBarrier image_memory_barrier = {
+			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.image = mesh->image,
+			.subresourceRange = subresourceRange,
+			.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT,
+			.dstAccessMask = VK_ACCESS_SHADER_READ_BIT,
+			.oldLayout = VK_IMAGE_LAYOUT_PREINITIALIZED,
+			.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+		};
+
+		// Insert a memory dependency at the proper pipeline stages that will execute the image layout transition
+		// Source pipeline stage is host write/read execution (VK_PIPELINE_STAGE_HOST_BIT)
+		// Destination pipeline stage fragment shader access (VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
+		vkCmdPipelineBarrier(
+			copy_cmd,
+			VK_PIPELINE_STAGE_HOST_BIT,
+			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+			0,
+			0, NULL,
+			0, NULL,
+			1, &image_memory_barrier);
+
+		flush_command_buffer(gpu, copy_cmd, true);
+
+		stbi_image_free(image);
+
+		// Texture sampler
+		VkSamplerCreateInfo sampler =
+		{
+			.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+			.maxAnisotropy = 1.0f,
+			.magFilter = VK_FILTER_LINEAR,
+			.minFilter = VK_FILTER_LINEAR,
+			.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR,
+			.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+			.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+			.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+			.mipLodBias = 0.0f,
+			.compareOp = VK_COMPARE_OP_NEVER,
+			.minLod = 0.0f,
+		};
+
+		// Set max level-of-detail to mip level count of the texture
+		sampler.maxLod = 0.0f;
+
+		// The device does not support anisotropic filtering
+		sampler.maxAnisotropy = 1.0;
+		sampler.anisotropyEnable = VK_FALSE;
+
+		sampler.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+
+		result = vkCreateSampler(gpu->logical_device, &sampler, NULL, &mesh->sampler);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkCreateSampler failed: %d\n", result);
+		}
+
+		// Image View
+		VkImageViewCreateInfo view = {
+			.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+			.viewType = VK_IMAGE_VIEW_TYPE_2D,
+			.format = format,
+			.components = { VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A },
+			// The subresource range describes the set of mip levels (and array layers) that can be accessed through this image view
+			// It's possible to create multiple image views for a single image referring to different (and/or overlapping) ranges of the image
+			.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+			.subresourceRange.baseMipLevel = 0,
+			.subresourceRange.baseArrayLayer = 0,
+			.subresourceRange.layerCount = 1,
+			// Linear tiling usually won't support mip maps
+			// Only set mip map count if optimal tiling is used
+			.subresourceRange.levelCount = 1,
+			.image = mesh->image
+		};
+
+		result = vkCreateImageView(gpu->logical_device, &view, NULL, &mesh->view);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkCreateSampler failed: %d\n", result);
 		}
 	}
 
@@ -1672,6 +1831,140 @@ static void create_mesh_layouts(gpu_t* gpu)
 	}
 }
 
+static void create_texture_mesh_layouts(gpu_t* gpu)
+{
+	// k_gpu_mesh_layout_tri_p444_i2
+	{
+		gpu->mesh_input_assembly_info[k_gpu_mesh_layout_tri_p444_i2] = (VkPipelineInputAssemblyStateCreateInfo)
+		{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+			.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+		};
+
+		VkVertexInputBindingDescription* vertex_binding = heap_alloc(gpu->heap, sizeof(VkVertexInputBindingDescription), 8);
+		*vertex_binding = (VkVertexInputBindingDescription)
+		{
+			.binding = 0,
+			.stride = 12,
+			.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
+		};
+
+		VkVertexInputAttributeDescription* vertex_attributes = heap_alloc(gpu->heap, sizeof(VkVertexInputAttributeDescription) * 1, 8);
+		vertex_attributes[0] = (VkVertexInputAttributeDescription)
+		{
+			.binding = 0,
+			.location = 0,
+			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.offset = 0,
+		};
+
+		gpu->mesh_vertex_input_info[k_gpu_mesh_layout_tri_p444_i2] = (VkPipelineVertexInputStateCreateInfo)
+		{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+			.vertexBindingDescriptionCount = 1,
+			.pVertexBindingDescriptions = vertex_binding,
+			.vertexAttributeDescriptionCount = 1,
+			.pVertexAttributeDescriptions = vertex_attributes,
+		};
+
+		gpu->mesh_index_type[k_gpu_mesh_layout_tri_p444_i2] = VK_INDEX_TYPE_UINT16;
+		gpu->mesh_index_size[k_gpu_mesh_layout_tri_p444_i2] = 2;
+		gpu->mesh_vertex_size[k_gpu_mesh_layout_tri_p444_i2] = 12;
+	}
+
+	// k_gpu_mesh_layout_tri_p444_c444_i2
+	{
+		gpu->mesh_input_assembly_info[k_gpu_mesh_layout_tri_p444_c444_i2] = (VkPipelineInputAssemblyStateCreateInfo)
+		{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+			.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+		};
+
+		VkVertexInputBindingDescription* vertex_binding = heap_alloc(gpu->heap, sizeof(VkVertexInputBindingDescription), 8);
+		*vertex_binding = (VkVertexInputBindingDescription)
+		{
+			.binding = 0,
+			.stride = 24,
+			.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
+		};
+
+		VkVertexInputAttributeDescription* vertex_attributes = heap_alloc(gpu->heap, sizeof(VkVertexInputAttributeDescription) * 2, 8);
+		vertex_attributes[0] = (VkVertexInputAttributeDescription)
+		{
+			.binding = 0,
+			.location = 0,
+			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.offset = 0,
+		};
+		vertex_attributes[1] = (VkVertexInputAttributeDescription)
+		{
+			.binding = 0,
+			.location = 1,
+			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.offset = 12,
+		};
+
+		gpu->mesh_vertex_input_info[k_gpu_mesh_layout_tri_p444_c444_i2] = (VkPipelineVertexInputStateCreateInfo)
+		{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+			.vertexBindingDescriptionCount = 1,
+			.pVertexBindingDescriptions = vertex_binding,
+			.vertexAttributeDescriptionCount = 2,
+			.pVertexAttributeDescriptions = vertex_attributes,
+		};
+
+		gpu->mesh_index_type[k_gpu_mesh_layout_tri_p444_c444_i2] = VK_INDEX_TYPE_UINT16;
+		gpu->mesh_index_size[k_gpu_mesh_layout_tri_p444_c444_i2] = 2;
+		gpu->mesh_vertex_size[k_gpu_mesh_layout_tri_p444_c444_i2] = 24;
+	}
+
+	// k_gpu_mesh_layout_tri_p444_c444_i2
+	{
+		gpu->mesh_input_assembly_info[k_gpu_mesh_layout_tri_p444_c444_i2] = (VkPipelineInputAssemblyStateCreateInfo)
+		{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+			.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+		};
+
+		VkVertexInputBindingDescription* vertex_binding = heap_alloc(gpu->heap, sizeof(VkVertexInputBindingDescription), 8);
+		*vertex_binding = (VkVertexInputBindingDescription)
+		{
+			.binding = 0,
+			.stride = 24,
+			.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
+		};
+
+		VkVertexInputAttributeDescription* vertex_attributes = heap_alloc(gpu->heap, sizeof(VkVertexInputAttributeDescription) * 2, 8);
+		vertex_attributes[0] = (VkVertexInputAttributeDescription)
+		{
+			.binding = 0,
+			.location = 0,
+			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.offset = 0,
+		};
+		vertex_attributes[1] = (VkVertexInputAttributeDescription)
+		{
+			.binding = 0,
+			.location = 1,
+			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.offset = 12,
+		};
+
+		gpu->mesh_vertex_input_info[k_gpu_mesh_layout_tri_p444_c444_i2] = (VkPipelineVertexInputStateCreateInfo)
+		{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+			.vertexBindingDescriptionCount = 1,
+			.pVertexBindingDescriptions = vertex_binding,
+			.vertexAttributeDescriptionCount = 2,
+			.pVertexAttributeDescriptions = vertex_attributes,
+		};
+
+		gpu->mesh_index_type[k_gpu_mesh_layout_tri_p444_c444_i2] = VK_INDEX_TYPE_UINT16;
+		gpu->mesh_index_size[k_gpu_mesh_layout_tri_p444_c444_i2] = 2;
+		gpu->mesh_vertex_size[k_gpu_mesh_layout_tri_p444_c444_i2] = 24;
+	}
+}
+
 static void destroy_mesh_layouts(gpu_t* gpu)
 {
 	for (int i = 0; i < _countof(gpu->mesh_vertex_input_info); ++i)
@@ -1700,17 +1993,21 @@ static uint32_t get_memory_type_index(gpu_t* gpu, uint32_t bits, VkMemoryPropert
 	return 0;
 }
 
-static VkCommandBuffer create_command_buffer(gpu_t* gpu) {
+static VkCommandBuffer create_command_buffer(gpu_t* gpu, VkCommandBufferLevel level, bool begin) {
 	VkCommandBufferAllocateInfo allocation_info =
 	{
 		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-		.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+		.level = level,
 		.commandPool = gpu->cmd_pool,
 		.commandBufferCount = 1
 	};
 
 	VkCommandBuffer command_buffer;
-	vkAllocateCommandBuffers(gpu->logical_device, &allocation_info, &command_buffer);
+	VkResult result = vkAllocateCommandBuffers(gpu->logical_device, &allocation_info, &command_buffer);
+	
+	if (result != VK_SUCCESS) {
+		debug_print_line(k_print_error, "vkAllocateCommandBuffers failed: %d\n", result);
+	}
 
 	VkCommandBufferBeginInfo begin_info =
 	{
@@ -1721,6 +2018,55 @@ static VkCommandBuffer create_command_buffer(gpu_t* gpu) {
 	vkBeginCommandBuffer(command_buffer, &begin_info);
 
 	return command_buffer;
+}
+
+static void flush_command_buffer(gpu_t* gpu, VkCommandBuffer cmd_buffer, bool free) {
+
+	if (cmd_buffer == VK_NULL_HANDLE)
+		return;
+
+	VkResult result = vkEndCommandBuffer(cmd_buffer);
+
+	if (result != VK_SUCCESS) {
+		debug_print_line(k_print_error, "vkEndCommandBuffer failed: %d\n", result);
+	}
+
+	VkSubmitInfo submit_info = {
+		.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+		.commandBufferCount = 1,
+		.pCommandBuffers = &cmd_buffer
+	};
+
+	// Create fence to ensure that the command buffer has finished executing
+	VkFenceCreateInfo fence_info = {
+		.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+		.flags = 0
+	};
+
+	VkFence fence;
+	result = vkCreateFence(gpu->logical_device, &fence_info, NULL, &fence);
+	if (result != VK_SUCCESS) {
+		debug_print_line(k_print_error, "vkCreateFence failed: %d\n", result);
+	}
+
+	// Submit to the queue
+	result = vkQueueSubmit(gpu->queue, 1, &submit_info, fence);
+	if (result != VK_SUCCESS) {
+		debug_print_line(k_print_error, "vkQueueSubmit failed: %d\n", result);
+	}
+
+	// Wait for the fence to signal that command buffer has finished executing
+	result = vkWaitForFences(gpu->logical_device, 1, &fence, VK_TRUE, 0);
+	if (result != VK_SUCCESS) {
+		debug_print_line(k_print_error, "vkWaitForFences failed: %d\n", result);
+	}
+
+	vkDestroyFence(gpu->logical_device, fence, NULL);
+
+	if (free){
+		vkFreeCommandBuffers(gpu->logical_device, gpu->cmd_pool, 1, &cmd_buffer);
+	}
+
 }
 
 static void end_command_buffer(gpu_t* gpu, VkCommandBuffer command_buffer) {
