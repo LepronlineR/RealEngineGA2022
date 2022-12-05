@@ -7,6 +7,7 @@ typedef struct gpu_t gpu_t;
 typedef struct gpu_cmd_buffer_t gpu_cmd_buffer_t;
 typedef struct gpu_descriptor_t gpu_descriptor_t;
 typedef struct gpu_mesh_t gpu_mesh_t;
+typedef struct gpu_texture_t gpu_texture_t;
 typedef struct gpu_pipeline_t gpu_pipeline_t;
 typedef struct gpu_shader_t gpu_shader_t;
 typedef struct gpu_uniform_buffer_t gpu_uniform_buffer_t;
@@ -40,6 +41,16 @@ typedef struct gpu_mesh_info_t
 	void* index_data;
 	size_t index_data_size;
 } gpu_mesh_info_t;
+
+typedef struct gpu_image_mesh_info_t
+{
+	gpu_mesh_layout_t layout;
+	void* vertex_data;
+	size_t vertex_data_size;
+	void* index_data;
+	size_t index_data_size;
+	const char* image_location;
+} gpu_image_mesh_info_t;
 
 typedef struct gpu_pipeline_info_t
 {
@@ -82,6 +93,12 @@ void gpu_descriptor_destroy(gpu_t* gpu, gpu_descriptor_t* descriptor);
 
 // Create a drawable piece of geometry with vertex and index data.
 gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info);
+
+// Destroy some geometry.
+void gpu_mesh_destroy(gpu_t* gpu, gpu_mesh_t* mesh);
+
+// Create a drawable piece of geometry with vertex and index data.
+gpu_texture_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* info);
 
 // Destroy some geometry.
 void gpu_mesh_destroy(gpu_t* gpu, gpu_mesh_t* mesh);

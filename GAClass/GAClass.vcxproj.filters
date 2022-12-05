@@ -307,5 +307,11 @@
     <None Include="shaders\triangle-vert.spv">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="shaders\ui.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\ui.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

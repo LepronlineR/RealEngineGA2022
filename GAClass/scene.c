@@ -43,6 +43,12 @@ typedef struct model_component_t
 	gpu_shader_info_t* shader_info;
 } model_component_t;
 
+typedef struct image_model_component_t
+{
+	gpu_image_mesh_info_t* mesh_info;
+	gpu_shader_info_t* shader_info;
+} image_model_component_t;
+
 typedef struct player_component_t
 {
 	int index;
@@ -82,6 +88,7 @@ typedef struct scene_t
 	int transform_type;
 	int camera_type;
 	int model_type;
+	int image_model_type;
 	int name_type;
 	int collider_type;
 
@@ -165,6 +172,7 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	scene->model_type = ecs_register_component_type(scene->ecs, "model", sizeof(model_component_t), _Alignof(model_component_t));
 	scene->name_type = ecs_register_component_type(scene->ecs, "name", sizeof(name_component_t), _Alignof(name_component_t));
 	scene->collider_type = ecs_register_component_type(scene->ecs, "collider", sizeof(collider_component_t), _Alignof(collider_component_t));
+	scene->image_model_type = ecs_register_component_type(scene->ecs, "imagemodel", sizeof(image_model_component_t), _Alignof(image_model_component_t));
 
 	// load_scene_hierarchy_resources(scene);
 	load_object_scene_resources(scene);
@@ -239,6 +247,7 @@ static void draw_models(scene_t* scene)
 		}
 	}
 }
+
 
 // ===========================================================================================
 //                                           CAMERA

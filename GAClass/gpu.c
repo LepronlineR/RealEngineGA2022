@@ -40,6 +40,26 @@ typedef struct gpu_mesh_t
 	int vertex_count;
 } gpu_mesh_t;
 
+typedef struct gpu_texture_t
+{
+	VkBuffer index_buffer;
+	VkDeviceMemory index_memory;
+	int index_count;
+	VkIndexType index_type;
+
+	VkBuffer vertex_buffer;
+	VkDeviceMemory vertex_memory;
+	int vertex_count;
+
+	VkSampler sampler;
+	VkImage image;
+	VkImageLayout imageLayout;
+
+	VkImageView view;
+	uint32_t width, height;
+	uint32_t mipLevels;
+} gpu_texture_t;
+
 typedef struct gpu_pipeline_t
 {
 	VkPipelineLayout pipeline_layout;
@@ -77,6 +97,7 @@ typedef struct gpu_buffer_info_t {
 	VkDeviceMemory* buffer_memory;
 } gpu_buffer_info_t;
 
+/*
 typedef struct gpu_image_info_t {
 	uint32_t width;
 	uint32_t height;
@@ -94,6 +115,7 @@ typedef struct gpu_image_layout_t {
 	VkImageLayout old_layout;
 	VkImageLayout new_layout;
 } gpu_image_layout_t;
+*/
 
 typedef struct gpu_t
 {
@@ -959,6 +981,123 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 	return mesh;
 }
 
+gpu_texture_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* info) {
+	gpu_mesh_t* mesh = heap_alloc(gpu->heap, sizeof(gpu_mesh_t), 8);
+	memset(mesh, 0, sizeof(*mesh));
+
+	mesh->index_type = gpu->mesh_index_type[info->layout];
+	mesh->index_count = (int)info->index_data_size / gpu->mesh_index_size[info->layout];
+	mesh->vertex_count = (int)info->vertex_data_size / gpu->mesh_vertex_size[info->layout];
+
+	// Vertex data
+	{
+		VkBufferCreateInfo vertex_buffer_info =
+		{
+			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.size = info->vertex_data_size,
+			.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+		};
+		VkResult result = vkCreateBuffer(gpu->logical_device, &vertex_buffer_info, NULL, &mesh->vertex_buffer);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkCreateBuffer failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+
+		VkMemoryRequirements mem_reqs;
+		vkGetBufferMemoryRequirements(gpu->logical_device, mesh->vertex_buffer, &mem_reqs);
+
+		VkMemoryAllocateInfo mem_alloc =
+		{
+			.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+			.allocationSize = mem_reqs.size,
+			.memoryTypeIndex = get_memory_type_index(gpu, mem_reqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT),
+		};
+		result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &mesh->vertex_memory);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+
+		void* vertex_dest = NULL;
+		result = vkMapMemory(gpu->logical_device, mesh->vertex_memory, 0, mem_alloc.allocationSize, 0, &vertex_dest);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkMapMemory failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+		memcpy(vertex_dest, info->vertex_data, info->vertex_data_size);
+		vkUnmapMemory(gpu->logical_device, mesh->vertex_memory);
+
+		result = vkBindBufferMemory(gpu->logical_device, mesh->vertex_buffer, mesh->vertex_memory, 0);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkBindBufferMemory failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+	}
+
+	// Index data
+	{
+		VkBufferCreateInfo index_buffer_info =
+		{
+			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.size = info->index_data_size,
+			.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+		};
+		VkResult result = vkCreateBuffer(gpu->logical_device, &index_buffer_info, NULL, &mesh->index_buffer);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkCreateBuffer failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+
+		VkMemoryRequirements mem_reqs;
+		vkGetBufferMemoryRequirements(gpu->logical_device, mesh->index_buffer, &mem_reqs);
+
+		VkMemoryAllocateInfo mem_alloc =
+		{
+			.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+			.allocationSize = mem_reqs.size,
+			.memoryTypeIndex = get_memory_type_index(gpu, mem_reqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT),
+		};
+		result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &mesh->index_memory);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+
+		void* index_dest = NULL;
+		result = vkMapMemory(gpu->logical_device, mesh->index_memory, 0, mem_alloc.allocationSize, 0, &index_dest);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkMapMemory failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+		memcpy(index_dest, info->index_data, info->index_data_size);
+		vkUnmapMemory(gpu->logical_device, mesh->index_memory);
+
+		result = vkBindBufferMemory(gpu->logical_device, mesh->index_buffer, mesh->index_memory, 0);
+		if (result)
+		{
+			debug_print_line(k_print_error, "vkBindBufferMemory failed: %d\n", result);
+			gpu_mesh_destroy(gpu, mesh);
+			return NULL;
+		}
+	}
+
+	return mesh;
+}
+
 void gpu_mesh_destroy(gpu_t* gpu, gpu_mesh_t* mesh)
 {
 	if (mesh && mesh->index_buffer)
@@ -1599,6 +1738,7 @@ static void end_command_buffer(gpu_t* gpu, VkCommandBuffer command_buffer) {
 	vkFreeCommandBuffers(gpu->logical_device, gpu->cmd_pool, 1, &command_buffer);
 }
 
+/*
 static void copy_buffer_to_image(gpu_t* gpu, VkBuffer buffer, gpu_image_info_t* image_info) {
 	VkCommandBuffer command_buffer = create_command_buffer(gpu);
 
@@ -1808,3 +1948,4 @@ static void init_imgui(gpu_t* gpu) {
 
 	//};
 }
+*/

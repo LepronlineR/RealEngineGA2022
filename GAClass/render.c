@@ -20,6 +20,7 @@ typedef enum command_type_t
 {
 	k_command_frame_done,
 	k_command_model,
+	k_command_image_model
 } command_type_t;
 
 typedef struct model_command_t
@@ -30,6 +31,16 @@ typedef struct model_command_t
 	gpu_shader_info_t* shader;
 	gpu_uniform_buffer_info_t uniform_buffer;
 } model_command_t;
+
+typedef struct model_command_t
+{
+	command_type_t type;
+	ecs_entity_ref_t entity;
+	gpu_mesh_info_t* mesh;
+	gpu_shader_info_t* shader;
+	gpu_uniform_buffer_info_t uniform_buffer;
+	const char* image_location;
+} model_image_command_t;
 
 typedef struct frame_done_command_t
 {
@@ -118,6 +129,20 @@ void render_push_model(render_t* render, ecs_entity_ref_t* entity, gpu_mesh_info
 	queue_push(render->queue, command);
 }
 
+void render_push_model_image(render_t* render, ecs_entity_ref_t* entity, gpu_mesh_info_t* mesh, gpu_shader_info_t* shader, gpu_uniform_buffer_info_t* uniform, const char* image_location)
+{
+	model_image_command_t* command = heap_alloc(render->heap, sizeof(model_command_t), 8);
+	command->type = k_command_image_model;
+	command->entity = *entity;
+	command->mesh = mesh;
+	command->shader = shader;
+	command->uniform_buffer.size = uniform->size;
+	command->uniform_buffer.data = heap_alloc(render->heap, uniform->size, 8);
+	command->image_location = image_location;
+	memcpy(command->uniform_buffer.data, uniform->data, uniform->size);
+	queue_push(render->queue, command);
+}
+
 void render_push_done(render_t* render)
 {
 	frame_done_command_t* command = heap_alloc(render->heap, sizeof(frame_done_command_t), 8);
@@ -168,6 +193,27 @@ static int render_thread_func(void* user)
 			draw_mesh_t* mesh = create_or_get_mesh_for_model_command(render, command);
 			draw_instance_t* instance = create_or_get_instance_for_model_command(render, command, shader->shader);
 
+			heap_free(render->heap, command->uniform_buffer.data);
+
+			if (last_pipeline != shader->pipeline)
+			{
+				gpu_cmd_pipeline_bind(render->gpu, cmdbuf, shader->pipeline);
+				last_pipeline = shader->pipeline;
+			}
+			if (last_mesh != mesh->mesh)
+			{
+				gpu_cmd_mesh_bind(render->gpu, cmdbuf, mesh->mesh);
+				last_mesh = mesh->mesh;
+			}
+			gpu_cmd_descriptor_bind(render->gpu, cmdbuf, instance->descriptors[frame_index]);
+			gpu_cmd_draw(render->gpu, cmdbuf);
+		}
+		else if (*type == k_command_image_model)
+		{
+			model_command_t* command = (model_command_t*)type;
+			draw_shader_t* shader = create_or_get_shader_for_model_command(render, command);
+			draw_mesh_t* mesh = create_or_get_mesh_for_model_command(render, command);
+			draw_instance_t* instance = create_or_get_instance_for_model_command(render, command, shader->shader);
 			heap_free(render->heap, command->uniform_buffer.data);
 
 			if (last_pipeline != shader->pipeline)
