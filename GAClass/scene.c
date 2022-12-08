@@ -181,7 +181,9 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 
 	// Setup Dear ImGui binding
 	IMGUI_CHECKVERSION();
-	igCreateContext();
+	ImFontAtlas font;
+	igImFontAtlasBuildInit(&font);
+	igCreateContext(&font);
 	ImGuiIO* io = igGetIO();
 
 	// Init Win32
