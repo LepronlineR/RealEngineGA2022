@@ -179,8 +179,16 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	load_scene_hierarchy_resources(scene, "resources/temp.png");
 	load_object_scene_resources(scene);
 
-	//Init Win32
-	// ImGui_ImplWin32_Init(wm_get_hwnd(window));
+	// Setup Dear ImGui binding
+	IMGUI_CHECKVERSION();
+	igCreateContext();
+	ImGuiIO* io = igGetIO();
+
+	// Init Win32
+	ImGui_ImplWin32_Init(wm_get_hwnd(window));
+
+	// Init Vulkan
+	ImGui_ImplVulkan_Init();
 
 	spawn_scene_hierarchy(scene);
 
@@ -567,6 +575,11 @@ static void scene_interaction(scene_t* scene)
 		transform_multiply(&transform_comp->transform, &move);
 	}
 
+	// IMGUI
+	ImGui_ImplVulkan_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	igNewFrame();
+	igRender();
 }
 
 // ===========================================================================================

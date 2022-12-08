@@ -1,38 +1,10 @@
-﻿  imgui_impl_win32.c
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(131,32): warning C4013: 'calloc' undefined; assuming extern returning int
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(156,25): warning C4013: 'IM_ARRAYSIZE' undefined; assuming extern returning int
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(131,1): warning C4047: 'initializing': 'ImGui_ImplWin32_Data *' differs in levels of indirection from 'int'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(172,5): warning C4013: 'IM_ASSERT' undefined; assuming extern returning int
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(183,5): warning C4013: 'IM_DELETE' undefined; assuming extern returning int
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(229,5): warning C4013: 'IM_UNUSED' undefined; assuming extern returning int
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(235,9): warning C4013: 'IsKeyDown' undefined; assuming extern returning int
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(315,5): warning C4013: 'ImGui_ImplWin32_UpdateGamepads' undefined; assuming extern returning int
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(608,10): warning C4013: '_IsWindowsVistaOrGreater' undefined; assuming extern returning int
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(617,9): warning C4013: '_IsWindows8OrGreater' undefined; assuming extern returning int
-x64\Debug\atomic.obj : warning LNK4042: object specified more than once; extras ignored
-     Creating library C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.lib and object C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exp
-imgui_impl_vulkan.obj : error LNK2019: unresolved external symbol igGetIO referenced in function ImGui_ImplVulkan_CreateFontsTexture
-imgui_impl_win32.obj : error LNK2001: unresolved external symbol igGetIO
-imgui_impl_vulkan.obj : error LNK2019: unresolved external symbol igMemAlloc referenced in function ImGui_ImplVulkanH_CreateWindowSwapChain
-imgui_impl_vulkan.obj : error LNK2019: unresolved external symbol igMemFree referenced in function ImGui_ImplVulkanH_CreateWindowSwapChain
-imgui_impl_vulkan.obj : error LNK2019: unresolved external symbol ImFontAtlas_GetTexDataAsRGBA32 referenced in function ImGui_ImplVulkan_CreateFontsTexture
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol igGetCurrentContext referenced in function ImGui_ImplWin32_GetBackendData
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol igGetMainViewport referenced in function ImGui_ImplWin32_Init
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol igGetMouseCursor referenced in function ImGui_ImplWin32_NewFrame
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol ImGuiIO_AddKeyEvent referenced in function ImGui_ImplWin32_AddKeyEvent
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol ImGuiIO_AddMousePosEvent referenced in function ImGui_ImplWin32_UpdateMouseData
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol ImGuiIO_AddMouseButtonEvent referenced in function ImGui_ImplWin32_WndProcHandler
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol ImGuiIO_AddMouseWheelEvent referenced in function ImGui_ImplWin32_WndProcHandler
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol ImGuiIO_AddFocusEvent referenced in function ImGui_ImplWin32_WndProcHandler
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol ImGuiIO_AddInputCharacter referenced in function ImGui_ImplWin32_WndProcHandler
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol ImGuiIO_AddInputCharacterUTF16 referenced in function ImGui_ImplWin32_WndProcHandler
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol ImGuiIO_SetKeyEventNativeData referenced in function ImGui_ImplWin32_AddKeyEvent
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol IM_ARRAYSIZE referenced in function ImGui_ImplWin32_Init
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol IM_ASSERT referenced in function ImGui_ImplWin32_NewFrame
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol IM_DELETE referenced in function ImGui_ImplWin32_Shutdown
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol IM_UNUSED referenced in function ImGui_ImplWin32_AddKeyEvent
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol IsKeyDown referenced in function ImGui_ImplWin32_ProcessKeyEventsWorkarounds
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol ImGui_ImplWin32_UpdateGamepads referenced in function ImGui_ImplWin32_NewFrame
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol _IsWindowsVistaOrGreater referenced in function ImGui_ImplWin32_EnableAlphaCompositing
-imgui_impl_win32.obj : error LNK2019: unresolved external symbol _IsWindows8OrGreater referenced in function ImGui_ImplWin32_EnableAlphaCompositing
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe : fatal error LNK1120: 23 unresolved externals
+﻿  scene.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(183,2): warning C4013: 'IMGUI_CHECKVERSION' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(184,2): error C2198: 'igCreateContext': too few arguments for call
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(188,2): warning C4013: 'ImGui_ImplWin32_Init' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(191,2): warning C4013: 'ImGui_ImplVulkan_Init' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(191,36): error C2065: 'glsl_version': undeclared identifier
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(282,77): warning C4133: 'function': incompatible types - from 'gpu_image_mesh_info_t *' to 'gpu_mesh_info_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(337,48): warning C4098: 'spawn_scene_hierarchy': 'void' function returning a value
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(579,2): warning C4013: 'ImGui_ImplVulkan_NewFrame' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(580,2): warning C4013: 'ImGui_ImplWin32_NewFrame' undefined; assuming extern returning int
