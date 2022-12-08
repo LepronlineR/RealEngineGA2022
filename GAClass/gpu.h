@@ -29,7 +29,7 @@ typedef enum gpu_mesh_layout_t
 {
 	k_gpu_mesh_layout_tri_p444_i2,
 	k_gpu_mesh_layout_tri_p444_c444_i2,
-	k_gpu_mesh_layout_tri_p44_c444_t44_i2,
+	k_gpu_mesh_layout_tri_p444_u44_c444_i2,
 
 	k_gpu_mesh_layout_count,
 } gpu_mesh_layout_t;
@@ -102,7 +102,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info);
 void gpu_mesh_destroy(gpu_t* gpu, gpu_mesh_t* mesh);
 
 // Create a drawable piece of geometry with vertex and index data.
-gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* info);
+gpu_texture_mesh_t* gpu_texture_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* info);
 
 // Destroy some geometry.
 void gpu_mesh_destroy(gpu_t* gpu, gpu_mesh_t* mesh);
@@ -141,21 +141,13 @@ void gpu_cmd_pipeline_bind(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer, gpu_pipelin
 
 // Set the current mesh for this command buffer.
 void gpu_cmd_mesh_bind(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer, gpu_mesh_t* mesh);
+void gpu_cmd_texture_mesh_bind(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer, gpu_texture_mesh_t* mesh);
 
 // Set the current descriptor for this command buffer.
 void gpu_cmd_descriptor_bind(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer, gpu_descriptor_t* descriptor);
 
 // Draw given current pipeline, mesh, and descriptor.
 void gpu_cmd_draw(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer);
-
-// Create an image layout
-void gpu_create_image_layout(gpu_t* gpu, gpu_image_layout_t* image_layout);
-
-// Generate a texture given a target image location
-void gpu_generate_texture(gpu_t* gpu, const char* image_location);
-
-// Create an image for a texture
-void gpu_create_image(gpu_t* gpu, gpu_image_info_t* image_info);
 
 // Generate a buffer and store it in the buffer info
 void gpu_generate_buffer(gpu_t* gpu, gpu_buffer_info_t* buffer_info);

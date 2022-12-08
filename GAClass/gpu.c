@@ -797,7 +797,7 @@ void gpu_generate_buffer(gpu_t* gpu, gpu_buffer_info_t* r_buffer_info) {
 
 	result = vkAllocateMemory(gpu->logical_device, &allocation_info, NULL, &r_buffer_info->buffer_memory);
 	if (result != VK_SUCCESS) {
-		debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
+		debug_print_line(k_print_error, "vkAllocateMemory failed for generating buffer: %d\n", result);
 	}
 
 	vkBindBufferMemory(gpu->logical_device, r_buffer_info->buffer, r_buffer_info->buffer_memory, 0);
@@ -890,7 +890,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 		result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &mesh->vertex_memory);
 		if (result)
 		{
-			debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkAllocateMemory failed for vertex data: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -943,7 +943,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 		result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &mesh->index_memory);
 		if (result)
 		{
-			debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkAllocateMemory failed for index data: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -971,7 +971,7 @@ gpu_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_mesh_info_t* info)
 	return mesh;
 }
 
-gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* info) {
+gpu_texture_mesh_t* gpu_texture_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* info) {
 	gpu_texture_mesh_t* mesh = heap_alloc(gpu->heap, sizeof(gpu_texture_mesh_t), 8);
 	memset(mesh, 0, sizeof(*mesh));
 
@@ -1007,7 +1007,7 @@ gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* inf
 		result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &mesh->vertex_memory);
 		if (result)
 		{
-			debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkAllocateMemory failed for vertex data: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -1060,7 +1060,7 @@ gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* inf
 		result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &mesh->index_memory);
 		if (result)
 		{
-			debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkAllocateMemory failed for index data: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
@@ -1098,6 +1098,9 @@ gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* inf
 			debug_print_line(k_print_error, "stbi_uc failed for loading images\n");
 		};
 
+		VkImage mappable_image;
+		VkDeviceMemory mappable_memory;
+
 		VkImageCreateInfo image_info =
 		{
 			.imageType = VK_IMAGE_TYPE_2D,
@@ -1112,7 +1115,8 @@ gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* inf
 			.extent = { texture_width, texture_height, 1 },
 		};
 
-		VkResult result = vkCreateBuffer(gpu->logical_device, &image_info, NULL, &mesh->image);
+
+		VkResult result = vkCreateImage(gpu->logical_device, &image_info, NULL, &mappable_image);
 		if (result)
 		{
 			debug_print_line(k_print_error, "VkImageCreateInfo failed: %d\n", result);
@@ -1120,10 +1124,9 @@ gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* inf
 			return NULL;
 		}
 
-
-
-		VkMemoryRequirements mem_reqs;
-		vkGetBufferMemoryRequirements(gpu->logical_device, mesh->image, &mem_reqs);
+		// Get memory requirements for this image
+		VkMemoryRequirements mem_reqs = { .size = 0 };
+		vkGetImageMemoryRequirements(gpu->logical_device, mappable_image, &mem_reqs);
 
 		VkMemoryAllocateInfo mem_alloc =
 		{
@@ -1131,15 +1134,15 @@ gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* inf
 			.allocationSize = mem_reqs.size,
 			.memoryTypeIndex = get_memory_type_index(gpu, mem_reqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT),
 		};
-		result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &mesh->image_memory);
+		result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &mappable_memory);
 		if (result)
 		{
-			debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkAllocateMemory failed for creating images: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
 
-		result = vkBindImageMemory(gpu->logical_device, mesh->image, mesh->image_memory, 0);
+		result = vkBindImageMemory(gpu->logical_device, mappable_image, mappable_memory, 0);
 		if (result)
 		{
 			debug_print_line(k_print_error, "vkBindImageMemory failed: %d\n", result);
@@ -1148,16 +1151,18 @@ gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* inf
 		}
 
 		void* data = NULL;
-		result = vkMapMemory(gpu->logical_device, mesh->image_memory, 0, mem_alloc.allocationSize, 0, &data);
+		result = vkMapMemory(gpu->logical_device, mappable_memory, 0, mem_alloc.allocationSize, 0, &data);
 		if (result)
 		{
-			debug_print_line(k_print_error, "vkMapMemory failed: %d\n", result);
+			debug_print_line(k_print_error, "vkMapMemory failed for mapping image: %d\n", result);
 			gpu_mesh_destroy(gpu, mesh);
 			return NULL;
 		}
-		memcpy(data, info->image_data, mem_reqs.size);
-		vkUnmapMemory(gpu->logical_device, mesh->image_memory);
+		memcpy(data, image, mem_reqs.size);
+		vkUnmapMemory(gpu->logical_device, mappable_memory);
 
+		mesh->image = mappable_image;
+		mesh->image_memory = mappable_memory;
 		mesh->image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
 		VkCommandBuffer copy_cmd = create_command_buffer(gpu, VK_COMMAND_BUFFER_LEVEL_PRIMARY, true);
@@ -1194,7 +1199,7 @@ gpu_texture_mesh_t* gpu_mesh_create(gpu_t* gpu, const gpu_image_mesh_info_t* inf
 			0, NULL,
 			1, &image_memory_barrier);
 
-		flush_command_buffer(gpu, copy_cmd, true);
+		end_command_buffer(gpu, copy_cmd);
 
 		stbi_image_free(image);
 
@@ -1534,7 +1539,7 @@ gpu_uniform_buffer_t* gpu_uniform_buffer_create(gpu_t* gpu, const gpu_uniform_bu
 	result = vkAllocateMemory(gpu->logical_device, &mem_alloc, NULL, &uniform_buffer->memory);
 	if (result)
 	{
-		debug_print_line(k_print_error, "vkAllocateMemory failed: %d\n", result);
+		debug_print_line(k_print_error, "vkAllocateMemory failed for buffer create: %d\n", result);
 		gpu_uniform_buffer_destroy(gpu, uniform_buffer);
 		return NULL;
 	}
@@ -1709,6 +1714,29 @@ void gpu_cmd_descriptor_bind(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer, gpu_descr
 }
 
 void gpu_cmd_mesh_bind(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer, gpu_mesh_t* mesh)
+{
+	if (mesh->vertex_count)
+	{
+		VkDeviceSize zero = 0;
+		vkCmdBindVertexBuffers(cmd_buffer->buffer, 0, 1, &mesh->vertex_buffer, &zero);
+		cmd_buffer->vertex_count = mesh->vertex_count;
+	}
+	else
+	{
+		cmd_buffer->vertex_count = 0;
+	}
+	if (mesh->index_count)
+	{
+		vkCmdBindIndexBuffer(cmd_buffer->buffer, mesh->index_buffer, 0, mesh->index_type);
+		cmd_buffer->index_count = mesh->index_count;
+	}
+	else
+	{
+		cmd_buffer->index_count = 0;
+	}
+}
+
+void gpu_cmd_texture_mesh_bind(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer, gpu_texture_mesh_t* mesh)
 {
 	if (mesh->vertex_count)
 	{
@@ -1920,7 +1948,7 @@ static void create_texture_mesh_layouts(gpu_t* gpu)
 
 	// k_gpu_mesh_layout_tri_p44_c444_t_44_i2
 	{
-		gpu->mesh_input_assembly_info[k_gpu_mesh_layout_tri_p44_c444_t44_i2] = (VkPipelineInputAssemblyStateCreateInfo)
+		gpu->mesh_input_assembly_info[k_gpu_mesh_layout_tri_p444_u44_c444_i2] = (VkPipelineInputAssemblyStateCreateInfo)
 		{
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
 			.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
@@ -1934,12 +1962,12 @@ static void create_texture_mesh_layouts(gpu_t* gpu)
 			.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
 		};
 
-		VkVertexInputAttributeDescription* vertex_attributes = heap_alloc(gpu->heap, sizeof(VkVertexInputAttributeDescription) * 2, 8);
+		VkVertexInputAttributeDescription* vertex_attributes = heap_alloc(gpu->heap, sizeof(VkVertexInputAttributeDescription) * 3, 8);
 		vertex_attributes[0] = (VkVertexInputAttributeDescription)
 		{
 			.binding = 0,
 			.location = 0,
-			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.format = VK_FORMAT_R32G32_SFLOAT,
 			.offset = 0,
 		};
 		vertex_attributes[1] = (VkVertexInputAttributeDescription)
@@ -1949,26 +1977,26 @@ static void create_texture_mesh_layouts(gpu_t* gpu)
 			.format = VK_FORMAT_R32G32B32_SFLOAT,
 			.offset = 12,
 		};
-		vertex_attributes[1] = (VkVertexInputAttributeDescription)
+		vertex_attributes[2] = (VkVertexInputAttributeDescription)
 		{
 			.binding = 0,
-			.location = 1,
-			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.location = 2,
+			.format = VK_FORMAT_R32G32_SFLOAT,
 			.offset = 20,
 		};
 
-		gpu->mesh_vertex_input_info[k_gpu_mesh_layout_tri_p44_c444_t44_i2] = (VkPipelineVertexInputStateCreateInfo)
+		gpu->mesh_vertex_input_info[k_gpu_mesh_layout_tri_p444_u44_c444_i2] = (VkPipelineVertexInputStateCreateInfo)
 		{
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
 			.vertexBindingDescriptionCount = 1,
 			.pVertexBindingDescriptions = vertex_binding,
-			.vertexAttributeDescriptionCount = 2,
+			.vertexAttributeDescriptionCount = 3,
 			.pVertexAttributeDescriptions = vertex_attributes,
 		};
 
-		gpu->mesh_index_type[k_gpu_mesh_layout_tri_p44_c444_t44_i2] = VK_INDEX_TYPE_UINT16;
-		gpu->mesh_index_size[k_gpu_mesh_layout_tri_p44_c444_t44_i2] = 2;
-		gpu->mesh_vertex_size[k_gpu_mesh_layout_tri_p44_c444_t44_i2] = 24;
+		gpu->mesh_index_type[k_gpu_mesh_layout_tri_p444_u44_c444_i2] = VK_INDEX_TYPE_UINT16;
+		gpu->mesh_index_size[k_gpu_mesh_layout_tri_p444_u44_c444_i2] = 3;
+		gpu->mesh_vertex_size[k_gpu_mesh_layout_tri_p444_u44_c444_i2] = 32;
 	}
 }
 

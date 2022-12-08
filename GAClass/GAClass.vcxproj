@@ -239,8 +239,15 @@
     <None Include="shaders\default.vert" />
     <None Include="shaders\triangle-frag.spv" />
     <None Include="shaders\triangle-vert.spv" />
+    <None Include="shaders\triangle.frag" />
+    <None Include="shaders\triangle.vert" />
+    <None Include="shaders\ui-frag.spv" />
+    <None Include="shaders\ui-vert.spv" />
     <None Include="shaders\ui.frag" />
     <None Include="shaders\ui.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\temp.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

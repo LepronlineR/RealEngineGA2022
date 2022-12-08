@@ -43,11 +43,11 @@ typedef struct model_component_t
 	gpu_shader_info_t* shader_info;
 } model_component_t;
 
-typedef struct image_model_component_t
+typedef struct model_texture_component_t
 {
 	gpu_image_mesh_info_t* mesh_info;
 	gpu_shader_info_t* shader_info;
-} image_model_component_t;
+} model_texture_component_t;
 
 typedef struct player_component_t
 {
@@ -88,7 +88,7 @@ typedef struct scene_t
 	int transform_type;
 	int camera_type;
 	int model_type;
-	int image_model_type;
+	int model_texture_type;
 	int name_type;
 	int collider_type;
 
@@ -98,7 +98,7 @@ typedef struct scene_t
 	ecs_entity_ref_t all_ent[k_max_entities];
 	int next_free_entity;
 
-	gpu_mesh_info_t ui_mesh;
+	gpu_image_mesh_info_t ui_mesh;
 	gpu_shader_info_t ui_shader;
 
 	gpu_mesh_info_t object_mesh;
@@ -119,7 +119,7 @@ static void unload_shader_resources(scene_t* scene);
 static void spawn_camera(scene_t* scene);
 
 // scene hierarchy
-static void load_scene_hierarchy_resources(scene_t* scene);
+static void load_scene_hierarchy_resources(scene_t* scene, const char* image_location);
 static void spawn_scene_hierarchy(scene_t* scene);
 static void update_scene_hierarchy(scene_t* scene);
 
@@ -172,11 +172,12 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	scene->model_type = ecs_register_component_type(scene->ecs, "model", sizeof(model_component_t), _Alignof(model_component_t));
 	scene->name_type = ecs_register_component_type(scene->ecs, "name", sizeof(name_component_t), _Alignof(name_component_t));
 	scene->collider_type = ecs_register_component_type(scene->ecs, "collider", sizeof(collider_component_t), _Alignof(collider_component_t));
-	scene->image_model_type = ecs_register_component_type(scene->ecs, "imagemodel", sizeof(image_model_component_t), _Alignof(image_model_component_t));
+	scene->model_texture_type = ecs_register_component_type(scene->ecs, "model texture", sizeof(model_texture_component_t), _Alignof(model_texture_component_t));
 
-	// load_scene_hierarchy_resources(scene);
+	load_scene_hierarchy_resources(scene, "resources/temp.png");
 	load_object_scene_resources(scene);
 
+	// add_object_to_scene(scene);
 	spawn_scene_hierarchy(scene);
 
 	spawn_camera(scene);
@@ -245,6 +246,29 @@ static void draw_models(scene_t* scene)
 
 			render_push_model(scene->render, &entity_ref, model_comp->mesh_info, model_comp->shader_info, &uniform_info);
 		}
+
+		uint64_t k_image_model_query_mark = (1ULL << scene->transform_type) | (1ULL << scene->model_texture_type);
+		for (ecs_query_t query = ecs_query_create(scene->ecs, k_image_model_query_mark);
+			ecs_query_is_valid(scene->ecs, &query);
+			ecs_query_next(scene->ecs, &query))
+		{
+			transform_component_t* transform_comp = ecs_query_get_component(scene->ecs, &query, scene->transform_type);
+			model_texture_component_t* model_comp = ecs_query_get_component(scene->ecs, &query, scene->model_texture_type);
+			ecs_entity_ref_t entity_ref = ecs_query_get_entity(scene->ecs, &query);
+
+			struct 
+			{
+				mat4f_t projection;
+				mat4f_t model;
+				mat4f_t view;
+			} uniform_data;
+			uniform_data.projection = camera_comp->projection;
+			uniform_data.view = camera_comp->view;
+			transform_to_matrix(&transform_comp->transform, &uniform_data.model);
+			gpu_uniform_buffer_info_t uniform_info = { .data = &uniform_data, sizeof(uniform_data) };
+
+			render_push_model_image(scene->render, &entity_ref, model_comp->mesh_info, model_comp->shader_info, &uniform_info);
+		}
 	}
 }
 
@@ -279,24 +303,47 @@ static void spawn_camera(scene_t* scene)
 //                                       SCENE HIERARCHY
 // ===========================================================================================
 
-static void load_scene_hierarchy_resources(scene_t* scene) {
-	scene->vertex_shader_work = fs_read(scene->fs, "shaders/ui-vert.spv", scene->heap, false, false);
-	scene->fragment_shader_work = fs_read(scene->fs, "shaders/ui-frag.spv", scene->heap, false, false);
+static void spawn_scene_hierarchy(scene_t* scene) {
+	uint64_t k_object_ent_mask =
+		(1ULL << scene->transform_type) |
+		(1ULL << scene->name_type) |
+		(1ULL << scene->model_texture_type);
+	scene->all_ent[scene->next_free_entity] = ecs_entity_add(scene->ecs, k_object_ent_mask);
+
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->transform_type, true);
+	transform_identity(&transform_comp->transform);
+
+	name_component_t* name_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->name_type, true);
+	strcpy_s(name_comp->name, sizeof(name_comp->name), "UI");
+
+	model_texture_component_t* model_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->model_texture_type, true);
+	model_comp->mesh_info = &scene->ui_mesh;
+	model_comp->shader_info = &scene->ui_shader;
+
+	update_next_entity_location(scene);
+
+	return scene->all_ent[scene->next_free_entity];
+
+}
+
+static void load_scene_hierarchy_resources(scene_t* scene, const char* image_location) {
+	scene->vertex_shader_work = fs_read(scene->fs, "shaders/triangle-vert.spv", scene->heap, false, false);
+	scene->fragment_shader_work = fs_read(scene->fs, "shaders/triangle-frag.spv", scene->heap, false, false);
 	scene->ui_shader = (gpu_shader_info_t)
 	{
 		.vertex_shader_data = fs_work_get_buffer(scene->vertex_shader_work),
 		.vertex_shader_size = fs_work_get_size(scene->vertex_shader_work),
 		.fragment_shader_data = fs_work_get_buffer(scene->fragment_shader_work),
 		.fragment_shader_size = fs_work_get_size(scene->fragment_shader_work),
-		.uniform_buffer_count = 1,
+		.uniform_buffer_count = 2,
 	};
 
 	static vec3f_t plane_verts[] =
 	{
-		{-0.5f, -0.5f}, { 1.0f, 0.0f, 0.0f },
-		{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f},
-		{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f},
-		{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f},
+		{  1.0f,  1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f },
+		{ -1.0f,  1.0f, 0.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f },
+		{ -1.0f, -1.0f, 0.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f },
+		{  1.0f, -1.0f, 0.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }
 	};
 
 	static uint16_t plane_indices[] =
@@ -304,25 +351,17 @@ static void load_scene_hierarchy_resources(scene_t* scene) {
 		0, 1, 2, 2, 3, 0
 	};
 
-	scene->ui_mesh = (gpu_mesh_info_t)
+	scene->ui_mesh = (gpu_image_mesh_info_t)
 	{
-		.layout = k_gpu_mesh_layout_tri_p444_c444_i2,
+		.layout = k_gpu_mesh_layout_tri_p444_u44_c444_i2,
 		.vertex_data = plane_verts,
 		.vertex_data_size = sizeof(plane_verts),
 		.index_data = plane_indices,
 		.index_data_size = sizeof(plane_indices),
+		.image_location = image_location,
+		.image_data = NULL,
+		.image_data_size = 0
 	};
-}
-
-static void spawn_scene_hierarchy(scene_t* scene) {
-	// igCreateContext();
-	// igGetIO()->ConfigFlags |= ImGuiConfigFlags_;
-
-
-}
-
-static void update_scene_hierarchy(scene_t* scene) {
-
 }
 
 // ===========================================================================================
@@ -491,7 +530,7 @@ static void scene_interaction(scene_t* scene)
 
 	uint32_t key_mask = wm_get_key_mask(scene->window);
 
-	if (key_mask & k_key_zero && scene->current_entity) { // add object to the scene
+	if (key_mask & k_key_zero) { // add object to the scene
 		scene->current_entity = add_object_to_scene(scene);
 	}
 
@@ -602,3 +641,4 @@ static bool check_collision(collider_component_t one, collider_component_t two) 
 		(one_min.y <= two_max.y) && (one_max.y >= two_min.y) &&
 		(one_min.z <= two_max.z) && (one_max.z >= two_min.z));
 }
+

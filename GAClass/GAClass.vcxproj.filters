@@ -313,5 +313,22 @@
     <None Include="shaders\ui.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="shaders\triangle.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\triangle.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\ui-frag.spv">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\ui-vert.spv">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\temp.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
