@@ -16,6 +16,11 @@ enum
 	k_render_max_drawables = 512,
 };
 
+enum
+{
+	k_texture_sampler_binding = 1
+};
+
 typedef enum command_type_t
 {
 	k_command_frame_done,
@@ -106,7 +111,7 @@ static draw_mesh_t* create_or_get_mesh_for_model_command(render_t* render, model
 static draw_texture_mesh_t* create_or_get_mesh_for_texture_model_command(render_t* render, model_texture_command_t* command);
 
 static draw_instance_t* create_or_get_instance_for_model_command(render_t* render, model_command_t* command, gpu_shader_t* shader);
-static draw_instance_t* create_or_get_instance_for_texture_model_command(render_t* render, model_texture_command_t* command, gpu_shader_t* shader);
+static draw_instance_t* create_or_get_instance_for_texture_model_command(render_t* render, gpu_texture_mesh_t* mesh, model_texture_command_t* command, gpu_shader_t* shader);
 
 static void destroy_stale_data(render_t* render);
 
@@ -229,7 +234,7 @@ static int render_thread_func(void* user)
 			model_texture_command_t* command = (model_texture_command_t*)type;
 			draw_shader_t* shader = create_or_get_shader_for_texture_model_command(render, command);
 			draw_texture_mesh_t* mesh = create_or_get_mesh_for_texture_model_command(render, command);
-			draw_instance_t* instance = create_or_get_instance_for_texture_model_command(render, command, shader->shader);
+			draw_instance_t* instance = create_or_get_instance_for_texture_model_command(render, mesh->mesh, command, shader->shader);
 
 			heap_free(render->heap, command->uniform_buffer.data);
 
@@ -419,7 +424,7 @@ static draw_instance_t* create_or_get_instance_for_model_command(render_t* rende
 	return instance;
 }
 
-static draw_instance_t* create_or_get_instance_for_texture_model_command(render_t* render, model_texture_command_t* command, gpu_shader_t* shader)
+static draw_instance_t* create_or_get_instance_for_texture_model_command(render_t* render, gpu_texture_mesh_t* mesh, model_texture_command_t* command, gpu_shader_t* shader)
 {
 	draw_instance_t* instance = NULL;
 	for (int i = 0; i < render->instance_count; ++i)
@@ -448,7 +453,7 @@ static draw_instance_t* create_or_get_instance_for_texture_model_command(render_
 				.uniform_buffers = &instance->uniform_buffers[i],
 				.uniform_buffer_count = 2,
 			};
-			instance->descriptors[i] = gpu_descriptor_create(render->gpu, &descriptor_info);
+			instance->descriptors[i] = gpu_descriptor_create_texture(render->gpu, mesh, &descriptor_info, k_texture_sampler_binding);
 		}
 	}
 

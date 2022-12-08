@@ -1,24 +1,24 @@
 ﻿  gpu.c
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(783,98): warning C4047: 'function': 'VkBuffer *' differs in levels of indirection from 'VkBuffer **'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(783,76): warning C4024: 'vkCreateBuffer': different types for formal and actual parameter 4
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(789,74): warning C4047: 'function': 'VkBuffer' differs in levels of indirection from 'VkBuffer *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(789,66): warning C4024: 'vkGetBufferMemoryRequirements': different types for formal and actual parameter 2
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(798,102): warning C4047: 'function': 'VkDeviceMemory *' differs in levels of indirection from 'VkDeviceMemory **'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(798,73): warning C4024: 'vkAllocateMemory': different types for formal and actual parameter 4
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(803,63): warning C4047: 'function': 'VkBuffer' differs in levels of indirection from 'VkBuffer *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(803,55): warning C4024: 'vkBindBufferMemory': different types for formal and actual parameter 2
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(803,93): warning C4047: 'function': 'VkDeviceMemory' differs in levels of indirection from 'VkDeviceMemory *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(803,78): warning C4024: 'vkBindBufferMemory': different types for formal and actual parameter 3
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(994,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1011,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1020,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1030,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1047,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1064,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1073,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1083,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1123,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1141,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1149,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1158,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(787,98): warning C4047: 'function': 'VkBuffer *' differs in levels of indirection from 'VkBuffer **'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(787,76): warning C4024: 'vkCreateBuffer': different types for formal and actual parameter 4
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(793,74): warning C4047: 'function': 'VkBuffer' differs in levels of indirection from 'VkBuffer *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(793,66): warning C4024: 'vkGetBufferMemoryRequirements': different types for formal and actual parameter 2
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(802,102): warning C4047: 'function': 'VkDeviceMemory *' differs in levels of indirection from 'VkDeviceMemory **'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(802,73): warning C4024: 'vkAllocateMemory': different types for formal and actual parameter 4
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(807,63): warning C4047: 'function': 'VkBuffer' differs in levels of indirection from 'VkBuffer *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(807,55): warning C4024: 'vkBindBufferMemory': different types for formal and actual parameter 2
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(807,93): warning C4047: 'function': 'VkDeviceMemory' differs in levels of indirection from 'VkDeviceMemory *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(807,78): warning C4024: 'vkBindBufferMemory': different types for formal and actual parameter 3
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1048,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1065,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1074,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1084,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1101,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1118,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1127,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1137,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1177,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1195,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1203,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1212,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
   GAClass.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe

@@ -177,7 +177,6 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	load_scene_hierarchy_resources(scene, "resources/temp.png");
 	load_object_scene_resources(scene);
 
-	// add_object_to_scene(scene);
 	spawn_scene_hierarchy(scene);
 
 	spawn_camera(scene);

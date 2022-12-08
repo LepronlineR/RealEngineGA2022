@@ -589,10 +589,14 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 	//////////////////////////////////////////////////////
 	// Create a VkDescriptorPool for use during the frame
 	//////////////////////////////////////////////////////
-	VkDescriptorPoolSize descriptor_pool_sizes[1] =
+	VkDescriptorPoolSize descriptor_pool_sizes[2] =
 	{
 		{
 			.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			.descriptorCount = 512,
+		},
+		{
+			.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
 			.descriptorCount = 512,
 		}
 	};
@@ -835,6 +839,56 @@ gpu_descriptor_t* gpu_descriptor_create(gpu_t* gpu, const gpu_descriptor_info_t*
 			.pBufferInfo = &info->uniform_buffers[i]->descriptor,
 			.dstBinding = i,
 		};
+	}
+	vkUpdateDescriptorSets(gpu->logical_device, info->uniform_buffer_count, write_sets, 0, NULL);
+
+	return descriptor;
+}
+
+gpu_descriptor_t* gpu_descriptor_create_texture(gpu_t* gpu, gpu_texture_mesh_t* mesh, const gpu_descriptor_info_t* info, int sampler_binding_point)
+{
+	gpu_descriptor_t* descriptor = heap_alloc(gpu->heap, sizeof(gpu_descriptor_t), 8);
+	memset(descriptor, 0, sizeof(*descriptor));
+
+	VkDescriptorSetAllocateInfo alloc_info =
+	{
+		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+		.descriptorPool = gpu->descriptor_pool,
+		.descriptorSetCount = 1,
+		.pSetLayouts = &info->shader->descriptor_set_layout,
+	};
+	VkResult result = vkAllocateDescriptorSets(gpu->logical_device, &alloc_info, &descriptor->set);
+	if (result)
+	{
+		debug_print_line(k_print_error, "vkAllocateDescriptorSets failed: %d\n", result);
+		gpu_descriptor_destroy(gpu, descriptor);
+		return NULL;
+	}
+
+	// Setup a descriptor image info for the current texture to be used as a combined image sampler
+	VkDescriptorImageInfo textureDescriptor;
+	textureDescriptor.imageView = mesh->view;			// The image's view 
+	textureDescriptor.sampler = mesh->sampler;			// The sampler
+	textureDescriptor.imageLayout = mesh->image_layout;	// The current layout of the image
+
+	VkWriteDescriptorSet* write_sets = alloca(sizeof(VkWriteDescriptorSet) * info->uniform_buffer_count);
+	for (int i = 0; i < info->uniform_buffer_count; ++i)
+	{
+		write_sets[i] = (VkWriteDescriptorSet)
+		{
+			.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+			.dstSet = descriptor->set,
+			.descriptorCount = 1,
+			.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			.pBufferInfo = &info->uniform_buffers[i]->descriptor,
+			.dstBinding = i,
+		};
+		if (i == sampler_binding_point) { 
+			// write for texture sampler
+			// i.e. layout (binding = 1) uniform sampler2D sampler;
+			write_sets[i].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			write_sets[i].pImageInfo = &textureDescriptor;
+		}
 	}
 	vkUpdateDescriptorSets(gpu->logical_device, info->uniform_buffer_count, write_sets, 0, NULL);
 

@@ -91,6 +91,7 @@ void gpu_wait_until_idle(gpu_t* gpu);
 
 // Binds uniform buffers (and textures if we had them) to a given shader layout.
 gpu_descriptor_t* gpu_descriptor_create(gpu_t* gpu, const gpu_descriptor_info_t* info);
+gpu_descriptor_t* gpu_descriptor_create_texture(gpu_t* gpu, gpu_texture_mesh_t* mesh, const gpu_descriptor_info_t* info, int sampler_binding_point);
 
 // Destroys a descriptor.
 void gpu_descriptor_destroy(gpu_t* gpu, gpu_descriptor_t* descriptor);
