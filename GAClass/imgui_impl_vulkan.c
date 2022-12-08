@@ -48,8 +48,6 @@
 
 // Translated to C by https://github.com/nickscha/vk-glfw-cimgui/blob/master/imgui_impl_vulkan.c
 
-#pragma once
-
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include <cimgui/cimgui.h>
 

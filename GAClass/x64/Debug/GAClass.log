@@ -1,4 +1,15 @@
-﻿x64\Debug\atomic.obj : warning LNK4042: object specified more than once; extras ignored
+﻿  imgui_impl_win32.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(131,32): warning C4013: 'calloc' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(156,25): warning C4013: 'IM_ARRAYSIZE' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(131,1): warning C4047: 'initializing': 'ImGui_ImplWin32_Data *' differs in levels of indirection from 'int'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(172,5): warning C4013: 'IM_ASSERT' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(183,5): warning C4013: 'IM_DELETE' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(229,5): warning C4013: 'IM_UNUSED' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(235,9): warning C4013: 'IsKeyDown' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(315,5): warning C4013: 'ImGui_ImplWin32_UpdateGamepads' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(608,10): warning C4013: '_IsWindowsVistaOrGreater' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_win32.c(617,9): warning C4013: '_IsWindows8OrGreater' undefined; assuming extern returning int
+x64\Debug\atomic.obj : warning LNK4042: object specified more than once; extras ignored
      Creating library C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.lib and object C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exp
 imgui_impl_vulkan.obj : error LNK2019: unresolved external symbol igGetIO referenced in function ImGui_ImplVulkan_CreateFontsTexture
 imgui_impl_win32.obj : error LNK2001: unresolved external symbol igGetIO

@@ -180,7 +180,7 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	load_object_scene_resources(scene);
 
 	//Init Win32
-	ImGui_ImplWin32_Init(wm_get_hwnd(window));
+	// ImGui_ImplWin32_Init(wm_get_hwnd(window));
 
 	spawn_scene_hierarchy(scene);
 
@@ -344,10 +344,10 @@ static void load_scene_hierarchy_resources(scene_t* scene, const char* image_loc
 
 	static vec3f_t plane_verts[] =
 	{
-		{  1.0f,  0.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f },
-		{ -1.0f,  0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f },
-		{ -1.0f, 0.0f, -1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f },
-		{  1.0f, 0.0f, -1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }
+		{  1.0f,  1.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f },
+		{ -1.0f,  1.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f },
+		{ -1.0f, 1.0f, -1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f },
+		{  1.0f, 1.0f, -1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }
 	};
 
 	static uint16_t plane_indices[] =

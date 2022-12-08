@@ -11,7 +11,8 @@
 // Prefer including the entire imgui/ repository into your project (either as a copy or as a submodule), and only build the backends you need.
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
-#pragma once
+#ifndef IMGUI_IMPL_WIN32_H
+#define IMGUI_IMPL_WIN32_H
 
 #include <cimgui/cimgui.h>      // IMGUI_IMPL_API
 
@@ -42,3 +43,5 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 // - Use to enable alpha compositing transparency with the desktop.
 // - Use together with e.g. clearing your framebuffer with zero-alpha.
 CIMGUI_API void     ImGui_ImplWin32_EnableAlphaCompositing(void* hwnd);   // HWND hwnd
+
+#endif

@@ -83,13 +83,13 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)vulkan;$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;$(ProjectDir)include\cimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan\vulkan-1.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)\vulkan;$(ProjectDir)\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -115,13 +115,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)vulkan;$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;$(ProjectDir)include\cimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan\vulkan-1.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)\vulkan;$(ProjectDir)\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
