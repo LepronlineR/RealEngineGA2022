@@ -10,6 +10,12 @@
 #include "vec3f.h"
 #include "scene.h"
 
+//#include "imgui_impl_vulkan.h"
+//#include "imgui_impl_win32.h"
+
+#define IMGUI_VERSION               "1.89"
+#define IMGUI_CHECKVERSION()        igDebugCheckVersionAndDataLayout(IMGUI_VERSION, sizeof(ImGuiIO), sizeof(ImGuiStyle), sizeof(ImVec2), sizeof(ImVec4), sizeof(ImDrawVert), sizeof(ImDrawIdx))
+
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include <cimgui/cimgui.h>
 
@@ -180,17 +186,19 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	load_object_scene_resources(scene);
 
 	// Setup Dear ImGui binding
-	IMGUI_CHECKVERSION();
-	ImFontAtlas font;
-	igImFontAtlasBuildInit(&font);
-	igCreateContext(&font);
-	ImGuiIO* io = igGetIO();
+	//IMGUI_CHECKVERSION();
+
+	//ImGuiContext* ctx = igCreateContext(0);
+
+	//ImGuiIO* io = igGetIO(); 
+	//(void)io;
+
+	//igStyleColorsDark(NULL);
 
 	// Init Win32
-	ImGui_ImplWin32_Init(wm_get_hwnd(window));
+	//ImGui_ImplWin32_Init(wm_get_hwnd(window));
 
 	// Init Vulkan
-	ImGui_ImplVulkan_Init();
 
 	spawn_scene_hierarchy(scene);
 
@@ -578,8 +586,8 @@ static void scene_interaction(scene_t* scene)
 	}
 
 	// IMGUI
-	ImGui_ImplVulkan_NewFrame();
-	ImGui_ImplWin32_NewFrame();
+	//ImGui_ImplVulkan_NewFrame();
+	//ImGui_ImplWin32_NewFrame();
 	igNewFrame();
 	igRender();
 }

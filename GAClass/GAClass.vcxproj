@@ -83,13 +83,13 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;$(ProjectDir)include\cimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan\vulkan-1.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;cimgui.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -100,12 +100,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include\cimgui;$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,13 +117,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;$(ProjectDir)include\cimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan\vulkan-1.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;cimgui.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -132,12 +134,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include\cimgui;$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -152,8 +156,6 @@
     <ClCompile Include="hw1.c" />
     <ClCompile Include="hw2.c" />
     <ClCompile Include="hw3.c" />
-    <ClCompile Include="imgui_impl_vulkan.c" />
-    <ClCompile Include="imgui_impl_win32.c" />
     <ClCompile Include="include\lz4\lz4.c" />
     <ClCompile Include="include\lz4\lz4file.c" />
     <ClCompile Include="include\lz4\lz4frame.c" />
@@ -208,8 +210,6 @@
     <ClInclude Include="hw1.h" />
     <ClInclude Include="hw2.h" />
     <ClInclude Include="hw3.h" />
-    <ClInclude Include="imgui_impl_vulkan.h" />
-    <ClInclude Include="imgui_impl_win32.h" />
     <ClInclude Include="include\lz4\lz4.h" />
     <ClInclude Include="include\lz4\lz4file.h" />
     <ClInclude Include="include\lz4\lz4frame.h" />
