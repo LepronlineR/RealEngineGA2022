@@ -1,5 +1,4 @@
-#ifndef IMGUI_IMPL_VULKAN_H
-#define IMGUI_IMPL_VULKAN_H
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -110,7 +109,5 @@ CIMGUI_API int                  ImGui_ImplVulkanH_GetMinImageCountFromPresentMod
     
 #ifdef __cplusplus
 }
-#endif
-
 #endif
 

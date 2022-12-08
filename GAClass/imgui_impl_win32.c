@@ -14,6 +14,8 @@
 
 // This is translated to C by Zhi Zheng
 
+#pragma once
+
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include <cimgui/cimgui.h>
 

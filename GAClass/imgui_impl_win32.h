@@ -11,8 +11,8 @@
 // Prefer including the entire imgui/ repository into your project (either as a copy or as a submodule), and only build the backends you need.
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
-
 #pragma once
+
 #include <cimgui/cimgui.h>      // IMGUI_IMPL_API
 
 CIMGUI_API bool     ImGui_ImplWin32_Init(void* hwnd);

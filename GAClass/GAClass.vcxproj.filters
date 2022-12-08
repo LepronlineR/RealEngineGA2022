@@ -132,9 +132,6 @@
     <ClCompile Include="imgui_impl_win32.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cimgui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wm.h">
@@ -294,9 +291,6 @@
       <Filter>Includes</Filter>
     </ClInclude>
     <ClInclude Include="scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cimgui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gpu.h">
