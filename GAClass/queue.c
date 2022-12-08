@@ -2,7 +2,8 @@
 #include "heap.h"
 #include "semaphore.h"
 
-typedef struct queue_t {
+typedef struct queue_t
+{
 	heap_t* heap;
 	semaphore_t* used_items;
 	semaphore_t* free_items;
@@ -48,4 +49,28 @@ void* queue_pop(queue_t* queue)
 	void* item = queue->items[index];
 	semaphore_release(queue->free_items);
 	return item;
+}
+
+bool queue_try_push(queue_t* queue, void* item)
+{
+	if (semaphore_try_acquire(queue->free_items))
+	{
+		int index = atomic_increment(&queue->tail_index) % queue->capacity;
+		queue->items[index] = item;
+		semaphore_release(queue->used_items);
+		return true;
+	}
+	return false;
+}
+
+void* queue_try_pop(queue_t* queue)
+{
+	if (semaphore_try_acquire(queue->used_items))
+	{
+		int index = atomic_increment(&queue->head_index) % queue->capacity;
+		void* item = queue->items[index];
+		semaphore_release(queue->free_items);
+		return item;
+	}
+	return NULL;
 }

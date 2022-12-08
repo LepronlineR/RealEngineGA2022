@@ -5,7 +5,7 @@
 #include "wm.h"
 
 #define VK_USE_PLATFORM_WIN32_KHR
-#include "vulkan/vulkan.h"
+#include <vulkan/vulkan.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"

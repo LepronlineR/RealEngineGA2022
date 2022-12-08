@@ -1,0 +1,4 @@
+C:/Users/getog/Desktop/GA2022/RealEngineGA2022/GAClass/include/cimgui/CMakeFiles/cimgui.dir
+C:/Users/getog/Desktop/GA2022/RealEngineGA2022/GAClass/include/cimgui/CMakeFiles/INSTALL.dir
+C:/Users/getog/Desktop/GA2022/RealEngineGA2022/GAClass/include/cimgui/CMakeFiles/ALL_BUILD.dir
+C:/Users/getog/Desktop/GA2022/RealEngineGA2022/GAClass/include/cimgui/CMakeFiles/ZERO_CHECK.dir

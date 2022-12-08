@@ -10,14 +10,11 @@
 #include "vec3f.h"
 #include "scene.h"
 
-//#include "imgui_impl_vulkan.h"
-//#include "imgui_impl_win32.h"
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#include "cimgui/cimgui.h"
 
 #define IMGUI_VERSION               "1.89"
 #define IMGUI_CHECKVERSION()        igDebugCheckVersionAndDataLayout(IMGUI_VERSION, sizeof(ImGuiIO), sizeof(ImGuiStyle), sizeof(ImVec2), sizeof(ImVec4), sizeof(ImDrawVert), sizeof(ImDrawIdx))
-
-#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include <cimgui/cimgui.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>

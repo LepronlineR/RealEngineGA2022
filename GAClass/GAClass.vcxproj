@@ -83,13 +83,13 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\Debug;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\cimgui\imgui;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\cimgui\backend_test\example_glfw_opengl3\..\..\generator\output</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;cimgui.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\Debug</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -117,13 +117,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\Debug;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\cimgui\imgui;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\cimgui\backend_test\example_glfw_opengl3\..\..\generator\output</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;cimgui.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\Debug</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
