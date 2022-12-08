@@ -49,7 +49,7 @@
 // Translated to C by https://github.com/nickscha/vk-glfw-cimgui/blob/master/imgui_impl_vulkan.c
 
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include "cimgui.h"
+#include <cimgui/cimgui.h>
 
 #define VK_USE_PLATFORM_WIN32_KHR
 #include "vulkan/vulkan.h"

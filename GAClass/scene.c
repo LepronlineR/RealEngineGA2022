@@ -11,7 +11,7 @@
 #include "scene.h"
 
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include "cimgui.h"
+#include <cimgui/cimgui.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>

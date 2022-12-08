@@ -13,7 +13,7 @@
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
 
 #pragma once
-#include "cimgui.h"      // IMGUI_IMPL_API
+#include <cimgui/cimgui.h>      // IMGUI_IMPL_API
 
 CIMGUI_API bool     ImGui_ImplWin32_Init(void* hwnd);
 CIMGUI_API void     ImGui_ImplWin32_Shutdown();

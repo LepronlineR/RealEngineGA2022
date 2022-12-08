@@ -132,8 +132,8 @@
     <ClCompile Include="imgui_impl_win32.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="include\cimgui\cimgui.cpp">
-      <Filter>Includes</Filter>
+    <ClCompile Include="cimgui.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -307,9 +307,6 @@
     </ClInclude>
     <ClInclude Include="imgui_impl_win32.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\cimgui\cimgui.h">
-      <Filter>Includes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

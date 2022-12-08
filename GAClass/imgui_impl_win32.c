@@ -15,7 +15,7 @@
 // This is translated to C by Zhi Zheng
 
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include "cimgui.h"
+#include <cimgui/cimgui.h>
 
 #include "imgui_impl_win32.h"
 #ifndef WIN32_LEAN_AND_MEAN
