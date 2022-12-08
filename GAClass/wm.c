@@ -7,10 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <windowsx.h>
-
 typedef struct wm_window_t
 {
 	HWND hwnd;
@@ -216,5 +212,9 @@ void wm_destroy(wm_window_t* window)
 
 void* wm_get_raw_window(wm_window_t* window)
 {
+	return window->hwnd;
+}
+
+HWND wm_get_hwnd(wm_window_t* window) {
 	return window->hwnd;
 }

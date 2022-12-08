@@ -5,9 +5,8 @@
 extern "C" {
 #endif
 
-#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include <cimgui.h>
-#include <vulkan/vulkan.h>
+#define VK_USE_PLATFORM_WIN32_KHR
+#include "vulkan/vulkan.h"
 
 // Initialization data, for ImGui_ImplVulkan_Init()
 // [Please zero-clear before use!]
@@ -113,5 +112,5 @@ CIMGUI_API int                  ImGui_ImplVulkanH_GetMinImageCountFromPresentMod
 }
 #endif
 
-#endif /* IMGUI_IMPL_VULKAN_H */
+#endif
 

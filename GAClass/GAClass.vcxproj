@@ -88,8 +88,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)\vulkan;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;-lvulkan-1;-lcimgui;-lstdc++</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\vulkan;$(ProjectDir)\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -120,8 +120,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)\vulkan;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;-lvulkan-1;-lcimgui;-lstdc++</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\vulkan;$(ProjectDir)\imgui;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="atomic.c" />
+    <ClCompile Include="cimgui.cpp" />
     <ClCompile Include="debug.c" />
     <ClCompile Include="ecs.c" />
     <ClCompile Include="event.c" />
@@ -152,6 +153,8 @@
     <ClCompile Include="hw1.c" />
     <ClCompile Include="hw2.c" />
     <ClCompile Include="hw3.c" />
+    <ClCompile Include="imgui_impl_vulkan.c" />
+    <ClCompile Include="imgui_impl_win32.c" />
     <ClCompile Include="include\lz4\lz4.c" />
     <ClCompile Include="include\lz4\lz4file.c" />
     <ClCompile Include="include\lz4\lz4frame.c" />
@@ -207,6 +210,8 @@
     <ClInclude Include="hw1.h" />
     <ClInclude Include="hw2.h" />
     <ClInclude Include="hw3.h" />
+    <ClInclude Include="imgui_impl_vulkan.h" />
+    <ClInclude Include="imgui_impl_win32.h" />
     <ClInclude Include="include\lz4\lz4.h" />
     <ClInclude Include="include\lz4\lz4file.h" />
     <ClInclude Include="include\lz4\lz4frame.h" />
