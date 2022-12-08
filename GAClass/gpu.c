@@ -1918,9 +1918,9 @@ static void create_texture_mesh_layouts(gpu_t* gpu)
 		gpu->mesh_vertex_size[k_gpu_mesh_layout_tri_p444_c444_i2] = 24;
 	}
 
-	// k_gpu_mesh_layout_tri_p444_c444_i2
+	// k_gpu_mesh_layout_tri_p44_c444_t_44_i2
 	{
-		gpu->mesh_input_assembly_info[k_gpu_mesh_layout_tri_p444_c444_i2] = (VkPipelineInputAssemblyStateCreateInfo)
+		gpu->mesh_input_assembly_info[k_gpu_mesh_layout_tri_p44_c444_t44_i2] = (VkPipelineInputAssemblyStateCreateInfo)
 		{
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
 			.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
@@ -1930,7 +1930,7 @@ static void create_texture_mesh_layouts(gpu_t* gpu)
 		*vertex_binding = (VkVertexInputBindingDescription)
 		{
 			.binding = 0,
-			.stride = 24,
+			.stride = 32,
 			.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
 		};
 
@@ -1949,8 +1949,15 @@ static void create_texture_mesh_layouts(gpu_t* gpu)
 			.format = VK_FORMAT_R32G32B32_SFLOAT,
 			.offset = 12,
 		};
+		vertex_attributes[1] = (VkVertexInputAttributeDescription)
+		{
+			.binding = 0,
+			.location = 1,
+			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.offset = 20,
+		};
 
-		gpu->mesh_vertex_input_info[k_gpu_mesh_layout_tri_p444_c444_i2] = (VkPipelineVertexInputStateCreateInfo)
+		gpu->mesh_vertex_input_info[k_gpu_mesh_layout_tri_p44_c444_t44_i2] = (VkPipelineVertexInputStateCreateInfo)
 		{
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
 			.vertexBindingDescriptionCount = 1,
@@ -1959,9 +1966,9 @@ static void create_texture_mesh_layouts(gpu_t* gpu)
 			.pVertexAttributeDescriptions = vertex_attributes,
 		};
 
-		gpu->mesh_index_type[k_gpu_mesh_layout_tri_p444_c444_i2] = VK_INDEX_TYPE_UINT16;
-		gpu->mesh_index_size[k_gpu_mesh_layout_tri_p444_c444_i2] = 2;
-		gpu->mesh_vertex_size[k_gpu_mesh_layout_tri_p444_c444_i2] = 24;
+		gpu->mesh_index_type[k_gpu_mesh_layout_tri_p44_c444_t44_i2] = VK_INDEX_TYPE_UINT16;
+		gpu->mesh_index_size[k_gpu_mesh_layout_tri_p44_c444_t44_i2] = 2;
+		gpu->mesh_vertex_size[k_gpu_mesh_layout_tri_p44_c444_t44_i2] = 24;
 	}
 }
 
