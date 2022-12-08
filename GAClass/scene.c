@@ -9,6 +9,8 @@
 #include "debug.h"
 #include "vec3f.h"
 #include "scene.h"
+
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include "cimgui.h"
 
 #define _USE_MATH_DEFINES

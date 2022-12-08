@@ -7,25 +7,25 @@
 #include <stdio.h>
 #include <stdint.h>
 #if defined _WIN32 || defined __CYGWIN__
-#ifdef CIMGUI_NO_EXPORT
-#define API
+    #ifdef CIMGUI_NO_EXPORT
+        #define API
+    #else
+        #define API __declspec(dllexport)
+    #endif
 #else
-#define API __declspec(dllexport)
-#endif
-#else
-#ifdef __GNUC__
-#define API  __attribute__((__visibility__("default")))
-#else
-#define API
-#endif
+    #ifdef __GNUC__
+        #define API  __attribute__((__visibility__("default")))
+    #else
+        #define API
+    #endif
 #endif
 
 #if defined __cplusplus
-#define EXTERN extern "C"
+    #define EXTERN extern "C"
 #else
-#include <stdarg.h>
-#include <stdbool.h>
-#define EXTERN extern
+    #include <stdarg.h>
+    #include <stdbool.h>
+    #define EXTERN extern
 #endif
 
 #define CIMGUI_API EXTERN API
@@ -110,7 +110,7 @@ typedef struct ImGuiTableColumnsSettings ImGuiTableColumnsSettings;
 typedef struct ImGuiWindow ImGuiWindow;
 typedef struct ImGuiWindowTempData ImGuiWindowTempData;
 typedef struct ImGuiWindowSettings ImGuiWindowSettings;
-typedef struct ImVector_const_charPtr { int Size; int Capacity; const char** Data; } ImVector_const_charPtr;
+typedef struct ImVector_const_charPtr {int Size;int Capacity;const char** Data;} ImVector_const_charPtr;
 
 struct ImDrawChannel;
 struct ImDrawCmd;
@@ -223,8 +223,8 @@ typedef enum {
     ImGuiWindowFlags_HorizontalScrollbar = 1 << 11,
     ImGuiWindowFlags_NoFocusOnAppearing = 1 << 12,
     ImGuiWindowFlags_NoBringToFrontOnFocus = 1 << 13,
-    ImGuiWindowFlags_AlwaysVerticalScrollbar = 1 << 14,
-    ImGuiWindowFlags_AlwaysHorizontalScrollbar = 1 << 15,
+    ImGuiWindowFlags_AlwaysVerticalScrollbar= 1 << 14,
+    ImGuiWindowFlags_AlwaysHorizontalScrollbar=1<< 15,
     ImGuiWindowFlags_AlwaysUseWindowPadding = 1 << 16,
     ImGuiWindowFlags_NoNavInputs = 1 << 18,
     ImGuiWindowFlags_NoNavFocus = 1 << 19,
@@ -492,160 +492,160 @@ typedef enum {
     ImGuiSortDirection_Descending = 2
 }ImGuiSortDirection_;
 typedef enum {
-    ImGuiKey_None = 0,
-    ImGuiKey_Tab = 512,
-    ImGuiKey_LeftArrow = 513,
-    ImGuiKey_RightArrow = 514,
-    ImGuiKey_UpArrow = 515,
-    ImGuiKey_DownArrow = 516,
-    ImGuiKey_PageUp = 517,
-    ImGuiKey_PageDown = 518,
-    ImGuiKey_Home = 519,
-    ImGuiKey_End = 520,
-    ImGuiKey_Insert = 521,
-    ImGuiKey_Delete = 522,
-    ImGuiKey_Backspace = 523,
-    ImGuiKey_Space = 524,
-    ImGuiKey_Enter = 525,
-    ImGuiKey_Escape = 526,
-    ImGuiKey_LeftCtrl = 527,
-    ImGuiKey_LeftShift = 528,
-    ImGuiKey_LeftAlt = 529,
-    ImGuiKey_LeftSuper = 530,
-    ImGuiKey_RightCtrl = 531,
-    ImGuiKey_RightShift = 532,
-    ImGuiKey_RightAlt = 533,
-    ImGuiKey_RightSuper = 534,
-    ImGuiKey_Menu = 535,
-    ImGuiKey_0 = 536,
-    ImGuiKey_1 = 537,
-    ImGuiKey_2 = 538,
-    ImGuiKey_3 = 539,
-    ImGuiKey_4 = 540,
-    ImGuiKey_5 = 541,
-    ImGuiKey_6 = 542,
-    ImGuiKey_7 = 543,
-    ImGuiKey_8 = 544,
-    ImGuiKey_9 = 545,
-    ImGuiKey_A = 546,
-    ImGuiKey_B = 547,
-    ImGuiKey_C = 548,
-    ImGuiKey_D = 549,
-    ImGuiKey_E = 550,
-    ImGuiKey_F = 551,
-    ImGuiKey_G = 552,
-    ImGuiKey_H = 553,
-    ImGuiKey_I = 554,
-    ImGuiKey_J = 555,
-    ImGuiKey_K = 556,
-    ImGuiKey_L = 557,
-    ImGuiKey_M = 558,
-    ImGuiKey_N = 559,
-    ImGuiKey_O = 560,
-    ImGuiKey_P = 561,
-    ImGuiKey_Q = 562,
-    ImGuiKey_R = 563,
-    ImGuiKey_S = 564,
-    ImGuiKey_T = 565,
-    ImGuiKey_U = 566,
-    ImGuiKey_V = 567,
-    ImGuiKey_W = 568,
-    ImGuiKey_X = 569,
-    ImGuiKey_Y = 570,
-    ImGuiKey_Z = 571,
-    ImGuiKey_F1 = 572,
-    ImGuiKey_F2 = 573,
-    ImGuiKey_F3 = 574,
-    ImGuiKey_F4 = 575,
-    ImGuiKey_F5 = 576,
-    ImGuiKey_F6 = 577,
-    ImGuiKey_F7 = 578,
-    ImGuiKey_F8 = 579,
-    ImGuiKey_F9 = 580,
-    ImGuiKey_F10 = 581,
-    ImGuiKey_F11 = 582,
-    ImGuiKey_F12 = 583,
-    ImGuiKey_Apostrophe = 584,
-    ImGuiKey_Comma = 585,
-    ImGuiKey_Minus = 586,
-    ImGuiKey_Period = 587,
-    ImGuiKey_Slash = 588,
-    ImGuiKey_Semicolon = 589,
-    ImGuiKey_Equal = 590,
-    ImGuiKey_LeftBracket = 591,
-    ImGuiKey_Backslash = 592,
-    ImGuiKey_RightBracket = 593,
-    ImGuiKey_GraveAccent = 594,
-    ImGuiKey_CapsLock = 595,
-    ImGuiKey_ScrollLock = 596,
-    ImGuiKey_NumLock = 597,
-    ImGuiKey_PrintScreen = 598,
-    ImGuiKey_Pause = 599,
-    ImGuiKey_Keypad0 = 600,
-    ImGuiKey_Keypad1 = 601,
-    ImGuiKey_Keypad2 = 602,
-    ImGuiKey_Keypad3 = 603,
-    ImGuiKey_Keypad4 = 604,
-    ImGuiKey_Keypad5 = 605,
-    ImGuiKey_Keypad6 = 606,
-    ImGuiKey_Keypad7 = 607,
-    ImGuiKey_Keypad8 = 608,
-    ImGuiKey_Keypad9 = 609,
-    ImGuiKey_KeypadDecimal = 610,
-    ImGuiKey_KeypadDivide = 611,
-    ImGuiKey_KeypadMultiply = 612,
-    ImGuiKey_KeypadSubtract = 613,
-    ImGuiKey_KeypadAdd = 614,
-    ImGuiKey_KeypadEnter = 615,
-    ImGuiKey_KeypadEqual = 616,
-    ImGuiKey_GamepadStart = 617,
-    ImGuiKey_GamepadBack = 618,
-    ImGuiKey_GamepadFaceLeft = 619,
-    ImGuiKey_GamepadFaceRight = 620,
-    ImGuiKey_GamepadFaceUp = 621,
-    ImGuiKey_GamepadFaceDown = 622,
-    ImGuiKey_GamepadDpadLeft = 623,
-    ImGuiKey_GamepadDpadRight = 624,
-    ImGuiKey_GamepadDpadUp = 625,
-    ImGuiKey_GamepadDpadDown = 626,
-    ImGuiKey_GamepadL1 = 627,
-    ImGuiKey_GamepadR1 = 628,
-    ImGuiKey_GamepadL2 = 629,
-    ImGuiKey_GamepadR2 = 630,
-    ImGuiKey_GamepadL3 = 631,
-    ImGuiKey_GamepadR3 = 632,
-    ImGuiKey_GamepadLStickLeft = 633,
-    ImGuiKey_GamepadLStickRight = 634,
-    ImGuiKey_GamepadLStickUp = 635,
-    ImGuiKey_GamepadLStickDown = 636,
-    ImGuiKey_GamepadRStickLeft = 637,
-    ImGuiKey_GamepadRStickRight = 638,
-    ImGuiKey_GamepadRStickUp = 639,
-    ImGuiKey_GamepadRStickDown = 640,
-    ImGuiKey_MouseLeft = 641,
-    ImGuiKey_MouseRight = 642,
-    ImGuiKey_MouseMiddle = 643,
-    ImGuiKey_MouseX1 = 644,
-    ImGuiKey_MouseX2 = 645,
-    ImGuiKey_MouseWheelX = 646,
-    ImGuiKey_MouseWheelY = 647,
-    ImGuiKey_ReservedForModCtrl = 648,
-    ImGuiKey_ReservedForModShift = 649,
-    ImGuiKey_ReservedForModAlt = 650,
-    ImGuiKey_ReservedForModSuper = 651,
-    ImGuiKey_COUNT = 652,
-    ImGuiMod_None = 0,
-    ImGuiMod_Ctrl = 1 << 12,
-    ImGuiMod_Shift = 1 << 13,
-    ImGuiMod_Alt = 1 << 14,
-    ImGuiMod_Super = 1 << 15,
-    ImGuiMod_Mask_ = 0xF000,
-    ImGuiMod_Shortcut = ImGuiMod_Ctrl,
-    ImGuiKey_NamedKey_BEGIN = 512,
-    ImGuiKey_NamedKey_END = ImGuiKey_COUNT,
-    ImGuiKey_NamedKey_COUNT = ImGuiKey_NamedKey_END - ImGuiKey_NamedKey_BEGIN,
-    ImGuiKey_KeysData_SIZE = ImGuiKey_COUNT,
-    ImGuiKey_KeysData_OFFSET = 0,
+ImGuiKey_None=0,
+ImGuiKey_Tab=512,
+ImGuiKey_LeftArrow=513,
+ImGuiKey_RightArrow=514,
+ImGuiKey_UpArrow=515,
+ImGuiKey_DownArrow=516,
+ImGuiKey_PageUp=517,
+ImGuiKey_PageDown=518,
+ImGuiKey_Home=519,
+ImGuiKey_End=520,
+ImGuiKey_Insert=521,
+ImGuiKey_Delete=522,
+ImGuiKey_Backspace=523,
+ImGuiKey_Space=524,
+ImGuiKey_Enter=525,
+ImGuiKey_Escape=526,
+ImGuiKey_LeftCtrl=527,
+ImGuiKey_LeftShift=528,
+ImGuiKey_LeftAlt=529,
+ImGuiKey_LeftSuper=530,
+ImGuiKey_RightCtrl=531,
+ImGuiKey_RightShift=532,
+ImGuiKey_RightAlt=533,
+ImGuiKey_RightSuper=534,
+ImGuiKey_Menu=535,
+ImGuiKey_0=536,
+ImGuiKey_1=537,
+ImGuiKey_2=538,
+ImGuiKey_3=539,
+ImGuiKey_4=540,
+ImGuiKey_5=541,
+ImGuiKey_6=542,
+ImGuiKey_7=543,
+ImGuiKey_8=544,
+ImGuiKey_9=545,
+ImGuiKey_A=546,
+ImGuiKey_B=547,
+ImGuiKey_C=548,
+ImGuiKey_D=549,
+ImGuiKey_E=550,
+ImGuiKey_F=551,
+ImGuiKey_G=552,
+ImGuiKey_H=553,
+ImGuiKey_I=554,
+ImGuiKey_J=555,
+ImGuiKey_K=556,
+ImGuiKey_L=557,
+ImGuiKey_M=558,
+ImGuiKey_N=559,
+ImGuiKey_O=560,
+ImGuiKey_P=561,
+ImGuiKey_Q=562,
+ImGuiKey_R=563,
+ImGuiKey_S=564,
+ImGuiKey_T=565,
+ImGuiKey_U=566,
+ImGuiKey_V=567,
+ImGuiKey_W=568,
+ImGuiKey_X=569,
+ImGuiKey_Y=570,
+ImGuiKey_Z=571,
+ImGuiKey_F1=572,
+ImGuiKey_F2=573,
+ImGuiKey_F3=574,
+ImGuiKey_F4=575,
+ImGuiKey_F5=576,
+ImGuiKey_F6=577,
+ImGuiKey_F7=578,
+ImGuiKey_F8=579,
+ImGuiKey_F9=580,
+ImGuiKey_F10=581,
+ImGuiKey_F11=582,
+ImGuiKey_F12=583,
+ImGuiKey_Apostrophe=584,
+ImGuiKey_Comma=585,
+ImGuiKey_Minus=586,
+ImGuiKey_Period=587,
+ImGuiKey_Slash=588,
+ImGuiKey_Semicolon=589,
+ImGuiKey_Equal=590,
+ImGuiKey_LeftBracket=591,
+ImGuiKey_Backslash=592,
+ImGuiKey_RightBracket=593,
+ImGuiKey_GraveAccent=594,
+ImGuiKey_CapsLock=595,
+ImGuiKey_ScrollLock=596,
+ImGuiKey_NumLock=597,
+ImGuiKey_PrintScreen=598,
+ImGuiKey_Pause=599,
+ImGuiKey_Keypad0=600,
+ImGuiKey_Keypad1=601,
+ImGuiKey_Keypad2=602,
+ImGuiKey_Keypad3=603,
+ImGuiKey_Keypad4=604,
+ImGuiKey_Keypad5=605,
+ImGuiKey_Keypad6=606,
+ImGuiKey_Keypad7=607,
+ImGuiKey_Keypad8=608,
+ImGuiKey_Keypad9=609,
+ImGuiKey_KeypadDecimal=610,
+ImGuiKey_KeypadDivide=611,
+ImGuiKey_KeypadMultiply=612,
+ImGuiKey_KeypadSubtract=613,
+ImGuiKey_KeypadAdd=614,
+ImGuiKey_KeypadEnter=615,
+ImGuiKey_KeypadEqual=616,
+ImGuiKey_GamepadStart=617,
+ImGuiKey_GamepadBack=618,
+ImGuiKey_GamepadFaceLeft=619,
+ImGuiKey_GamepadFaceRight=620,
+ImGuiKey_GamepadFaceUp=621,
+ImGuiKey_GamepadFaceDown=622,
+ImGuiKey_GamepadDpadLeft=623,
+ImGuiKey_GamepadDpadRight=624,
+ImGuiKey_GamepadDpadUp=625,
+ImGuiKey_GamepadDpadDown=626,
+ImGuiKey_GamepadL1=627,
+ImGuiKey_GamepadR1=628,
+ImGuiKey_GamepadL2=629,
+ImGuiKey_GamepadR2=630,
+ImGuiKey_GamepadL3=631,
+ImGuiKey_GamepadR3=632,
+ImGuiKey_GamepadLStickLeft=633,
+ImGuiKey_GamepadLStickRight=634,
+ImGuiKey_GamepadLStickUp=635,
+ImGuiKey_GamepadLStickDown=636,
+ImGuiKey_GamepadRStickLeft=637,
+ImGuiKey_GamepadRStickRight=638,
+ImGuiKey_GamepadRStickUp=639,
+ImGuiKey_GamepadRStickDown=640,
+ImGuiKey_MouseLeft=641,
+ImGuiKey_MouseRight=642,
+ImGuiKey_MouseMiddle=643,
+ImGuiKey_MouseX1=644,
+ImGuiKey_MouseX2=645,
+ImGuiKey_MouseWheelX=646,
+ImGuiKey_MouseWheelY=647,
+ImGuiKey_ReservedForModCtrl=648,
+ImGuiKey_ReservedForModShift=649,
+ImGuiKey_ReservedForModAlt=650,
+ImGuiKey_ReservedForModSuper=651,
+ImGuiKey_COUNT=652,
+ImGuiMod_None=0,
+ImGuiMod_Ctrl=1 << 12,
+ImGuiMod_Shift=1 << 13,
+ImGuiMod_Alt=1 << 14,
+ImGuiMod_Super=1 << 15,
+ImGuiMod_Mask_=0xF000,
+ImGuiMod_Shortcut=ImGuiMod_Ctrl,
+ImGuiKey_NamedKey_BEGIN=512,
+ImGuiKey_NamedKey_END=ImGuiKey_COUNT,
+ImGuiKey_NamedKey_COUNT=ImGuiKey_NamedKey_END - ImGuiKey_NamedKey_BEGIN,
+ImGuiKey_KeysData_SIZE=ImGuiKey_COUNT,
+ImGuiKey_KeysData_OFFSET=0,
 }ImGuiKey;
 typedef enum {
     ImGuiNavInput_Activate, ImGuiNavInput_Cancel, ImGuiNavInput_Input, ImGuiNavInput_Menu, ImGuiNavInput_DpadLeft, ImGuiNavInput_DpadRight, ImGuiNavInput_DpadUp, ImGuiNavInput_DpadDown,
@@ -662,7 +662,7 @@ typedef enum {
     ImGuiConfigFlags_NoMouseCursorChange = 1 << 5,
     ImGuiConfigFlags_DockingEnable = 1 << 6,
     ImGuiConfigFlags_ViewportsEnable = 1 << 10,
-    ImGuiConfigFlags_DpiEnableScaleViewports = 1 << 14,
+    ImGuiConfigFlags_DpiEnableScaleViewports= 1 << 14,
     ImGuiConfigFlags_DpiEnableScaleFonts = 1 << 15,
     ImGuiConfigFlags_IsSRGB = 1 << 20,
     ImGuiConfigFlags_IsTouchScreen = 1 << 21,
@@ -674,7 +674,7 @@ typedef enum {
     ImGuiBackendFlags_HasSetMousePos = 1 << 2,
     ImGuiBackendFlags_RendererHasVtxOffset = 1 << 3,
     ImGuiBackendFlags_PlatformHasViewports = 1 << 10,
-    ImGuiBackendFlags_HasMouseHoveredViewport = 1 << 11,
+    ImGuiBackendFlags_HasMouseHoveredViewport=1 << 11,
     ImGuiBackendFlags_RendererHasViewports = 1 << 12,
 }ImGuiBackendFlags_;
 typedef enum {
@@ -785,7 +785,7 @@ typedef enum {
     ImGuiColorEditFlags_NoBorder = 1 << 10,
     ImGuiColorEditFlags_AlphaBar = 1 << 16,
     ImGuiColorEditFlags_AlphaPreview = 1 << 17,
-    ImGuiColorEditFlags_AlphaPreviewHalf = 1 << 18,
+    ImGuiColorEditFlags_AlphaPreviewHalf= 1 << 18,
     ImGuiColorEditFlags_HDR = 1 << 19,
     ImGuiColorEditFlags_DisplayRGB = 1 << 20,
     ImGuiColorEditFlags_DisplayHSV = 1 << 21,
@@ -887,7 +887,7 @@ struct ImGuiKeyData
     float DownDurationPrev;
     float AnalogValue;
 };
-typedef struct ImVector_ImWchar { int Size; int Capacity; ImWchar* Data; } ImVector_ImWchar;
+typedef struct ImVector_ImWchar {int Size;int Capacity;ImWchar* Data;} ImVector_ImWchar;
 
 struct ImGuiIO
 {
@@ -906,7 +906,7 @@ struct ImGuiIO
     float HoverDelayNormal;
     float HoverDelayShort;
     void* UserData;
-    ImFontAtlas* Fonts;
+    ImFontAtlas*Fonts;
     float FontGlobalScale;
     bool FontAllowUserScaling;
     ImFont* FontDefault;
@@ -1048,16 +1048,16 @@ struct ImGuiTableSortSpecs
 };
 struct ImGuiOnceUponAFrame
 {
-    int RefFrame;
+     int RefFrame;
 };
 struct ImGuiTextRange
 {
-    const char* b;
-    const char* e;
+        const char* b;
+        const char* e;
 };
 typedef struct ImGuiTextRange ImGuiTextRange;
 
-typedef struct ImVector_ImGuiTextRange { int Size; int Capacity; ImGuiTextRange* Data; } ImVector_ImGuiTextRange;
+typedef struct ImVector_ImGuiTextRange {int Size;int Capacity;ImGuiTextRange* Data;} ImVector_ImGuiTextRange;
 
 struct ImGuiTextFilter
 {
@@ -1066,7 +1066,7 @@ struct ImGuiTextFilter
     int CountGrep;
 };
 typedef struct ImGuiTextRange ImGuiTextRange;
-typedef struct ImVector_char { int Size; int Capacity; char* Data; } ImVector_char;
+typedef struct ImVector_char {int Size;int Capacity;char* Data;} ImVector_char;
 
 struct ImGuiTextBuffer
 {
@@ -1074,12 +1074,12 @@ struct ImGuiTextBuffer
 };
 struct ImGuiStoragePair
 {
-    ImGuiID key;
-    union { int val_i; float val_f; void* val_p; };
+        ImGuiID key;
+        union { int val_i; float val_f; void* val_p; };
 };
 typedef struct ImGuiStoragePair ImGuiStoragePair;
 
-typedef struct ImVector_ImGuiStoragePair { int Size; int Capacity; ImGuiStoragePair* Data; } ImVector_ImGuiStoragePair;
+typedef struct ImVector_ImGuiStoragePair {int Size;int Capacity;ImGuiStoragePair* Data;} ImVector_ImGuiStoragePair;
 
 struct ImGuiStorage
 {
@@ -1123,16 +1123,16 @@ struct ImDrawCmdHeader
     ImTextureID TextureId;
     unsigned int VtxOffset;
 };
-typedef struct ImVector_ImDrawCmd { int Size; int Capacity; ImDrawCmd* Data; } ImVector_ImDrawCmd;
+typedef struct ImVector_ImDrawCmd {int Size;int Capacity;ImDrawCmd* Data;} ImVector_ImDrawCmd;
 
-typedef struct ImVector_ImDrawIdx { int Size; int Capacity; ImDrawIdx* Data; } ImVector_ImDrawIdx;
+typedef struct ImVector_ImDrawIdx {int Size;int Capacity;ImDrawIdx* Data;} ImVector_ImDrawIdx;
 
 struct ImDrawChannel
 {
     ImVector_ImDrawCmd _CmdBuffer;
     ImVector_ImDrawIdx _IdxBuffer;
 };
-typedef struct ImVector_ImDrawChannel { int Size; int Capacity; ImDrawChannel* Data; } ImVector_ImDrawChannel;
+typedef struct ImVector_ImDrawChannel {int Size;int Capacity;ImDrawChannel* Data;} ImVector_ImDrawChannel;
 
 struct ImDrawListSplitter
 {
@@ -1163,13 +1163,13 @@ typedef enum {
     ImDrawListFlags_AntiAliasedFill = 1 << 2,
     ImDrawListFlags_AllowVtxOffset = 1 << 3,
 }ImDrawListFlags_;
-typedef struct ImVector_ImDrawVert { int Size; int Capacity; ImDrawVert* Data; } ImVector_ImDrawVert;
+typedef struct ImVector_ImDrawVert {int Size;int Capacity;ImDrawVert* Data;} ImVector_ImDrawVert;
 
-typedef struct ImVector_ImVec4 { int Size; int Capacity; ImVec4* Data; } ImVector_ImVec4;
+typedef struct ImVector_ImVec4 {int Size;int Capacity;ImVec4* Data;} ImVector_ImVec4;
 
-typedef struct ImVector_ImTextureID { int Size; int Capacity; ImTextureID* Data; } ImVector_ImTextureID;
+typedef struct ImVector_ImTextureID {int Size;int Capacity;ImTextureID* Data;} ImVector_ImTextureID;
 
-typedef struct ImVector_ImVec2 { int Size; int Capacity; ImVec2* Data; } ImVector_ImVec2;
+typedef struct ImVector_ImVec2 {int Size;int Capacity;ImVec2* Data;} ImVector_ImVec2;
 
 struct ImDrawList
 {
@@ -1232,7 +1232,7 @@ struct ImFontGlyph
     float X0, Y0, X1, Y1;
     float U0, V0, U1, V1;
 };
-typedef struct ImVector_ImU32 { int Size; int Capacity; ImU32* Data; } ImVector_ImU32;
+typedef struct ImVector_ImU32 {int Size;int Capacity;ImU32* Data;} ImVector_ImU32;
 
 struct ImFontGlyphRangesBuilder
 {
@@ -1254,11 +1254,11 @@ typedef enum {
     ImFontAtlasFlags_NoMouseCursors = 1 << 1,
     ImFontAtlasFlags_NoBakedLines = 1 << 2,
 }ImFontAtlasFlags_;
-typedef struct ImVector_ImFontPtr { int Size; int Capacity; ImFont** Data; } ImVector_ImFontPtr;
+typedef struct ImVector_ImFontPtr {int Size;int Capacity;ImFont** Data;} ImVector_ImFontPtr;
 
-typedef struct ImVector_ImFontAtlasCustomRect { int Size; int Capacity; ImFontAtlasCustomRect* Data; } ImVector_ImFontAtlasCustomRect;
+typedef struct ImVector_ImFontAtlasCustomRect {int Size;int Capacity;ImFontAtlasCustomRect* Data;} ImVector_ImFontAtlasCustomRect;
 
-typedef struct ImVector_ImFontConfig { int Size; int Capacity; ImFontConfig* Data; } ImVector_ImFontConfig;
+typedef struct ImVector_ImFontConfig {int Size;int Capacity;ImFontConfig* Data;} ImVector_ImFontConfig;
 
 struct ImFontAtlas
 {
@@ -1284,9 +1284,9 @@ struct ImFontAtlas
     int PackIdMouseCursors;
     int PackIdLines;
 };
-typedef struct ImVector_float { int Size; int Capacity; float* Data; } ImVector_float;
+typedef struct ImVector_float {int Size;int Capacity;float* Data;} ImVector_float;
 
-typedef struct ImVector_ImFontGlyph { int Size; int Capacity; ImFontGlyph* Data; } ImVector_ImFontGlyph;
+typedef struct ImVector_ImFontGlyph {int Size;int Capacity;ImFontGlyph* Data;} ImVector_ImFontGlyph;
 
 struct ImFont
 {
@@ -1306,7 +1306,7 @@ struct ImFont
     float Scale;
     float Ascent, Descent;
     int MetricsTotalSurface;
-    ImU8 Used4kPagesMap[(0xFFFF + 1) / 4096 / 8];
+    ImU8 Used4kPagesMap[(0xFFFF +1)/4096/8];
 };
 typedef enum {
     ImGuiViewportFlags_None = 0,
@@ -1344,9 +1344,9 @@ struct ImGuiViewport
     bool PlatformRequestResize;
     bool PlatformRequestClose;
 };
-typedef struct ImVector_ImGuiPlatformMonitor { int Size; int Capacity; ImGuiPlatformMonitor* Data; } ImVector_ImGuiPlatformMonitor;
+typedef struct ImVector_ImGuiPlatformMonitor {int Size;int Capacity;ImGuiPlatformMonitor* Data;} ImVector_ImGuiPlatformMonitor;
 
-typedef struct ImVector_ImGuiViewportPtr { int Size; int Capacity; ImGuiViewport** Data; } ImVector_ImGuiViewportPtr;
+typedef struct ImVector_ImGuiViewportPtr {int Size;int Capacity;ImGuiViewport** Data;} ImVector_ImGuiViewportPtr;
 
 struct ImGuiPlatformIO
 {
@@ -1354,9 +1354,9 @@ struct ImGuiPlatformIO
     void (*Platform_DestroyWindow)(ImGuiViewport* vp);
     void (*Platform_ShowWindow)(ImGuiViewport* vp);
     void (*Platform_SetWindowPos)(ImGuiViewport* vp, ImVec2 pos);
-    ImVec2(*Platform_GetWindowPos)(ImGuiViewport* vp);
+    ImVec2 (*Platform_GetWindowPos)(ImGuiViewport* vp);
     void (*Platform_SetWindowSize)(ImGuiViewport* vp, ImVec2 size);
-    ImVec2(*Platform_GetWindowSize)(ImGuiViewport* vp);
+    ImVec2 (*Platform_GetWindowSize)(ImGuiViewport* vp);
     void (*Platform_SetWindowFocus)(ImGuiViewport* vp);
     bool (*Platform_GetWindowFocus)(ImGuiViewport* vp);
     bool (*Platform_GetWindowMinimized)(ImGuiViewport* vp);
@@ -1447,42 +1447,42 @@ extern ImGuiContext* GImGui;
 typedef struct StbUndoRecord StbUndoRecord;
 struct StbUndoRecord
 {
-    int where;
-    int insert_length;
-    int delete_length;
-    int char_storage;
+   int where;
+   int insert_length;
+   int delete_length;
+   int char_storage;
 };
 typedef struct StbUndoState StbUndoState;
 struct StbUndoState
 {
-    StbUndoRecord undo_rec[99];
-    ImWchar undo_char[999];
-    short undo_point, redo_point;
-    int undo_char_point, redo_char_point;
+   StbUndoRecord undo_rec [99];
+   ImWchar undo_char[999];
+   short undo_point, redo_point;
+   int undo_char_point, redo_char_point;
 };
 typedef struct STB_TexteditState STB_TexteditState;
 struct STB_TexteditState
 {
-    int cursor;
-    int select_start;
-    int select_end;
-    unsigned char insert_mode;
-    int row_count_per_page;
-    unsigned char cursor_at_end_of_line;
-    unsigned char initialized;
-    unsigned char has_preferred_x;
-    unsigned char single_line;
-    unsigned char padding1, padding2, padding3;
-    float preferred_x;
-    StbUndoState undostate;
+   int cursor;
+   int select_start;
+   int select_end;
+   unsigned char insert_mode;
+   int row_count_per_page;
+   unsigned char cursor_at_end_of_line;
+   unsigned char initialized;
+   unsigned char has_preferred_x;
+   unsigned char single_line;
+   unsigned char padding1, padding2, padding3;
+   float preferred_x;
+   StbUndoState undostate;
 };
 typedef struct StbTexteditRow StbTexteditRow;
 struct StbTexteditRow
 {
-    float x0, x1;
-    float baseline_y_delta;
-    float ymin, ymax;
-    int num_chars;
+   float x0,x1;
+   float baseline_y_delta;
+   float ymin,ymax;
+   int num_chars;
 };
 typedef FILE* ImFileHandle;
 typedef struct ImVec1 ImVec1;
@@ -1506,7 +1506,7 @@ struct ImBitVector
 };
 typedef int ImPoolIdx;
 typedef struct ImGuiTextIndex ImGuiTextIndex;
-typedef struct ImVector_int { int Size; int Capacity; int* Data; } ImVector_int;
+typedef struct ImVector_int {int Size;int Capacity;int* Data;} ImVector_int;
 
 struct ImGuiTextIndex
 {
@@ -1528,7 +1528,7 @@ struct ImDrawListSharedData
     ImU8 CircleSegmentCounts[64];
     const ImVec4* TexUvLines;
 };
-typedef struct ImVector_ImDrawListPtr { int Size; int Capacity; ImDrawList** Data; } ImVector_ImDrawListPtr;
+typedef struct ImVector_ImDrawListPtr {int Size;int Capacity;ImDrawList** Data;} ImVector_ImDrawListPtr;
 
 struct ImDrawDataBuilder
 {
@@ -1827,7 +1827,7 @@ struct ImGuiPtrOrIndex
     void* Ptr;
     int Index;
 };
-typedef struct ImBitArray_ImGuiKey_NamedKey_COUNT__lessImGuiKey_NamedKey_BEGIN { ImU32 Storage[(ImGuiKey_NamedKey_COUNT + 31) >> 5]; } ImBitArray_ImGuiKey_NamedKey_COUNT__lessImGuiKey_NamedKey_BEGIN;
+typedef struct ImBitArray_ImGuiKey_NamedKey_COUNT__lessImGuiKey_NamedKey_BEGIN {ImU32 Storage[(ImGuiKey_NamedKey_COUNT+31)>>5];} ImBitArray_ImGuiKey_NamedKey_COUNT__lessImGuiKey_NamedKey_BEGIN;
 
 typedef ImBitArray_ImGuiKey_NamedKey_COUNT__lessImGuiKey_NamedKey_BEGIN ImBitArrayForNamedKeys;
 typedef enum {
@@ -1852,38 +1852,31 @@ typedef enum {
 }ImGuiInputSource;
 typedef struct ImGuiInputEventMousePos ImGuiInputEventMousePos;
 struct ImGuiInputEventMousePos
-{
-    float PosX, PosY;
+{ float PosX, PosY;
 };
 typedef struct ImGuiInputEventMouseWheel ImGuiInputEventMouseWheel;
 struct ImGuiInputEventMouseWheel
-{
-    float WheelX, WheelY;
+{ float WheelX, WheelY;
 };
 typedef struct ImGuiInputEventMouseButton ImGuiInputEventMouseButton;
 struct ImGuiInputEventMouseButton
-{
-    int Button; bool Down;
+{ int Button; bool Down;
 };
 typedef struct ImGuiInputEventMouseViewport ImGuiInputEventMouseViewport;
 struct ImGuiInputEventMouseViewport
-{
-    ImGuiID HoveredViewportID;
+{ ImGuiID HoveredViewportID;
 };
 typedef struct ImGuiInputEventKey ImGuiInputEventKey;
 struct ImGuiInputEventKey
-{
-    ImGuiKey Key; bool Down; float AnalogValue;
+{ ImGuiKey Key; bool Down; float AnalogValue;
 };
 typedef struct ImGuiInputEventText ImGuiInputEventText;
 struct ImGuiInputEventText
-{
-    unsigned int Char;
+{ unsigned int Char;
 };
 typedef struct ImGuiInputEventAppFocused ImGuiInputEventAppFocused;
 struct ImGuiInputEventAppFocused
-{
-    bool Focused;
+{ bool Focused;
 };
 typedef struct ImGuiInputEvent ImGuiInputEvent;
 struct ImGuiInputEvent
@@ -1913,7 +1906,7 @@ struct ImGuiKeyRoutingData
     ImGuiID RoutingNext;
 };
 typedef struct ImGuiKeyRoutingTable ImGuiKeyRoutingTable;
-typedef struct ImVector_ImGuiKeyRoutingData { int Size; int Capacity; ImGuiKeyRoutingData* Data; } ImVector_ImGuiKeyRoutingData;
+typedef struct ImVector_ImGuiKeyRoutingData {int Size;int Capacity;ImGuiKeyRoutingData* Data;} ImVector_ImGuiKeyRoutingData;
 
 struct ImGuiKeyRoutingTable
 {
@@ -1948,7 +1941,7 @@ typedef enum {
     ImGuiInputFlags_RouteGlobalHigh = 1 << 11,
     ImGuiInputFlags_RouteMask_ = ImGuiInputFlags_RouteFocused | ImGuiInputFlags_RouteGlobal | ImGuiInputFlags_RouteGlobalLow | ImGuiInputFlags_RouteGlobalHigh,
     ImGuiInputFlags_RouteAlways = 1 << 12,
-    ImGuiInputFlags_RouteUnlessBgFocused = 1 << 13,
+    ImGuiInputFlags_RouteUnlessBgFocused= 1 << 13,
     ImGuiInputFlags_RouteExtraMask_ = ImGuiInputFlags_RouteAlways | ImGuiInputFlags_RouteUnlessBgFocused,
     ImGuiInputFlags_SupportedByIsKeyPressed = ImGuiInputFlags_Repeat | ImGuiInputFlags_RepeatRateMask_,
     ImGuiInputFlags_SupportedByShortcut = ImGuiInputFlags_Repeat | ImGuiInputFlags_RepeatRateMask_ | ImGuiInputFlags_RouteMask_ | ImGuiInputFlags_RouteExtraMask_,
@@ -1965,7 +1958,7 @@ struct ImGuiListClipperRange
     ImS8 PosToIndexOffsetMax;
 };
 typedef struct ImGuiListClipperData ImGuiListClipperData;
-typedef struct ImVector_ImGuiListClipperRange { int Size; int Capacity; ImGuiListClipperRange* Data; } ImVector_ImGuiListClipperRange;
+typedef struct ImVector_ImGuiListClipperRange {int Size;int Capacity;ImGuiListClipperRange* Data;} ImVector_ImGuiListClipperRange;
 
 struct ImGuiListClipperData
 {
@@ -2047,7 +2040,7 @@ struct ImGuiOldColumnData
     ImGuiOldColumnFlags Flags;
     ImRect ClipRect;
 };
-typedef struct ImVector_ImGuiOldColumnData { int Size; int Capacity; ImGuiOldColumnData* Data; } ImVector_ImGuiOldColumnData;
+typedef struct ImVector_ImGuiOldColumnData {int Size;int Capacity;ImGuiOldColumnData* Data;} ImVector_ImGuiOldColumnData;
 
 struct ImGuiOldColumns
 {
@@ -2099,7 +2092,7 @@ typedef enum {
     ImGuiDockNodeState_HostWindowHiddenBecauseWindowsAreResizing,
     ImGuiDockNodeState_HostWindowVisible,
 }ImGuiDockNodeState;
-typedef struct ImVector_ImGuiWindowPtr { int Size; int Capacity; ImGuiWindow** Data; } ImVector_ImGuiWindowPtr;
+typedef struct ImVector_ImGuiWindowPtr {int Size;int Capacity;ImGuiWindow** Data;} ImVector_ImGuiWindowPtr;
 
 struct ImGuiDockNode
 {
@@ -2130,20 +2123,20 @@ struct ImGuiDockNode
     ImGuiID LastFocusedNodeId;
     ImGuiID SelectedTabId;
     ImGuiID WantCloseTabId;
-    ImGuiDataAuthority AuthorityForPos : 3;
-    ImGuiDataAuthority AuthorityForSize : 3;
-    ImGuiDataAuthority AuthorityForViewport : 3;
-    bool IsVisible : 1;
-    bool IsFocused : 1;
-    bool IsBgDrawnThisFrame : 1;
-    bool HasCloseButton : 1;
-    bool HasWindowMenuButton : 1;
-    bool HasCentralNodeChild : 1;
-    bool WantCloseAll : 1;
-    bool WantLockSizeOnce : 1;
-    bool WantMouseMove : 1;
-    bool WantHiddenTabBarUpdate : 1;
-    bool WantHiddenTabBarToggle : 1;
+    ImGuiDataAuthority AuthorityForPos :3;
+    ImGuiDataAuthority AuthorityForSize :3;
+    ImGuiDataAuthority AuthorityForViewport :3;
+    bool IsVisible :1;
+    bool IsFocused :1;
+    bool IsBgDrawnThisFrame :1;
+    bool HasCloseButton :1;
+    bool HasWindowMenuButton :1;
+    bool HasCentralNodeChild :1;
+    bool WantCloseAll :1;
+    bool WantLockSizeOnce :1;
+    bool WantMouseMove :1;
+    bool WantHiddenTabBarUpdate :1;
+    bool WantHiddenTabBarToggle :1;
 };
 typedef enum {
     ImGuiWindowDockStyleCol_Text,
@@ -2159,9 +2152,9 @@ struct ImGuiWindowDockStyle
 {
     ImU32 Colors[ImGuiWindowDockStyleCol_COUNT];
 };
-typedef struct ImVector_ImGuiDockRequest { int Size; int Capacity; ImGuiDockRequest* Data; } ImVector_ImGuiDockRequest;
+typedef struct ImVector_ImGuiDockRequest {int Size;int Capacity;ImGuiDockRequest* Data;} ImVector_ImGuiDockRequest;
 
-typedef struct ImVector_ImGuiDockNodeSettings { int Size; int Capacity; ImGuiDockNodeSettings* Data; } ImVector_ImGuiDockNodeSettings;
+typedef struct ImVector_ImGuiDockNodeSettings {int Size;int Capacity;ImGuiDockNodeSettings* Data;} ImVector_ImGuiDockNodeSettings;
 
 struct ImGuiDockContext
 {
@@ -2221,14 +2214,14 @@ struct ImGuiSettingsHandler
     void* UserData;
 };
 typedef enum {
-    ImGuiLocKey_TableSizeOne = 0,
-    ImGuiLocKey_TableSizeAllFit = 1,
-    ImGuiLocKey_TableSizeAllDefault = 2,
-    ImGuiLocKey_TableResetOrder = 3,
-    ImGuiLocKey_WindowingMainMenuBar = 4,
-    ImGuiLocKey_WindowingPopup = 5,
-    ImGuiLocKey_WindowingUntitled = 6,
-    ImGuiLocKey_COUNT = 7,
+ImGuiLocKey_TableSizeOne=0,
+ImGuiLocKey_TableSizeAllFit=1,
+ImGuiLocKey_TableSizeAllDefault=2,
+ImGuiLocKey_TableResetOrder=3,
+ImGuiLocKey_WindowingMainMenuBar=4,
+ImGuiLocKey_WindowingPopup=5,
+ImGuiLocKey_WindowingUntitled=6,
+ImGuiLocKey_COUNT=7,
 }ImGuiLocKey;
 struct ImGuiLocEntry
 {
@@ -2271,7 +2264,7 @@ struct ImGuiStackLevelInfo
     char Desc[57];
 };
 typedef struct ImGuiStackTool ImGuiStackTool;
-typedef struct ImVector_ImGuiStackLevelInfo { int Size; int Capacity; ImGuiStackLevelInfo* Data; } ImVector_ImGuiStackLevelInfo;
+typedef struct ImVector_ImGuiStackLevelInfo {int Size;int Capacity;ImGuiStackLevelInfo* Data;} ImVector_ImGuiStackLevelInfo;
 
 struct ImGuiStackTool
 {
@@ -2292,49 +2285,49 @@ struct ImGuiContextHook
     ImGuiContextHookCallback Callback;
     void* UserData;
 };
-typedef struct ImVector_ImGuiInputEvent { int Size; int Capacity; ImGuiInputEvent* Data; } ImVector_ImGuiInputEvent;
+typedef struct ImVector_ImGuiInputEvent {int Size;int Capacity;ImGuiInputEvent* Data;} ImVector_ImGuiInputEvent;
 
-typedef struct ImVector_ImGuiWindowStackData { int Size; int Capacity; ImGuiWindowStackData* Data; } ImVector_ImGuiWindowStackData;
+typedef struct ImVector_ImGuiWindowStackData {int Size;int Capacity;ImGuiWindowStackData* Data;} ImVector_ImGuiWindowStackData;
 
-typedef struct ImVector_ImGuiColorMod { int Size; int Capacity; ImGuiColorMod* Data; } ImVector_ImGuiColorMod;
+typedef struct ImVector_ImGuiColorMod {int Size;int Capacity;ImGuiColorMod* Data;} ImVector_ImGuiColorMod;
 
-typedef struct ImVector_ImGuiStyleMod { int Size; int Capacity; ImGuiStyleMod* Data; } ImVector_ImGuiStyleMod;
+typedef struct ImVector_ImGuiStyleMod {int Size;int Capacity;ImGuiStyleMod* Data;} ImVector_ImGuiStyleMod;
 
-typedef struct ImVector_ImGuiID { int Size; int Capacity; ImGuiID* Data; } ImVector_ImGuiID;
+typedef struct ImVector_ImGuiID {int Size;int Capacity;ImGuiID* Data;} ImVector_ImGuiID;
 
-typedef struct ImVector_ImGuiItemFlags { int Size; int Capacity; ImGuiItemFlags* Data; } ImVector_ImGuiItemFlags;
+typedef struct ImVector_ImGuiItemFlags {int Size;int Capacity;ImGuiItemFlags* Data;} ImVector_ImGuiItemFlags;
 
-typedef struct ImVector_ImGuiGroupData { int Size; int Capacity; ImGuiGroupData* Data; } ImVector_ImGuiGroupData;
+typedef struct ImVector_ImGuiGroupData {int Size;int Capacity;ImGuiGroupData* Data;} ImVector_ImGuiGroupData;
 
-typedef struct ImVector_ImGuiPopupData { int Size; int Capacity; ImGuiPopupData* Data; } ImVector_ImGuiPopupData;
+typedef struct ImVector_ImGuiPopupData {int Size;int Capacity;ImGuiPopupData* Data;} ImVector_ImGuiPopupData;
 
-typedef struct ImVector_ImGuiViewportPPtr { int Size; int Capacity; ImGuiViewportP** Data; } ImVector_ImGuiViewportPPtr;
+typedef struct ImVector_ImGuiViewportPPtr {int Size;int Capacity;ImGuiViewportP** Data;} ImVector_ImGuiViewportPPtr;
 
-typedef struct ImVector_unsigned_char { int Size; int Capacity; unsigned char* Data; } ImVector_unsigned_char;
+typedef struct ImVector_unsigned_char {int Size;int Capacity;unsigned char* Data;} ImVector_unsigned_char;
 
-typedef struct ImVector_ImGuiListClipperData { int Size; int Capacity; ImGuiListClipperData* Data; } ImVector_ImGuiListClipperData;
+typedef struct ImVector_ImGuiListClipperData {int Size;int Capacity;ImGuiListClipperData* Data;} ImVector_ImGuiListClipperData;
 
-typedef struct ImVector_ImGuiTableTempData { int Size; int Capacity; ImGuiTableTempData* Data; } ImVector_ImGuiTableTempData;
+typedef struct ImVector_ImGuiTableTempData {int Size;int Capacity;ImGuiTableTempData* Data;} ImVector_ImGuiTableTempData;
 
-typedef struct ImVector_ImGuiTable { int Size; int Capacity; ImGuiTable* Data; } ImVector_ImGuiTable;
+typedef struct ImVector_ImGuiTable {int Size;int Capacity;ImGuiTable* Data;} ImVector_ImGuiTable;
 
-typedef struct ImPool_ImGuiTable { ImVector_ImGuiTable Buf; ImGuiStorage Map; ImPoolIdx FreeIdx; ImPoolIdx AliveCount; } ImPool_ImGuiTable;
+typedef struct ImPool_ImGuiTable {ImVector_ImGuiTable Buf;ImGuiStorage Map;ImPoolIdx FreeIdx;ImPoolIdx AliveCount;} ImPool_ImGuiTable;
 
-typedef struct ImVector_ImGuiTabBar { int Size; int Capacity; ImGuiTabBar* Data; } ImVector_ImGuiTabBar;
+typedef struct ImVector_ImGuiTabBar {int Size;int Capacity;ImGuiTabBar* Data;} ImVector_ImGuiTabBar;
 
-typedef struct ImPool_ImGuiTabBar { ImVector_ImGuiTabBar Buf; ImGuiStorage Map; ImPoolIdx FreeIdx; ImPoolIdx AliveCount; } ImPool_ImGuiTabBar;
+typedef struct ImPool_ImGuiTabBar {ImVector_ImGuiTabBar Buf;ImGuiStorage Map;ImPoolIdx FreeIdx;ImPoolIdx AliveCount;} ImPool_ImGuiTabBar;
 
-typedef struct ImVector_ImGuiPtrOrIndex { int Size; int Capacity; ImGuiPtrOrIndex* Data; } ImVector_ImGuiPtrOrIndex;
+typedef struct ImVector_ImGuiPtrOrIndex {int Size;int Capacity;ImGuiPtrOrIndex* Data;} ImVector_ImGuiPtrOrIndex;
 
-typedef struct ImVector_ImGuiShrinkWidthItem { int Size; int Capacity; ImGuiShrinkWidthItem* Data; } ImVector_ImGuiShrinkWidthItem;
+typedef struct ImVector_ImGuiShrinkWidthItem {int Size;int Capacity;ImGuiShrinkWidthItem* Data;} ImVector_ImGuiShrinkWidthItem;
 
-typedef struct ImVector_ImGuiSettingsHandler { int Size; int Capacity; ImGuiSettingsHandler* Data; } ImVector_ImGuiSettingsHandler;
+typedef struct ImVector_ImGuiSettingsHandler {int Size;int Capacity;ImGuiSettingsHandler* Data;} ImVector_ImGuiSettingsHandler;
 
-typedef struct ImChunkStream_ImGuiWindowSettings { ImVector_char Buf; } ImChunkStream_ImGuiWindowSettings;
+typedef struct ImChunkStream_ImGuiWindowSettings {ImVector_char Buf;} ImChunkStream_ImGuiWindowSettings;
 
-typedef struct ImChunkStream_ImGuiTableSettings { ImVector_char Buf; } ImChunkStream_ImGuiTableSettings;
+typedef struct ImChunkStream_ImGuiTableSettings {ImVector_char Buf;} ImChunkStream_ImGuiTableSettings;
 
-typedef struct ImVector_ImGuiContextHook { int Size; int Capacity; ImGuiContextHook* Data; } ImVector_ImGuiContextHook;
+typedef struct ImVector_ImGuiContextHook {int Size;int Capacity;ImGuiContextHook* Data;} ImVector_ImGuiContextHook;
 
 struct ImGuiContext
 {
@@ -2621,7 +2614,7 @@ struct ImGuiWindowTempData
     ImVector_float ItemWidthStack;
     ImVector_float TextWrapPosStack;
 };
-typedef struct ImVector_ImGuiOldColumns { int Size; int Capacity; ImGuiOldColumns* Data; } ImVector_ImGuiOldColumns;
+typedef struct ImVector_ImGuiOldColumns {int Size;int Capacity;ImGuiOldColumns* Data;} ImVector_ImGuiOldColumns;
 
 struct ImGuiWindow
 {
@@ -2722,10 +2715,10 @@ struct ImGuiWindow
     int MemoryDrawListIdxCapacity;
     int MemoryDrawListVtxCapacity;
     bool MemoryCompacted;
-    bool DockIsActive : 1;
-    bool DockNodeIsVisible : 1;
-    bool DockTabIsVisible : 1;
-    bool DockTabWantClose : 1;
+    bool DockIsActive :1;
+    bool DockNodeIsVisible :1;
+    bool DockTabIsVisible :1;
+    bool DockTabWantClose :1;
     short DockOrder;
     ImGuiWindowDockStyle DockStyle;
     ImGuiDockNode* DockNode;
@@ -2762,7 +2755,7 @@ struct ImGuiTabItem
     ImS16 IndexDuringLayout;
     bool WantClose;
 };
-typedef struct ImVector_ImGuiTabItem { int Size; int Capacity; ImGuiTabItem* Data; } ImVector_ImGuiTabItem;
+typedef struct ImVector_ImGuiTabItem {int Size;int Capacity;ImGuiTabItem* Data;} ImVector_ImGuiTabItem;
 
 struct ImGuiTabBar
 {
@@ -2855,15 +2848,15 @@ struct ImGuiTableInstanceData
     float LastOuterHeight;
     float LastFirstRowHeight;
 };
-typedef struct ImSpan_ImGuiTableColumn { ImGuiTableColumn* Data; ImGuiTableColumn* DataEnd; } ImSpan_ImGuiTableColumn;
+typedef struct ImSpan_ImGuiTableColumn {ImGuiTableColumn* Data;ImGuiTableColumn* DataEnd;} ImSpan_ImGuiTableColumn;
 
-typedef struct ImSpan_ImGuiTableColumnIdx { ImGuiTableColumnIdx* Data; ImGuiTableColumnIdx* DataEnd; } ImSpan_ImGuiTableColumnIdx;
+typedef struct ImSpan_ImGuiTableColumnIdx {ImGuiTableColumnIdx* Data;ImGuiTableColumnIdx* DataEnd;} ImSpan_ImGuiTableColumnIdx;
 
-typedef struct ImSpan_ImGuiTableCellData { ImGuiTableCellData* Data; ImGuiTableCellData* DataEnd; } ImSpan_ImGuiTableCellData;
+typedef struct ImSpan_ImGuiTableCellData {ImGuiTableCellData* Data;ImGuiTableCellData* DataEnd;} ImSpan_ImGuiTableCellData;
 
-typedef struct ImVector_ImGuiTableInstanceData { int Size; int Capacity; ImGuiTableInstanceData* Data; } ImVector_ImGuiTableInstanceData;
+typedef struct ImVector_ImGuiTableInstanceData {int Size;int Capacity;ImGuiTableInstanceData* Data;} ImVector_ImGuiTableInstanceData;
 
-typedef struct ImVector_ImGuiTableColumnSortSpecs { int Size; int Capacity; ImGuiTableColumnSortSpecs* Data; } ImVector_ImGuiTableColumnSortSpecs;
+typedef struct ImVector_ImGuiTableColumnSortSpecs {int Size;int Capacity;ImGuiTableColumnSortSpecs* Data;} ImVector_ImGuiTableColumnSortSpecs;
 
 struct ImGuiTable
 {
@@ -3086,10 +3079,10 @@ typedef ImVector<unsigned char> ImVector_unsigned_char;
 #endif //CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 CIMGUI_API ImVec2* ImVec2_ImVec2_Nil(void);
 CIMGUI_API void ImVec2_destroy(ImVec2* self);
-CIMGUI_API ImVec2* ImVec2_ImVec2_Float(float _x, float _y);
+CIMGUI_API ImVec2* ImVec2_ImVec2_Float(float _x,float _y);
 CIMGUI_API ImVec4* ImVec4_ImVec4_Nil(void);
 CIMGUI_API void ImVec4_destroy(ImVec4* self);
-CIMGUI_API ImVec4* ImVec4_ImVec4_Float(float _x, float _y, float _z, float _w);
+CIMGUI_API ImVec4* ImVec4_ImVec4_Float(float _x,float _y,float _z,float _w);
 CIMGUI_API ImGuiContext* igCreateContext(ImFontAtlas* shared_font_atlas);
 CIMGUI_API void igDestroyContext(ImGuiContext* ctx);
 CIMGUI_API ImGuiContext* igGetCurrentContext(void);
@@ -3113,10 +3106,10 @@ CIMGUI_API const char* igGetVersion(void);
 CIMGUI_API void igStyleColorsDark(ImGuiStyle* dst);
 CIMGUI_API void igStyleColorsLight(ImGuiStyle* dst);
 CIMGUI_API void igStyleColorsClassic(ImGuiStyle* dst);
-CIMGUI_API bool igBegin(const char* name, bool* p_open, ImGuiWindowFlags flags);
+CIMGUI_API bool igBegin(const char* name,bool* p_open,ImGuiWindowFlags flags);
 CIMGUI_API void igEnd(void);
-CIMGUI_API bool igBeginChild_Str(const char* str_id, const ImVec2 size, bool border, ImGuiWindowFlags flags);
-CIMGUI_API bool igBeginChild_ID(ImGuiID id, const ImVec2 size, bool border, ImGuiWindowFlags flags);
+CIMGUI_API bool igBeginChild_Str(const char* str_id,const ImVec2 size,bool border,ImGuiWindowFlags flags);
+CIMGUI_API bool igBeginChild_ID(ImGuiID id,const ImVec2 size,bool border,ImGuiWindowFlags flags);
 CIMGUI_API void igEndChild(void);
 CIMGUI_API bool igIsWindowAppearing(void);
 CIMGUI_API bool igIsWindowCollapsed(void);
@@ -3124,33 +3117,33 @@ CIMGUI_API bool igIsWindowFocused(ImGuiFocusedFlags flags);
 CIMGUI_API bool igIsWindowHovered(ImGuiHoveredFlags flags);
 CIMGUI_API ImDrawList* igGetWindowDrawList(void);
 CIMGUI_API float igGetWindowDpiScale(void);
-CIMGUI_API void igGetWindowPos(ImVec2* pOut);
-CIMGUI_API void igGetWindowSize(ImVec2* pOut);
+CIMGUI_API void igGetWindowPos(ImVec2 *pOut);
+CIMGUI_API void igGetWindowSize(ImVec2 *pOut);
 CIMGUI_API float igGetWindowWidth(void);
 CIMGUI_API float igGetWindowHeight(void);
 CIMGUI_API ImGuiViewport* igGetWindowViewport(void);
-CIMGUI_API void igSetNextWindowPos(const ImVec2 pos, ImGuiCond cond, const ImVec2 pivot);
-CIMGUI_API void igSetNextWindowSize(const ImVec2 size, ImGuiCond cond);
-CIMGUI_API void igSetNextWindowSizeConstraints(const ImVec2 size_min, const ImVec2 size_max, ImGuiSizeCallback custom_callback, void* custom_callback_data);
+CIMGUI_API void igSetNextWindowPos(const ImVec2 pos,ImGuiCond cond,const ImVec2 pivot);
+CIMGUI_API void igSetNextWindowSize(const ImVec2 size,ImGuiCond cond);
+CIMGUI_API void igSetNextWindowSizeConstraints(const ImVec2 size_min,const ImVec2 size_max,ImGuiSizeCallback custom_callback,void* custom_callback_data);
 CIMGUI_API void igSetNextWindowContentSize(const ImVec2 size);
-CIMGUI_API void igSetNextWindowCollapsed(bool collapsed, ImGuiCond cond);
+CIMGUI_API void igSetNextWindowCollapsed(bool collapsed,ImGuiCond cond);
 CIMGUI_API void igSetNextWindowFocus(void);
 CIMGUI_API void igSetNextWindowScroll(const ImVec2 scroll);
 CIMGUI_API void igSetNextWindowBgAlpha(float alpha);
 CIMGUI_API void igSetNextWindowViewport(ImGuiID viewport_id);
-CIMGUI_API void igSetWindowPos_Vec2(const ImVec2 pos, ImGuiCond cond);
-CIMGUI_API void igSetWindowSize_Vec2(const ImVec2 size, ImGuiCond cond);
-CIMGUI_API void igSetWindowCollapsed_Bool(bool collapsed, ImGuiCond cond);
+CIMGUI_API void igSetWindowPos_Vec2(const ImVec2 pos,ImGuiCond cond);
+CIMGUI_API void igSetWindowSize_Vec2(const ImVec2 size,ImGuiCond cond);
+CIMGUI_API void igSetWindowCollapsed_Bool(bool collapsed,ImGuiCond cond);
 CIMGUI_API void igSetWindowFocus_Nil(void);
 CIMGUI_API void igSetWindowFontScale(float scale);
-CIMGUI_API void igSetWindowPos_Str(const char* name, const ImVec2 pos, ImGuiCond cond);
-CIMGUI_API void igSetWindowSize_Str(const char* name, const ImVec2 size, ImGuiCond cond);
-CIMGUI_API void igSetWindowCollapsed_Str(const char* name, bool collapsed, ImGuiCond cond);
+CIMGUI_API void igSetWindowPos_Str(const char* name,const ImVec2 pos,ImGuiCond cond);
+CIMGUI_API void igSetWindowSize_Str(const char* name,const ImVec2 size,ImGuiCond cond);
+CIMGUI_API void igSetWindowCollapsed_Str(const char* name,bool collapsed,ImGuiCond cond);
 CIMGUI_API void igSetWindowFocus_Str(const char* name);
-CIMGUI_API void igGetContentRegionAvail(ImVec2* pOut);
-CIMGUI_API void igGetContentRegionMax(ImVec2* pOut);
-CIMGUI_API void igGetWindowContentRegionMin(ImVec2* pOut);
-CIMGUI_API void igGetWindowContentRegionMax(ImVec2* pOut);
+CIMGUI_API void igGetContentRegionAvail(ImVec2 *pOut);
+CIMGUI_API void igGetContentRegionMax(ImVec2 *pOut);
+CIMGUI_API void igGetWindowContentRegionMin(ImVec2 *pOut);
+CIMGUI_API void igGetWindowContentRegionMax(ImVec2 *pOut);
 CIMGUI_API float igGetScrollX(void);
 CIMGUI_API float igGetScrollY(void);
 CIMGUI_API void igSetScrollX_Float(float scroll_x);
@@ -3159,15 +3152,15 @@ CIMGUI_API float igGetScrollMaxX(void);
 CIMGUI_API float igGetScrollMaxY(void);
 CIMGUI_API void igSetScrollHereX(float center_x_ratio);
 CIMGUI_API void igSetScrollHereY(float center_y_ratio);
-CIMGUI_API void igSetScrollFromPosX_Float(float local_x, float center_x_ratio);
-CIMGUI_API void igSetScrollFromPosY_Float(float local_y, float center_y_ratio);
+CIMGUI_API void igSetScrollFromPosX_Float(float local_x,float center_x_ratio);
+CIMGUI_API void igSetScrollFromPosY_Float(float local_y,float center_y_ratio);
 CIMGUI_API void igPushFont(ImFont* font);
 CIMGUI_API void igPopFont(void);
-CIMGUI_API void igPushStyleColor_U32(ImGuiCol idx, ImU32 col);
-CIMGUI_API void igPushStyleColor_Vec4(ImGuiCol idx, const ImVec4 col);
+CIMGUI_API void igPushStyleColor_U32(ImGuiCol idx,ImU32 col);
+CIMGUI_API void igPushStyleColor_Vec4(ImGuiCol idx,const ImVec4 col);
 CIMGUI_API void igPopStyleColor(int count);
-CIMGUI_API void igPushStyleVar_Float(ImGuiStyleVar idx, float val);
-CIMGUI_API void igPushStyleVar_Vec2(ImGuiStyleVar idx, const ImVec2 val);
+CIMGUI_API void igPushStyleVar_Float(ImGuiStyleVar idx,float val);
+CIMGUI_API void igPushStyleVar_Vec2(ImGuiStyleVar idx,const ImVec2 val);
 CIMGUI_API void igPopStyleVar(int count);
 CIMGUI_API void igPushAllowKeyboardFocus(bool allow_keyboard_focus);
 CIMGUI_API void igPopAllowKeyboardFocus(void);
@@ -3181,13 +3174,13 @@ CIMGUI_API void igPushTextWrapPos(float wrap_local_pos_x);
 CIMGUI_API void igPopTextWrapPos(void);
 CIMGUI_API ImFont* igGetFont(void);
 CIMGUI_API float igGetFontSize(void);
-CIMGUI_API void igGetFontTexUvWhitePixel(ImVec2* pOut);
-CIMGUI_API ImU32 igGetColorU32_Col(ImGuiCol idx, float alpha_mul);
+CIMGUI_API void igGetFontTexUvWhitePixel(ImVec2 *pOut);
+CIMGUI_API ImU32 igGetColorU32_Col(ImGuiCol idx,float alpha_mul);
 CIMGUI_API ImU32 igGetColorU32_Vec4(const ImVec4 col);
 CIMGUI_API ImU32 igGetColorU32_U32(ImU32 col);
 CIMGUI_API const ImVec4* igGetStyleColorVec4(ImGuiCol idx);
 CIMGUI_API void igSeparator(void);
-CIMGUI_API void igSameLine(float offset_from_start_x, float spacing);
+CIMGUI_API void igSameLine(float offset_from_start_x,float spacing);
 CIMGUI_API void igNewLine(void);
 CIMGUI_API void igSpacing(void);
 CIMGUI_API void igDummy(const ImVec2 size);
@@ -3195,14 +3188,14 @@ CIMGUI_API void igIndent(float indent_w);
 CIMGUI_API void igUnindent(float indent_w);
 CIMGUI_API void igBeginGroup(void);
 CIMGUI_API void igEndGroup(void);
-CIMGUI_API void igGetCursorPos(ImVec2* pOut);
+CIMGUI_API void igGetCursorPos(ImVec2 *pOut);
 CIMGUI_API float igGetCursorPosX(void);
 CIMGUI_API float igGetCursorPosY(void);
 CIMGUI_API void igSetCursorPos(const ImVec2 local_pos);
 CIMGUI_API void igSetCursorPosX(float local_x);
 CIMGUI_API void igSetCursorPosY(float local_y);
-CIMGUI_API void igGetCursorStartPos(ImVec2* pOut);
-CIMGUI_API void igGetCursorScreenPos(ImVec2* pOut);
+CIMGUI_API void igGetCursorStartPos(ImVec2 *pOut);
+CIMGUI_API void igGetCursorScreenPos(ImVec2 *pOut);
 CIMGUI_API void igSetCursorScreenPos(const ImVec2 pos);
 CIMGUI_API void igAlignTextToFramePadding(void);
 CIMGUI_API float igGetTextLineHeight(void);
@@ -3210,151 +3203,151 @@ CIMGUI_API float igGetTextLineHeightWithSpacing(void);
 CIMGUI_API float igGetFrameHeight(void);
 CIMGUI_API float igGetFrameHeightWithSpacing(void);
 CIMGUI_API void igPushID_Str(const char* str_id);
-CIMGUI_API void igPushID_StrStr(const char* str_id_begin, const char* str_id_end);
+CIMGUI_API void igPushID_StrStr(const char* str_id_begin,const char* str_id_end);
 CIMGUI_API void igPushID_Ptr(const void* ptr_id);
 CIMGUI_API void igPushID_Int(int int_id);
 CIMGUI_API void igPopID(void);
 CIMGUI_API ImGuiID igGetID_Str(const char* str_id);
-CIMGUI_API ImGuiID igGetID_StrStr(const char* str_id_begin, const char* str_id_end);
+CIMGUI_API ImGuiID igGetID_StrStr(const char* str_id_begin,const char* str_id_end);
 CIMGUI_API ImGuiID igGetID_Ptr(const void* ptr_id);
-CIMGUI_API void igTextUnformatted(const char* text, const char* text_end);
-CIMGUI_API void igText(const char* fmt, ...);
-CIMGUI_API void igTextV(const char* fmt, va_list args);
-CIMGUI_API void igTextColored(const ImVec4 col, const char* fmt, ...);
-CIMGUI_API void igTextColoredV(const ImVec4 col, const char* fmt, va_list args);
-CIMGUI_API void igTextDisabled(const char* fmt, ...);
-CIMGUI_API void igTextDisabledV(const char* fmt, va_list args);
-CIMGUI_API void igTextWrapped(const char* fmt, ...);
-CIMGUI_API void igTextWrappedV(const char* fmt, va_list args);
-CIMGUI_API void igLabelText(const char* label, const char* fmt, ...);
-CIMGUI_API void igLabelTextV(const char* label, const char* fmt, va_list args);
-CIMGUI_API void igBulletText(const char* fmt, ...);
-CIMGUI_API void igBulletTextV(const char* fmt, va_list args);
-CIMGUI_API bool igButton(const char* label, const ImVec2 size);
+CIMGUI_API void igTextUnformatted(const char* text,const char* text_end);
+CIMGUI_API void igText(const char* fmt,...);
+CIMGUI_API void igTextV(const char* fmt,va_list args);
+CIMGUI_API void igTextColored(const ImVec4 col,const char* fmt,...);
+CIMGUI_API void igTextColoredV(const ImVec4 col,const char* fmt,va_list args);
+CIMGUI_API void igTextDisabled(const char* fmt,...);
+CIMGUI_API void igTextDisabledV(const char* fmt,va_list args);
+CIMGUI_API void igTextWrapped(const char* fmt,...);
+CIMGUI_API void igTextWrappedV(const char* fmt,va_list args);
+CIMGUI_API void igLabelText(const char* label,const char* fmt,...);
+CIMGUI_API void igLabelTextV(const char* label,const char* fmt,va_list args);
+CIMGUI_API void igBulletText(const char* fmt,...);
+CIMGUI_API void igBulletTextV(const char* fmt,va_list args);
+CIMGUI_API bool igButton(const char* label,const ImVec2 size);
 CIMGUI_API bool igSmallButton(const char* label);
-CIMGUI_API bool igInvisibleButton(const char* str_id, const ImVec2 size, ImGuiButtonFlags flags);
-CIMGUI_API bool igArrowButton(const char* str_id, ImGuiDir dir);
-CIMGUI_API bool igCheckbox(const char* label, bool* v);
-CIMGUI_API bool igCheckboxFlags_IntPtr(const char* label, int* flags, int flags_value);
-CIMGUI_API bool igCheckboxFlags_UintPtr(const char* label, unsigned int* flags, unsigned int flags_value);
-CIMGUI_API bool igRadioButton_Bool(const char* label, bool active);
-CIMGUI_API bool igRadioButton_IntPtr(const char* label, int* v, int v_button);
-CIMGUI_API void igProgressBar(float fraction, const ImVec2 size_arg, const char* overlay);
+CIMGUI_API bool igInvisibleButton(const char* str_id,const ImVec2 size,ImGuiButtonFlags flags);
+CIMGUI_API bool igArrowButton(const char* str_id,ImGuiDir dir);
+CIMGUI_API bool igCheckbox(const char* label,bool* v);
+CIMGUI_API bool igCheckboxFlags_IntPtr(const char* label,int* flags,int flags_value);
+CIMGUI_API bool igCheckboxFlags_UintPtr(const char* label,unsigned int* flags,unsigned int flags_value);
+CIMGUI_API bool igRadioButton_Bool(const char* label,bool active);
+CIMGUI_API bool igRadioButton_IntPtr(const char* label,int* v,int v_button);
+CIMGUI_API void igProgressBar(float fraction,const ImVec2 size_arg,const char* overlay);
 CIMGUI_API void igBullet(void);
-CIMGUI_API void igImage(ImTextureID user_texture_id, const ImVec2 size, const ImVec2 uv0, const ImVec2 uv1, const ImVec4 tint_col, const ImVec4 border_col);
-CIMGUI_API bool igImageButton(const char* str_id, ImTextureID user_texture_id, const ImVec2 size, const ImVec2 uv0, const ImVec2 uv1, const ImVec4 bg_col, const ImVec4 tint_col);
-CIMGUI_API bool igBeginCombo(const char* label, const char* preview_value, ImGuiComboFlags flags);
+CIMGUI_API void igImage(ImTextureID user_texture_id,const ImVec2 size,const ImVec2 uv0,const ImVec2 uv1,const ImVec4 tint_col,const ImVec4 border_col);
+CIMGUI_API bool igImageButton(const char* str_id,ImTextureID user_texture_id,const ImVec2 size,const ImVec2 uv0,const ImVec2 uv1,const ImVec4 bg_col,const ImVec4 tint_col);
+CIMGUI_API bool igBeginCombo(const char* label,const char* preview_value,ImGuiComboFlags flags);
 CIMGUI_API void igEndCombo(void);
-CIMGUI_API bool igCombo_Str_arr(const char* label, int* current_item, const char* const items[], int items_count, int popup_max_height_in_items);
-CIMGUI_API bool igCombo_Str(const char* label, int* current_item, const char* items_separated_by_zeros, int popup_max_height_in_items);
-CIMGUI_API bool igCombo_FnBoolPtr(const char* label, int* current_item, bool(*items_getter)(void* data, int idx, const char** out_text), void* data, int items_count, int popup_max_height_in_items);
-CIMGUI_API bool igDragFloat(const char* label, float* v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igDragFloat2(const char* label, float v[2], float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igDragFloat3(const char* label, float v[3], float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igDragFloat4(const char* label, float v[4], float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igDragFloatRange2(const char* label, float* v_current_min, float* v_current_max, float v_speed, float v_min, float v_max, const char* format, const char* format_max, ImGuiSliderFlags flags);
-CIMGUI_API bool igDragInt(const char* label, int* v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igDragInt2(const char* label, int v[2], float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igDragInt3(const char* label, int v[3], float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igDragInt4(const char* label, int v[4], float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igDragIntRange2(const char* label, int* v_current_min, int* v_current_max, float v_speed, int v_min, int v_max, const char* format, const char* format_max, ImGuiSliderFlags flags);
-CIMGUI_API bool igDragScalar(const char* label, ImGuiDataType data_type, void* p_data, float v_speed, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igDragScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, float v_speed, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderFloat(const char* label, float* v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderFloat3(const char* label, float v[3], float v_min, float v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderFloat4(const char* label, float v[4], float v_min, float v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderAngle(const char* label, float* v_rad, float v_degrees_min, float v_degrees_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderInt(const char* label, int* v, int v_min, int v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderInt2(const char* label, int v[2], int v_min, int v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderInt3(const char* label, int v[3], int v_min, int v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderInt4(const char* label, int v[4], int v_min, int v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderScalar(const char* label, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igVSliderFloat(const char* label, const ImVec2 size, float* v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igVSliderInt(const char* label, const ImVec2 size, int* v, int v_min, int v_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igVSliderScalar(const char* label, const ImVec2 size, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igInputText(const char* label, char* buf, size_t buf_size, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data);
-CIMGUI_API bool igInputTextMultiline(const char* label, char* buf, size_t buf_size, const ImVec2 size, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data);
-CIMGUI_API bool igInputTextWithHint(const char* label, const char* hint, char* buf, size_t buf_size, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data);
-CIMGUI_API bool igInputFloat(const char* label, float* v, float step, float step_fast, const char* format, ImGuiInputTextFlags flags);
-CIMGUI_API bool igInputFloat2(const char* label, float v[2], const char* format, ImGuiInputTextFlags flags);
-CIMGUI_API bool igInputFloat3(const char* label, float v[3], const char* format, ImGuiInputTextFlags flags);
-CIMGUI_API bool igInputFloat4(const char* label, float v[4], const char* format, ImGuiInputTextFlags flags);
-CIMGUI_API bool igInputInt(const char* label, int* v, int step, int step_fast, ImGuiInputTextFlags flags);
-CIMGUI_API bool igInputInt2(const char* label, int v[2], ImGuiInputTextFlags flags);
-CIMGUI_API bool igInputInt3(const char* label, int v[3], ImGuiInputTextFlags flags);
-CIMGUI_API bool igInputInt4(const char* label, int v[4], ImGuiInputTextFlags flags);
-CIMGUI_API bool igInputDouble(const char* label, double* v, double step, double step_fast, const char* format, ImGuiInputTextFlags flags);
-CIMGUI_API bool igInputScalar(const char* label, ImGuiDataType data_type, void* p_data, const void* p_step, const void* p_step_fast, const char* format, ImGuiInputTextFlags flags);
-CIMGUI_API bool igInputScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, const void* p_step, const void* p_step_fast, const char* format, ImGuiInputTextFlags flags);
-CIMGUI_API bool igColorEdit3(const char* label, float col[3], ImGuiColorEditFlags flags);
-CIMGUI_API bool igColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags);
-CIMGUI_API bool igColorPicker3(const char* label, float col[3], ImGuiColorEditFlags flags);
-CIMGUI_API bool igColorPicker4(const char* label, float col[4], ImGuiColorEditFlags flags, const float* ref_col);
-CIMGUI_API bool igColorButton(const char* desc_id, const ImVec4 col, ImGuiColorEditFlags flags, const ImVec2 size);
+CIMGUI_API bool igCombo_Str_arr(const char* label,int* current_item,const char* const items[],int items_count,int popup_max_height_in_items);
+CIMGUI_API bool igCombo_Str(const char* label,int* current_item,const char* items_separated_by_zeros,int popup_max_height_in_items);
+CIMGUI_API bool igCombo_FnBoolPtr(const char* label,int* current_item,bool(*items_getter)(void* data,int idx,const char** out_text),void* data,int items_count,int popup_max_height_in_items);
+CIMGUI_API bool igDragFloat(const char* label,float* v,float v_speed,float v_min,float v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igDragFloat2(const char* label,float v[2],float v_speed,float v_min,float v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igDragFloat3(const char* label,float v[3],float v_speed,float v_min,float v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igDragFloat4(const char* label,float v[4],float v_speed,float v_min,float v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igDragFloatRange2(const char* label,float* v_current_min,float* v_current_max,float v_speed,float v_min,float v_max,const char* format,const char* format_max,ImGuiSliderFlags flags);
+CIMGUI_API bool igDragInt(const char* label,int* v,float v_speed,int v_min,int v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igDragInt2(const char* label,int v[2],float v_speed,int v_min,int v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igDragInt3(const char* label,int v[3],float v_speed,int v_min,int v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igDragInt4(const char* label,int v[4],float v_speed,int v_min,int v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igDragIntRange2(const char* label,int* v_current_min,int* v_current_max,float v_speed,int v_min,int v_max,const char* format,const char* format_max,ImGuiSliderFlags flags);
+CIMGUI_API bool igDragScalar(const char* label,ImGuiDataType data_type,void* p_data,float v_speed,const void* p_min,const void* p_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igDragScalarN(const char* label,ImGuiDataType data_type,void* p_data,int components,float v_speed,const void* p_min,const void* p_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderFloat(const char* label,float* v,float v_min,float v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderFloat2(const char* label,float v[2],float v_min,float v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderFloat3(const char* label,float v[3],float v_min,float v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderFloat4(const char* label,float v[4],float v_min,float v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderAngle(const char* label,float* v_rad,float v_degrees_min,float v_degrees_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderInt(const char* label,int* v,int v_min,int v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderInt2(const char* label,int v[2],int v_min,int v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderInt3(const char* label,int v[3],int v_min,int v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderInt4(const char* label,int v[4],int v_min,int v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderScalar(const char* label,ImGuiDataType data_type,void* p_data,const void* p_min,const void* p_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderScalarN(const char* label,ImGuiDataType data_type,void* p_data,int components,const void* p_min,const void* p_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igVSliderFloat(const char* label,const ImVec2 size,float* v,float v_min,float v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igVSliderInt(const char* label,const ImVec2 size,int* v,int v_min,int v_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igVSliderScalar(const char* label,const ImVec2 size,ImGuiDataType data_type,void* p_data,const void* p_min,const void* p_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igInputText(const char* label,char* buf,size_t buf_size,ImGuiInputTextFlags flags,ImGuiInputTextCallback callback,void* user_data);
+CIMGUI_API bool igInputTextMultiline(const char* label,char* buf,size_t buf_size,const ImVec2 size,ImGuiInputTextFlags flags,ImGuiInputTextCallback callback,void* user_data);
+CIMGUI_API bool igInputTextWithHint(const char* label,const char* hint,char* buf,size_t buf_size,ImGuiInputTextFlags flags,ImGuiInputTextCallback callback,void* user_data);
+CIMGUI_API bool igInputFloat(const char* label,float* v,float step,float step_fast,const char* format,ImGuiInputTextFlags flags);
+CIMGUI_API bool igInputFloat2(const char* label,float v[2],const char* format,ImGuiInputTextFlags flags);
+CIMGUI_API bool igInputFloat3(const char* label,float v[3],const char* format,ImGuiInputTextFlags flags);
+CIMGUI_API bool igInputFloat4(const char* label,float v[4],const char* format,ImGuiInputTextFlags flags);
+CIMGUI_API bool igInputInt(const char* label,int* v,int step,int step_fast,ImGuiInputTextFlags flags);
+CIMGUI_API bool igInputInt2(const char* label,int v[2],ImGuiInputTextFlags flags);
+CIMGUI_API bool igInputInt3(const char* label,int v[3],ImGuiInputTextFlags flags);
+CIMGUI_API bool igInputInt4(const char* label,int v[4],ImGuiInputTextFlags flags);
+CIMGUI_API bool igInputDouble(const char* label,double* v,double step,double step_fast,const char* format,ImGuiInputTextFlags flags);
+CIMGUI_API bool igInputScalar(const char* label,ImGuiDataType data_type,void* p_data,const void* p_step,const void* p_step_fast,const char* format,ImGuiInputTextFlags flags);
+CIMGUI_API bool igInputScalarN(const char* label,ImGuiDataType data_type,void* p_data,int components,const void* p_step,const void* p_step_fast,const char* format,ImGuiInputTextFlags flags);
+CIMGUI_API bool igColorEdit3(const char* label,float col[3],ImGuiColorEditFlags flags);
+CIMGUI_API bool igColorEdit4(const char* label,float col[4],ImGuiColorEditFlags flags);
+CIMGUI_API bool igColorPicker3(const char* label,float col[3],ImGuiColorEditFlags flags);
+CIMGUI_API bool igColorPicker4(const char* label,float col[4],ImGuiColorEditFlags flags,const float* ref_col);
+CIMGUI_API bool igColorButton(const char* desc_id,const ImVec4 col,ImGuiColorEditFlags flags,const ImVec2 size);
 CIMGUI_API void igSetColorEditOptions(ImGuiColorEditFlags flags);
 CIMGUI_API bool igTreeNode_Str(const char* label);
-CIMGUI_API bool igTreeNode_StrStr(const char* str_id, const char* fmt, ...);
-CIMGUI_API bool igTreeNode_Ptr(const void* ptr_id, const char* fmt, ...);
-CIMGUI_API bool igTreeNodeV_Str(const char* str_id, const char* fmt, va_list args);
-CIMGUI_API bool igTreeNodeV_Ptr(const void* ptr_id, const char* fmt, va_list args);
-CIMGUI_API bool igTreeNodeEx_Str(const char* label, ImGuiTreeNodeFlags flags);
-CIMGUI_API bool igTreeNodeEx_StrStr(const char* str_id, ImGuiTreeNodeFlags flags, const char* fmt, ...);
-CIMGUI_API bool igTreeNodeEx_Ptr(const void* ptr_id, ImGuiTreeNodeFlags flags, const char* fmt, ...);
-CIMGUI_API bool igTreeNodeExV_Str(const char* str_id, ImGuiTreeNodeFlags flags, const char* fmt, va_list args);
-CIMGUI_API bool igTreeNodeExV_Ptr(const void* ptr_id, ImGuiTreeNodeFlags flags, const char* fmt, va_list args);
+CIMGUI_API bool igTreeNode_StrStr(const char* str_id,const char* fmt,...);
+CIMGUI_API bool igTreeNode_Ptr(const void* ptr_id,const char* fmt,...);
+CIMGUI_API bool igTreeNodeV_Str(const char* str_id,const char* fmt,va_list args);
+CIMGUI_API bool igTreeNodeV_Ptr(const void* ptr_id,const char* fmt,va_list args);
+CIMGUI_API bool igTreeNodeEx_Str(const char* label,ImGuiTreeNodeFlags flags);
+CIMGUI_API bool igTreeNodeEx_StrStr(const char* str_id,ImGuiTreeNodeFlags flags,const char* fmt,...);
+CIMGUI_API bool igTreeNodeEx_Ptr(const void* ptr_id,ImGuiTreeNodeFlags flags,const char* fmt,...);
+CIMGUI_API bool igTreeNodeExV_Str(const char* str_id,ImGuiTreeNodeFlags flags,const char* fmt,va_list args);
+CIMGUI_API bool igTreeNodeExV_Ptr(const void* ptr_id,ImGuiTreeNodeFlags flags,const char* fmt,va_list args);
 CIMGUI_API void igTreePush_Str(const char* str_id);
 CIMGUI_API void igTreePush_Ptr(const void* ptr_id);
 CIMGUI_API void igTreePop(void);
 CIMGUI_API float igGetTreeNodeToLabelSpacing(void);
-CIMGUI_API bool igCollapsingHeader_TreeNodeFlags(const char* label, ImGuiTreeNodeFlags flags);
-CIMGUI_API bool igCollapsingHeader_BoolPtr(const char* label, bool* p_visible, ImGuiTreeNodeFlags flags);
-CIMGUI_API void igSetNextItemOpen(bool is_open, ImGuiCond cond);
-CIMGUI_API bool igSelectable_Bool(const char* label, bool selected, ImGuiSelectableFlags flags, const ImVec2 size);
-CIMGUI_API bool igSelectable_BoolPtr(const char* label, bool* p_selected, ImGuiSelectableFlags flags, const ImVec2 size);
-CIMGUI_API bool igBeginListBox(const char* label, const ImVec2 size);
+CIMGUI_API bool igCollapsingHeader_TreeNodeFlags(const char* label,ImGuiTreeNodeFlags flags);
+CIMGUI_API bool igCollapsingHeader_BoolPtr(const char* label,bool* p_visible,ImGuiTreeNodeFlags flags);
+CIMGUI_API void igSetNextItemOpen(bool is_open,ImGuiCond cond);
+CIMGUI_API bool igSelectable_Bool(const char* label,bool selected,ImGuiSelectableFlags flags,const ImVec2 size);
+CIMGUI_API bool igSelectable_BoolPtr(const char* label,bool* p_selected,ImGuiSelectableFlags flags,const ImVec2 size);
+CIMGUI_API bool igBeginListBox(const char* label,const ImVec2 size);
 CIMGUI_API void igEndListBox(void);
-CIMGUI_API bool igListBox_Str_arr(const char* label, int* current_item, const char* const items[], int items_count, int height_in_items);
-CIMGUI_API bool igListBox_FnBoolPtr(const char* label, int* current_item, bool(*items_getter)(void* data, int idx, const char** out_text), void* data, int items_count, int height_in_items);
-CIMGUI_API void igPlotLines_FloatPtr(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int stride);
-CIMGUI_API void igPlotLines_FnFloatPtr(const char* label, float(*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size);
-CIMGUI_API void igPlotHistogram_FloatPtr(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int stride);
-CIMGUI_API void igPlotHistogram_FnFloatPtr(const char* label, float(*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size);
-CIMGUI_API void igValue_Bool(const char* prefix, bool b);
-CIMGUI_API void igValue_Int(const char* prefix, int v);
-CIMGUI_API void igValue_Uint(const char* prefix, unsigned int v);
-CIMGUI_API void igValue_Float(const char* prefix, float v, const char* float_format);
+CIMGUI_API bool igListBox_Str_arr(const char* label,int* current_item,const char* const items[],int items_count,int height_in_items);
+CIMGUI_API bool igListBox_FnBoolPtr(const char* label,int* current_item,bool(*items_getter)(void* data,int idx,const char** out_text),void* data,int items_count,int height_in_items);
+CIMGUI_API void igPlotLines_FloatPtr(const char* label,const float* values,int values_count,int values_offset,const char* overlay_text,float scale_min,float scale_max,ImVec2 graph_size,int stride);
+CIMGUI_API void igPlotLines_FnFloatPtr(const char* label,float(*values_getter)(void* data,int idx),void* data,int values_count,int values_offset,const char* overlay_text,float scale_min,float scale_max,ImVec2 graph_size);
+CIMGUI_API void igPlotHistogram_FloatPtr(const char* label,const float* values,int values_count,int values_offset,const char* overlay_text,float scale_min,float scale_max,ImVec2 graph_size,int stride);
+CIMGUI_API void igPlotHistogram_FnFloatPtr(const char* label,float(*values_getter)(void* data,int idx),void* data,int values_count,int values_offset,const char* overlay_text,float scale_min,float scale_max,ImVec2 graph_size);
+CIMGUI_API void igValue_Bool(const char* prefix,bool b);
+CIMGUI_API void igValue_Int(const char* prefix,int v);
+CIMGUI_API void igValue_Uint(const char* prefix,unsigned int v);
+CIMGUI_API void igValue_Float(const char* prefix,float v,const char* float_format);
 CIMGUI_API bool igBeginMenuBar(void);
 CIMGUI_API void igEndMenuBar(void);
 CIMGUI_API bool igBeginMainMenuBar(void);
 CIMGUI_API void igEndMainMenuBar(void);
-CIMGUI_API bool igBeginMenu(const char* label, bool enabled);
+CIMGUI_API bool igBeginMenu(const char* label,bool enabled);
 CIMGUI_API void igEndMenu(void);
-CIMGUI_API bool igMenuItem_Bool(const char* label, const char* shortcut, bool selected, bool enabled);
-CIMGUI_API bool igMenuItem_BoolPtr(const char* label, const char* shortcut, bool* p_selected, bool enabled);
+CIMGUI_API bool igMenuItem_Bool(const char* label,const char* shortcut,bool selected,bool enabled);
+CIMGUI_API bool igMenuItem_BoolPtr(const char* label,const char* shortcut,bool* p_selected,bool enabled);
 CIMGUI_API void igBeginTooltip(void);
 CIMGUI_API void igEndTooltip(void);
-CIMGUI_API void igSetTooltip(const char* fmt, ...);
-CIMGUI_API void igSetTooltipV(const char* fmt, va_list args);
-CIMGUI_API bool igBeginPopup(const char* str_id, ImGuiWindowFlags flags);
-CIMGUI_API bool igBeginPopupModal(const char* name, bool* p_open, ImGuiWindowFlags flags);
+CIMGUI_API void igSetTooltip(const char* fmt,...);
+CIMGUI_API void igSetTooltipV(const char* fmt,va_list args);
+CIMGUI_API bool igBeginPopup(const char* str_id,ImGuiWindowFlags flags);
+CIMGUI_API bool igBeginPopupModal(const char* name,bool* p_open,ImGuiWindowFlags flags);
 CIMGUI_API void igEndPopup(void);
-CIMGUI_API void igOpenPopup_Str(const char* str_id, ImGuiPopupFlags popup_flags);
-CIMGUI_API void igOpenPopup_ID(ImGuiID id, ImGuiPopupFlags popup_flags);
-CIMGUI_API void igOpenPopupOnItemClick(const char* str_id, ImGuiPopupFlags popup_flags);
+CIMGUI_API void igOpenPopup_Str(const char* str_id,ImGuiPopupFlags popup_flags);
+CIMGUI_API void igOpenPopup_ID(ImGuiID id,ImGuiPopupFlags popup_flags);
+CIMGUI_API void igOpenPopupOnItemClick(const char* str_id,ImGuiPopupFlags popup_flags);
 CIMGUI_API void igCloseCurrentPopup(void);
-CIMGUI_API bool igBeginPopupContextItem(const char* str_id, ImGuiPopupFlags popup_flags);
-CIMGUI_API bool igBeginPopupContextWindow(const char* str_id, ImGuiPopupFlags popup_flags);
-CIMGUI_API bool igBeginPopupContextVoid(const char* str_id, ImGuiPopupFlags popup_flags);
-CIMGUI_API bool igIsPopupOpen_Str(const char* str_id, ImGuiPopupFlags flags);
-CIMGUI_API bool igBeginTable(const char* str_id, int column, ImGuiTableFlags flags, const ImVec2 outer_size, float inner_width);
+CIMGUI_API bool igBeginPopupContextItem(const char* str_id,ImGuiPopupFlags popup_flags);
+CIMGUI_API bool igBeginPopupContextWindow(const char* str_id,ImGuiPopupFlags popup_flags);
+CIMGUI_API bool igBeginPopupContextVoid(const char* str_id,ImGuiPopupFlags popup_flags);
+CIMGUI_API bool igIsPopupOpen_Str(const char* str_id,ImGuiPopupFlags flags);
+CIMGUI_API bool igBeginTable(const char* str_id,int column,ImGuiTableFlags flags,const ImVec2 outer_size,float inner_width);
 CIMGUI_API void igEndTable(void);
-CIMGUI_API void igTableNextRow(ImGuiTableRowFlags row_flags, float min_row_height);
+CIMGUI_API void igTableNextRow(ImGuiTableRowFlags row_flags,float min_row_height);
 CIMGUI_API bool igTableNextColumn(void);
 CIMGUI_API bool igTableSetColumnIndex(int column_n);
-CIMGUI_API void igTableSetupColumn(const char* label, ImGuiTableColumnFlags flags, float init_width_or_weight, ImGuiID user_id);
-CIMGUI_API void igTableSetupScrollFreeze(int cols, int rows);
+CIMGUI_API void igTableSetupColumn(const char* label,ImGuiTableColumnFlags flags,float init_width_or_weight,ImGuiID user_id);
+CIMGUI_API void igTableSetupScrollFreeze(int cols,int rows);
 CIMGUI_API void igTableHeadersRow(void);
 CIMGUI_API void igTableHeader(const char* label);
 CIMGUI_API ImGuiTableSortSpecs* igTableGetSortSpecs(void);
@@ -3363,44 +3356,44 @@ CIMGUI_API int igTableGetColumnIndex(void);
 CIMGUI_API int igTableGetRowIndex(void);
 CIMGUI_API const char* igTableGetColumnName_Int(int column_n);
 CIMGUI_API ImGuiTableColumnFlags igTableGetColumnFlags(int column_n);
-CIMGUI_API void igTableSetColumnEnabled(int column_n, bool v);
-CIMGUI_API void igTableSetBgColor(ImGuiTableBgTarget target, ImU32 color, int column_n);
-CIMGUI_API void igColumns(int count, const char* id, bool border);
+CIMGUI_API void igTableSetColumnEnabled(int column_n,bool v);
+CIMGUI_API void igTableSetBgColor(ImGuiTableBgTarget target,ImU32 color,int column_n);
+CIMGUI_API void igColumns(int count,const char* id,bool border);
 CIMGUI_API void igNextColumn(void);
 CIMGUI_API int igGetColumnIndex(void);
 CIMGUI_API float igGetColumnWidth(int column_index);
-CIMGUI_API void igSetColumnWidth(int column_index, float width);
+CIMGUI_API void igSetColumnWidth(int column_index,float width);
 CIMGUI_API float igGetColumnOffset(int column_index);
-CIMGUI_API void igSetColumnOffset(int column_index, float offset_x);
+CIMGUI_API void igSetColumnOffset(int column_index,float offset_x);
 CIMGUI_API int igGetColumnsCount(void);
-CIMGUI_API bool igBeginTabBar(const char* str_id, ImGuiTabBarFlags flags);
+CIMGUI_API bool igBeginTabBar(const char* str_id,ImGuiTabBarFlags flags);
 CIMGUI_API void igEndTabBar(void);
-CIMGUI_API bool igBeginTabItem(const char* label, bool* p_open, ImGuiTabItemFlags flags);
+CIMGUI_API bool igBeginTabItem(const char* label,bool* p_open,ImGuiTabItemFlags flags);
 CIMGUI_API void igEndTabItem(void);
-CIMGUI_API bool igTabItemButton(const char* label, ImGuiTabItemFlags flags);
+CIMGUI_API bool igTabItemButton(const char* label,ImGuiTabItemFlags flags);
 CIMGUI_API void igSetTabItemClosed(const char* tab_or_docked_window_label);
-CIMGUI_API ImGuiID igDockSpace(ImGuiID id, const ImVec2 size, ImGuiDockNodeFlags flags, const ImGuiWindowClass* window_class);
-CIMGUI_API ImGuiID igDockSpaceOverViewport(const ImGuiViewport* viewport, ImGuiDockNodeFlags flags, const ImGuiWindowClass* window_class);
-CIMGUI_API void igSetNextWindowDockID(ImGuiID dock_id, ImGuiCond cond);
+CIMGUI_API ImGuiID igDockSpace(ImGuiID id,const ImVec2 size,ImGuiDockNodeFlags flags,const ImGuiWindowClass* window_class);
+CIMGUI_API ImGuiID igDockSpaceOverViewport(const ImGuiViewport* viewport,ImGuiDockNodeFlags flags,const ImGuiWindowClass* window_class);
+CIMGUI_API void igSetNextWindowDockID(ImGuiID dock_id,ImGuiCond cond);
 CIMGUI_API void igSetNextWindowClass(const ImGuiWindowClass* window_class);
 CIMGUI_API ImGuiID igGetWindowDockID(void);
 CIMGUI_API bool igIsWindowDocked(void);
 CIMGUI_API void igLogToTTY(int auto_open_depth);
-CIMGUI_API void igLogToFile(int auto_open_depth, const char* filename);
+CIMGUI_API void igLogToFile(int auto_open_depth,const char* filename);
 CIMGUI_API void igLogToClipboard(int auto_open_depth);
 CIMGUI_API void igLogFinish(void);
 CIMGUI_API void igLogButtons(void);
-CIMGUI_API void igLogTextV(const char* fmt, va_list args);
+CIMGUI_API void igLogTextV(const char* fmt,va_list args);
 CIMGUI_API bool igBeginDragDropSource(ImGuiDragDropFlags flags);
-CIMGUI_API bool igSetDragDropPayload(const char* type, const void* data, size_t sz, ImGuiCond cond);
+CIMGUI_API bool igSetDragDropPayload(const char* type,const void* data,size_t sz,ImGuiCond cond);
 CIMGUI_API void igEndDragDropSource(void);
 CIMGUI_API bool igBeginDragDropTarget(void);
-CIMGUI_API const ImGuiPayload* igAcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags);
+CIMGUI_API const ImGuiPayload* igAcceptDragDropPayload(const char* type,ImGuiDragDropFlags flags);
 CIMGUI_API void igEndDragDropTarget(void);
 CIMGUI_API const ImGuiPayload* igGetDragDropPayload(void);
 CIMGUI_API void igBeginDisabled(bool disabled);
 CIMGUI_API void igEndDisabled(void);
-CIMGUI_API void igPushClipRect(const ImVec2 clip_rect_min, const ImVec2 clip_rect_max, bool intersect_with_current_clip_rect);
+CIMGUI_API void igPushClipRect(const ImVec2 clip_rect_min,const ImVec2 clip_rect_max,bool intersect_with_current_clip_rect);
 CIMGUI_API void igPopClipRect(void);
 CIMGUI_API void igSetItemDefaultFocus(void);
 CIMGUI_API void igSetKeyboardFocusHere(int offset);
@@ -3417,9 +3410,9 @@ CIMGUI_API bool igIsItemToggledOpen(void);
 CIMGUI_API bool igIsAnyItemHovered(void);
 CIMGUI_API bool igIsAnyItemActive(void);
 CIMGUI_API bool igIsAnyItemFocused(void);
-CIMGUI_API void igGetItemRectMin(ImVec2* pOut);
-CIMGUI_API void igGetItemRectMax(ImVec2* pOut);
-CIMGUI_API void igGetItemRectSize(ImVec2* pOut);
+CIMGUI_API void igGetItemRectMin(ImVec2 *pOut);
+CIMGUI_API void igGetItemRectMax(ImVec2 *pOut);
+CIMGUI_API void igGetItemRectSize(ImVec2 *pOut);
 CIMGUI_API void igSetItemAllowOverlap(void);
 CIMGUI_API ImGuiViewport* igGetMainViewport(void);
 CIMGUI_API ImDrawList* igGetBackgroundDrawList_Nil(void);
@@ -3427,38 +3420,38 @@ CIMGUI_API ImDrawList* igGetForegroundDrawList_Nil(void);
 CIMGUI_API ImDrawList* igGetBackgroundDrawList_ViewportPtr(ImGuiViewport* viewport);
 CIMGUI_API ImDrawList* igGetForegroundDrawList_ViewportPtr(ImGuiViewport* viewport);
 CIMGUI_API bool igIsRectVisible_Nil(const ImVec2 size);
-CIMGUI_API bool igIsRectVisible_Vec2(const ImVec2 rect_min, const ImVec2 rect_max);
+CIMGUI_API bool igIsRectVisible_Vec2(const ImVec2 rect_min,const ImVec2 rect_max);
 CIMGUI_API double igGetTime(void);
 CIMGUI_API int igGetFrameCount(void);
 CIMGUI_API ImDrawListSharedData* igGetDrawListSharedData(void);
 CIMGUI_API const char* igGetStyleColorName(ImGuiCol idx);
 CIMGUI_API void igSetStateStorage(ImGuiStorage* storage);
 CIMGUI_API ImGuiStorage* igGetStateStorage(void);
-CIMGUI_API bool igBeginChildFrame(ImGuiID id, const ImVec2 size, ImGuiWindowFlags flags);
+CIMGUI_API bool igBeginChildFrame(ImGuiID id,const ImVec2 size,ImGuiWindowFlags flags);
 CIMGUI_API void igEndChildFrame(void);
-CIMGUI_API void igCalcTextSize(ImVec2* pOut, const char* text, const char* text_end, bool hide_text_after_double_hash, float wrap_width);
-CIMGUI_API void igColorConvertU32ToFloat4(ImVec4* pOut, ImU32 in);
+CIMGUI_API void igCalcTextSize(ImVec2 *pOut,const char* text,const char* text_end,bool hide_text_after_double_hash,float wrap_width);
+CIMGUI_API void igColorConvertU32ToFloat4(ImVec4 *pOut,ImU32 in);
 CIMGUI_API ImU32 igColorConvertFloat4ToU32(const ImVec4 in);
-CIMGUI_API void igColorConvertRGBtoHSV(float r, float g, float b, float* out_h, float* out_s, float* out_v);
-CIMGUI_API void igColorConvertHSVtoRGB(float h, float s, float v, float* out_r, float* out_g, float* out_b);
+CIMGUI_API void igColorConvertRGBtoHSV(float r,float g,float b,float* out_h,float* out_s,float* out_v);
+CIMGUI_API void igColorConvertHSVtoRGB(float h,float s,float v,float* out_r,float* out_g,float* out_b);
 CIMGUI_API bool igIsKeyDown_Nil(ImGuiKey key);
-CIMGUI_API bool igIsKeyPressed_Bool(ImGuiKey key, bool repeat);
+CIMGUI_API bool igIsKeyPressed_Bool(ImGuiKey key,bool repeat);
 CIMGUI_API bool igIsKeyReleased_Nil(ImGuiKey key);
-CIMGUI_API int igGetKeyPressedAmount(ImGuiKey key, float repeat_delay, float rate);
+CIMGUI_API int igGetKeyPressedAmount(ImGuiKey key,float repeat_delay,float rate);
 CIMGUI_API const char* igGetKeyName(ImGuiKey key);
 CIMGUI_API void igSetNextFrameWantCaptureKeyboard(bool want_capture_keyboard);
 CIMGUI_API bool igIsMouseDown_Nil(ImGuiMouseButton button);
-CIMGUI_API bool igIsMouseClicked_Bool(ImGuiMouseButton button, bool repeat);
+CIMGUI_API bool igIsMouseClicked_Bool(ImGuiMouseButton button,bool repeat);
 CIMGUI_API bool igIsMouseReleased_Nil(ImGuiMouseButton button);
 CIMGUI_API bool igIsMouseDoubleClicked(ImGuiMouseButton button);
 CIMGUI_API int igGetMouseClickedCount(ImGuiMouseButton button);
-CIMGUI_API bool igIsMouseHoveringRect(const ImVec2 r_min, const ImVec2 r_max, bool clip);
+CIMGUI_API bool igIsMouseHoveringRect(const ImVec2 r_min,const ImVec2 r_max,bool clip);
 CIMGUI_API bool igIsMousePosValid(const ImVec2* mouse_pos);
 CIMGUI_API bool igIsAnyMouseDown(void);
-CIMGUI_API void igGetMousePos(ImVec2* pOut);
-CIMGUI_API void igGetMousePosOnOpeningCurrentPopup(ImVec2* pOut);
-CIMGUI_API bool igIsMouseDragging(ImGuiMouseButton button, float lock_threshold);
-CIMGUI_API void igGetMouseDragDelta(ImVec2* pOut, ImGuiMouseButton button, float lock_threshold);
+CIMGUI_API void igGetMousePos(ImVec2 *pOut);
+CIMGUI_API void igGetMousePosOnOpeningCurrentPopup(ImVec2 *pOut);
+CIMGUI_API bool igIsMouseDragging(ImGuiMouseButton button,float lock_threshold);
+CIMGUI_API void igGetMouseDragDelta(ImVec2 *pOut,ImGuiMouseButton button,float lock_threshold);
 CIMGUI_API void igResetMouseDragDelta(ImGuiMouseButton button);
 CIMGUI_API ImGuiMouseCursor igGetMouseCursor(void);
 CIMGUI_API void igSetMouseCursor(ImGuiMouseCursor cursor_type);
@@ -3466,44 +3459,44 @@ CIMGUI_API void igSetNextFrameWantCaptureMouse(bool want_capture_mouse);
 CIMGUI_API const char* igGetClipboardText(void);
 CIMGUI_API void igSetClipboardText(const char* text);
 CIMGUI_API void igLoadIniSettingsFromDisk(const char* ini_filename);
-CIMGUI_API void igLoadIniSettingsFromMemory(const char* ini_data, size_t ini_size);
+CIMGUI_API void igLoadIniSettingsFromMemory(const char* ini_data,size_t ini_size);
 CIMGUI_API void igSaveIniSettingsToDisk(const char* ini_filename);
 CIMGUI_API const char* igSaveIniSettingsToMemory(size_t* out_ini_size);
 CIMGUI_API void igDebugTextEncoding(const char* text);
-CIMGUI_API bool igDebugCheckVersionAndDataLayout(const char* version_str, size_t sz_io, size_t sz_style, size_t sz_vec2, size_t sz_vec4, size_t sz_drawvert, size_t sz_drawidx);
-CIMGUI_API void igSetAllocatorFunctions(ImGuiMemAllocFunc alloc_func, ImGuiMemFreeFunc free_func, void* user_data);
-CIMGUI_API void igGetAllocatorFunctions(ImGuiMemAllocFunc* p_alloc_func, ImGuiMemFreeFunc* p_free_func, void** p_user_data);
+CIMGUI_API bool igDebugCheckVersionAndDataLayout(const char* version_str,size_t sz_io,size_t sz_style,size_t sz_vec2,size_t sz_vec4,size_t sz_drawvert,size_t sz_drawidx);
+CIMGUI_API void igSetAllocatorFunctions(ImGuiMemAllocFunc alloc_func,ImGuiMemFreeFunc free_func,void* user_data);
+CIMGUI_API void igGetAllocatorFunctions(ImGuiMemAllocFunc* p_alloc_func,ImGuiMemFreeFunc* p_free_func,void** p_user_data);
 CIMGUI_API void* igMemAlloc(size_t size);
 CIMGUI_API void igMemFree(void* ptr);
 CIMGUI_API ImGuiPlatformIO* igGetPlatformIO(void);
 CIMGUI_API void igUpdatePlatformWindows(void);
-CIMGUI_API void igRenderPlatformWindowsDefault(void* platform_render_arg, void* renderer_render_arg);
+CIMGUI_API void igRenderPlatformWindowsDefault(void* platform_render_arg,void* renderer_render_arg);
 CIMGUI_API void igDestroyPlatformWindows(void);
 CIMGUI_API ImGuiViewport* igFindViewportByID(ImGuiID id);
 CIMGUI_API ImGuiViewport* igFindViewportByPlatformHandle(void* platform_handle);
 CIMGUI_API ImGuiStyle* ImGuiStyle_ImGuiStyle(void);
 CIMGUI_API void ImGuiStyle_destroy(ImGuiStyle* self);
-CIMGUI_API void ImGuiStyle_ScaleAllSizes(ImGuiStyle* self, float scale_factor);
-CIMGUI_API void ImGuiIO_AddKeyEvent(ImGuiIO* self, ImGuiKey key, bool down);
-CIMGUI_API void ImGuiIO_AddKeyAnalogEvent(ImGuiIO* self, ImGuiKey key, bool down, float v);
-CIMGUI_API void ImGuiIO_AddMousePosEvent(ImGuiIO* self, float x, float y);
-CIMGUI_API void ImGuiIO_AddMouseButtonEvent(ImGuiIO* self, int button, bool down);
-CIMGUI_API void ImGuiIO_AddMouseWheelEvent(ImGuiIO* self, float wh_x, float wh_y);
-CIMGUI_API void ImGuiIO_AddMouseViewportEvent(ImGuiIO* self, ImGuiID id);
-CIMGUI_API void ImGuiIO_AddFocusEvent(ImGuiIO* self, bool focused);
-CIMGUI_API void ImGuiIO_AddInputCharacter(ImGuiIO* self, unsigned int c);
-CIMGUI_API void ImGuiIO_AddInputCharacterUTF16(ImGuiIO* self, ImWchar16 c);
-CIMGUI_API void ImGuiIO_AddInputCharactersUTF8(ImGuiIO* self, const char* str);
-CIMGUI_API void ImGuiIO_SetKeyEventNativeData(ImGuiIO* self, ImGuiKey key, int native_keycode, int native_scancode, int native_legacy_index);
-CIMGUI_API void ImGuiIO_SetAppAcceptingEvents(ImGuiIO* self, bool accepting_events);
+CIMGUI_API void ImGuiStyle_ScaleAllSizes(ImGuiStyle* self,float scale_factor);
+CIMGUI_API void ImGuiIO_AddKeyEvent(ImGuiIO* self,ImGuiKey key,bool down);
+CIMGUI_API void ImGuiIO_AddKeyAnalogEvent(ImGuiIO* self,ImGuiKey key,bool down,float v);
+CIMGUI_API void ImGuiIO_AddMousePosEvent(ImGuiIO* self,float x,float y);
+CIMGUI_API void ImGuiIO_AddMouseButtonEvent(ImGuiIO* self,int button,bool down);
+CIMGUI_API void ImGuiIO_AddMouseWheelEvent(ImGuiIO* self,float wh_x,float wh_y);
+CIMGUI_API void ImGuiIO_AddMouseViewportEvent(ImGuiIO* self,ImGuiID id);
+CIMGUI_API void ImGuiIO_AddFocusEvent(ImGuiIO* self,bool focused);
+CIMGUI_API void ImGuiIO_AddInputCharacter(ImGuiIO* self,unsigned int c);
+CIMGUI_API void ImGuiIO_AddInputCharacterUTF16(ImGuiIO* self,ImWchar16 c);
+CIMGUI_API void ImGuiIO_AddInputCharactersUTF8(ImGuiIO* self,const char* str);
+CIMGUI_API void ImGuiIO_SetKeyEventNativeData(ImGuiIO* self,ImGuiKey key,int native_keycode,int native_scancode,int native_legacy_index);
+CIMGUI_API void ImGuiIO_SetAppAcceptingEvents(ImGuiIO* self,bool accepting_events);
 CIMGUI_API void ImGuiIO_ClearInputCharacters(ImGuiIO* self);
 CIMGUI_API void ImGuiIO_ClearInputKeys(ImGuiIO* self);
 CIMGUI_API ImGuiIO* ImGuiIO_ImGuiIO(void);
 CIMGUI_API void ImGuiIO_destroy(ImGuiIO* self);
 CIMGUI_API ImGuiInputTextCallbackData* ImGuiInputTextCallbackData_ImGuiInputTextCallbackData(void);
 CIMGUI_API void ImGuiInputTextCallbackData_destroy(ImGuiInputTextCallbackData* self);
-CIMGUI_API void ImGuiInputTextCallbackData_DeleteChars(ImGuiInputTextCallbackData* self, int pos, int bytes_count);
-CIMGUI_API void ImGuiInputTextCallbackData_InsertChars(ImGuiInputTextCallbackData* self, int pos, const char* text, const char* text_end);
+CIMGUI_API void ImGuiInputTextCallbackData_DeleteChars(ImGuiInputTextCallbackData* self,int pos,int bytes_count);
+CIMGUI_API void ImGuiInputTextCallbackData_InsertChars(ImGuiInputTextCallbackData* self,int pos,const char* text,const char* text_end);
 CIMGUI_API void ImGuiInputTextCallbackData_SelectAll(ImGuiInputTextCallbackData* self);
 CIMGUI_API void ImGuiInputTextCallbackData_ClearSelection(ImGuiInputTextCallbackData* self);
 CIMGUI_API bool ImGuiInputTextCallbackData_HasSelection(ImGuiInputTextCallbackData* self);
@@ -3512,7 +3505,7 @@ CIMGUI_API void ImGuiWindowClass_destroy(ImGuiWindowClass* self);
 CIMGUI_API ImGuiPayload* ImGuiPayload_ImGuiPayload(void);
 CIMGUI_API void ImGuiPayload_destroy(ImGuiPayload* self);
 CIMGUI_API void ImGuiPayload_Clear(ImGuiPayload* self);
-CIMGUI_API bool ImGuiPayload_IsDataType(ImGuiPayload* self, const char* type);
+CIMGUI_API bool ImGuiPayload_IsDataType(ImGuiPayload* self,const char* type);
 CIMGUI_API bool ImGuiPayload_IsPreview(ImGuiPayload* self);
 CIMGUI_API bool ImGuiPayload_IsDelivery(ImGuiPayload* self);
 CIMGUI_API ImGuiTableColumnSortSpecs* ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs(void);
@@ -3523,16 +3516,16 @@ CIMGUI_API ImGuiOnceUponAFrame* ImGuiOnceUponAFrame_ImGuiOnceUponAFrame(void);
 CIMGUI_API void ImGuiOnceUponAFrame_destroy(ImGuiOnceUponAFrame* self);
 CIMGUI_API ImGuiTextFilter* ImGuiTextFilter_ImGuiTextFilter(const char* default_filter);
 CIMGUI_API void ImGuiTextFilter_destroy(ImGuiTextFilter* self);
-CIMGUI_API bool ImGuiTextFilter_Draw(ImGuiTextFilter* self, const char* label, float width);
-CIMGUI_API bool ImGuiTextFilter_PassFilter(ImGuiTextFilter* self, const char* text, const char* text_end);
+CIMGUI_API bool ImGuiTextFilter_Draw(ImGuiTextFilter* self,const char* label,float width);
+CIMGUI_API bool ImGuiTextFilter_PassFilter(ImGuiTextFilter* self,const char* text,const char* text_end);
 CIMGUI_API void ImGuiTextFilter_Build(ImGuiTextFilter* self);
 CIMGUI_API void ImGuiTextFilter_Clear(ImGuiTextFilter* self);
 CIMGUI_API bool ImGuiTextFilter_IsActive(ImGuiTextFilter* self);
 CIMGUI_API ImGuiTextRange* ImGuiTextRange_ImGuiTextRange_Nil(void);
 CIMGUI_API void ImGuiTextRange_destroy(ImGuiTextRange* self);
-CIMGUI_API ImGuiTextRange* ImGuiTextRange_ImGuiTextRange_Str(const char* _b, const char* _e);
+CIMGUI_API ImGuiTextRange* ImGuiTextRange_ImGuiTextRange_Str(const char* _b,const char* _e);
 CIMGUI_API bool ImGuiTextRange_empty(ImGuiTextRange* self);
-CIMGUI_API void ImGuiTextRange_split(ImGuiTextRange* self, char separator, ImVector_ImGuiTextRange* out);
+CIMGUI_API void ImGuiTextRange_split(ImGuiTextRange* self,char separator,ImVector_ImGuiTextRange* out);
 CIMGUI_API ImGuiTextBuffer* ImGuiTextBuffer_ImGuiTextBuffer(void);
 CIMGUI_API void ImGuiTextBuffer_destroy(ImGuiTextBuffer* self);
 CIMGUI_API const char* ImGuiTextBuffer_begin(ImGuiTextBuffer* self);
@@ -3540,43 +3533,43 @@ CIMGUI_API const char* ImGuiTextBuffer_end(ImGuiTextBuffer* self);
 CIMGUI_API int ImGuiTextBuffer_size(ImGuiTextBuffer* self);
 CIMGUI_API bool ImGuiTextBuffer_empty(ImGuiTextBuffer* self);
 CIMGUI_API void ImGuiTextBuffer_clear(ImGuiTextBuffer* self);
-CIMGUI_API void ImGuiTextBuffer_reserve(ImGuiTextBuffer* self, int capacity);
+CIMGUI_API void ImGuiTextBuffer_reserve(ImGuiTextBuffer* self,int capacity);
 CIMGUI_API const char* ImGuiTextBuffer_c_str(ImGuiTextBuffer* self);
-CIMGUI_API void ImGuiTextBuffer_append(ImGuiTextBuffer* self, const char* str, const char* str_end);
-CIMGUI_API void ImGuiTextBuffer_appendfv(ImGuiTextBuffer* self, const char* fmt, va_list args);
-CIMGUI_API ImGuiStoragePair* ImGuiStoragePair_ImGuiStoragePair_Int(ImGuiID _key, int _val_i);
+CIMGUI_API void ImGuiTextBuffer_append(ImGuiTextBuffer* self,const char* str,const char* str_end);
+CIMGUI_API void ImGuiTextBuffer_appendfv(ImGuiTextBuffer* self,const char* fmt,va_list args);
+CIMGUI_API ImGuiStoragePair* ImGuiStoragePair_ImGuiStoragePair_Int(ImGuiID _key,int _val_i);
 CIMGUI_API void ImGuiStoragePair_destroy(ImGuiStoragePair* self);
-CIMGUI_API ImGuiStoragePair* ImGuiStoragePair_ImGuiStoragePair_Float(ImGuiID _key, float _val_f);
-CIMGUI_API ImGuiStoragePair* ImGuiStoragePair_ImGuiStoragePair_Ptr(ImGuiID _key, void* _val_p);
+CIMGUI_API ImGuiStoragePair* ImGuiStoragePair_ImGuiStoragePair_Float(ImGuiID _key,float _val_f);
+CIMGUI_API ImGuiStoragePair* ImGuiStoragePair_ImGuiStoragePair_Ptr(ImGuiID _key,void* _val_p);
 CIMGUI_API void ImGuiStorage_Clear(ImGuiStorage* self);
-CIMGUI_API int ImGuiStorage_GetInt(ImGuiStorage* self, ImGuiID key, int default_val);
-CIMGUI_API void ImGuiStorage_SetInt(ImGuiStorage* self, ImGuiID key, int val);
-CIMGUI_API bool ImGuiStorage_GetBool(ImGuiStorage* self, ImGuiID key, bool default_val);
-CIMGUI_API void ImGuiStorage_SetBool(ImGuiStorage* self, ImGuiID key, bool val);
-CIMGUI_API float ImGuiStorage_GetFloat(ImGuiStorage* self, ImGuiID key, float default_val);
-CIMGUI_API void ImGuiStorage_SetFloat(ImGuiStorage* self, ImGuiID key, float val);
-CIMGUI_API void* ImGuiStorage_GetVoidPtr(ImGuiStorage* self, ImGuiID key);
-CIMGUI_API void ImGuiStorage_SetVoidPtr(ImGuiStorage* self, ImGuiID key, void* val);
-CIMGUI_API int* ImGuiStorage_GetIntRef(ImGuiStorage* self, ImGuiID key, int default_val);
-CIMGUI_API bool* ImGuiStorage_GetBoolRef(ImGuiStorage* self, ImGuiID key, bool default_val);
-CIMGUI_API float* ImGuiStorage_GetFloatRef(ImGuiStorage* self, ImGuiID key, float default_val);
-CIMGUI_API void** ImGuiStorage_GetVoidPtrRef(ImGuiStorage* self, ImGuiID key, void* default_val);
-CIMGUI_API void ImGuiStorage_SetAllInt(ImGuiStorage* self, int val);
+CIMGUI_API int ImGuiStorage_GetInt(ImGuiStorage* self,ImGuiID key,int default_val);
+CIMGUI_API void ImGuiStorage_SetInt(ImGuiStorage* self,ImGuiID key,int val);
+CIMGUI_API bool ImGuiStorage_GetBool(ImGuiStorage* self,ImGuiID key,bool default_val);
+CIMGUI_API void ImGuiStorage_SetBool(ImGuiStorage* self,ImGuiID key,bool val);
+CIMGUI_API float ImGuiStorage_GetFloat(ImGuiStorage* self,ImGuiID key,float default_val);
+CIMGUI_API void ImGuiStorage_SetFloat(ImGuiStorage* self,ImGuiID key,float val);
+CIMGUI_API void* ImGuiStorage_GetVoidPtr(ImGuiStorage* self,ImGuiID key);
+CIMGUI_API void ImGuiStorage_SetVoidPtr(ImGuiStorage* self,ImGuiID key,void* val);
+CIMGUI_API int* ImGuiStorage_GetIntRef(ImGuiStorage* self,ImGuiID key,int default_val);
+CIMGUI_API bool* ImGuiStorage_GetBoolRef(ImGuiStorage* self,ImGuiID key,bool default_val);
+CIMGUI_API float* ImGuiStorage_GetFloatRef(ImGuiStorage* self,ImGuiID key,float default_val);
+CIMGUI_API void** ImGuiStorage_GetVoidPtrRef(ImGuiStorage* self,ImGuiID key,void* default_val);
+CIMGUI_API void ImGuiStorage_SetAllInt(ImGuiStorage* self,int val);
 CIMGUI_API void ImGuiStorage_BuildSortByKey(ImGuiStorage* self);
 CIMGUI_API ImGuiListClipper* ImGuiListClipper_ImGuiListClipper(void);
 CIMGUI_API void ImGuiListClipper_destroy(ImGuiListClipper* self);
-CIMGUI_API void ImGuiListClipper_Begin(ImGuiListClipper* self, int items_count, float items_height);
+CIMGUI_API void ImGuiListClipper_Begin(ImGuiListClipper* self,int items_count,float items_height);
 CIMGUI_API void ImGuiListClipper_End(ImGuiListClipper* self);
 CIMGUI_API bool ImGuiListClipper_Step(ImGuiListClipper* self);
-CIMGUI_API void ImGuiListClipper_ForceDisplayRangeByIndices(ImGuiListClipper* self, int item_min, int item_max);
+CIMGUI_API void ImGuiListClipper_ForceDisplayRangeByIndices(ImGuiListClipper* self,int item_min,int item_max);
 CIMGUI_API ImColor* ImColor_ImColor_Nil(void);
 CIMGUI_API void ImColor_destroy(ImColor* self);
-CIMGUI_API ImColor* ImColor_ImColor_Float(float r, float g, float b, float a);
+CIMGUI_API ImColor* ImColor_ImColor_Float(float r,float g,float b,float a);
 CIMGUI_API ImColor* ImColor_ImColor_Vec4(const ImVec4 col);
-CIMGUI_API ImColor* ImColor_ImColor_Int(int r, int g, int b, int a);
+CIMGUI_API ImColor* ImColor_ImColor_Int(int r,int g,int b,int a);
 CIMGUI_API ImColor* ImColor_ImColor_U32(ImU32 rgba);
-CIMGUI_API void ImColor_SetHSV(ImColor* self, float h, float s, float v, float a);
-CIMGUI_API void ImColor_HSV(ImColor* pOut, float h, float s, float v, float a);
+CIMGUI_API void ImColor_SetHSV(ImColor* self,float h,float s,float v,float a);
+CIMGUI_API void ImColor_HSV(ImColor *pOut,float h,float s,float v,float a);
 CIMGUI_API ImDrawCmd* ImDrawCmd_ImDrawCmd(void);
 CIMGUI_API void ImDrawCmd_destroy(ImDrawCmd* self);
 CIMGUI_API ImTextureID ImDrawCmd_GetTexID(ImDrawCmd* self);
@@ -3584,63 +3577,63 @@ CIMGUI_API ImDrawListSplitter* ImDrawListSplitter_ImDrawListSplitter(void);
 CIMGUI_API void ImDrawListSplitter_destroy(ImDrawListSplitter* self);
 CIMGUI_API void ImDrawListSplitter_Clear(ImDrawListSplitter* self);
 CIMGUI_API void ImDrawListSplitter_ClearFreeMemory(ImDrawListSplitter* self);
-CIMGUI_API void ImDrawListSplitter_Split(ImDrawListSplitter* self, ImDrawList* draw_list, int count);
-CIMGUI_API void ImDrawListSplitter_Merge(ImDrawListSplitter* self, ImDrawList* draw_list);
-CIMGUI_API void ImDrawListSplitter_SetCurrentChannel(ImDrawListSplitter* self, ImDrawList* draw_list, int channel_idx);
+CIMGUI_API void ImDrawListSplitter_Split(ImDrawListSplitter* self,ImDrawList* draw_list,int count);
+CIMGUI_API void ImDrawListSplitter_Merge(ImDrawListSplitter* self,ImDrawList* draw_list);
+CIMGUI_API void ImDrawListSplitter_SetCurrentChannel(ImDrawListSplitter* self,ImDrawList* draw_list,int channel_idx);
 CIMGUI_API ImDrawList* ImDrawList_ImDrawList(ImDrawListSharedData* shared_data);
 CIMGUI_API void ImDrawList_destroy(ImDrawList* self);
-CIMGUI_API void ImDrawList_PushClipRect(ImDrawList* self, const ImVec2 clip_rect_min, const ImVec2 clip_rect_max, bool intersect_with_current_clip_rect);
+CIMGUI_API void ImDrawList_PushClipRect(ImDrawList* self,const ImVec2 clip_rect_min,const ImVec2 clip_rect_max,bool intersect_with_current_clip_rect);
 CIMGUI_API void ImDrawList_PushClipRectFullScreen(ImDrawList* self);
 CIMGUI_API void ImDrawList_PopClipRect(ImDrawList* self);
-CIMGUI_API void ImDrawList_PushTextureID(ImDrawList* self, ImTextureID texture_id);
+CIMGUI_API void ImDrawList_PushTextureID(ImDrawList* self,ImTextureID texture_id);
 CIMGUI_API void ImDrawList_PopTextureID(ImDrawList* self);
-CIMGUI_API void ImDrawList_GetClipRectMin(ImVec2* pOut, ImDrawList* self);
-CIMGUI_API void ImDrawList_GetClipRectMax(ImVec2* pOut, ImDrawList* self);
-CIMGUI_API void ImDrawList_AddLine(ImDrawList* self, const ImVec2 p1, const ImVec2 p2, ImU32 col, float thickness);
-CIMGUI_API void ImDrawList_AddRect(ImDrawList* self, const ImVec2 p_min, const ImVec2 p_max, ImU32 col, float rounding, ImDrawFlags flags, float thickness);
-CIMGUI_API void ImDrawList_AddRectFilled(ImDrawList* self, const ImVec2 p_min, const ImVec2 p_max, ImU32 col, float rounding, ImDrawFlags flags);
-CIMGUI_API void ImDrawList_AddRectFilledMultiColor(ImDrawList* self, const ImVec2 p_min, const ImVec2 p_max, ImU32 col_upr_left, ImU32 col_upr_right, ImU32 col_bot_right, ImU32 col_bot_left);
-CIMGUI_API void ImDrawList_AddQuad(ImDrawList* self, const ImVec2 p1, const ImVec2 p2, const ImVec2 p3, const ImVec2 p4, ImU32 col, float thickness);
-CIMGUI_API void ImDrawList_AddQuadFilled(ImDrawList* self, const ImVec2 p1, const ImVec2 p2, const ImVec2 p3, const ImVec2 p4, ImU32 col);
-CIMGUI_API void ImDrawList_AddTriangle(ImDrawList* self, const ImVec2 p1, const ImVec2 p2, const ImVec2 p3, ImU32 col, float thickness);
-CIMGUI_API void ImDrawList_AddTriangleFilled(ImDrawList* self, const ImVec2 p1, const ImVec2 p2, const ImVec2 p3, ImU32 col);
-CIMGUI_API void ImDrawList_AddCircle(ImDrawList* self, const ImVec2 center, float radius, ImU32 col, int num_segments, float thickness);
-CIMGUI_API void ImDrawList_AddCircleFilled(ImDrawList* self, const ImVec2 center, float radius, ImU32 col, int num_segments);
-CIMGUI_API void ImDrawList_AddNgon(ImDrawList* self, const ImVec2 center, float radius, ImU32 col, int num_segments, float thickness);
-CIMGUI_API void ImDrawList_AddNgonFilled(ImDrawList* self, const ImVec2 center, float radius, ImU32 col, int num_segments);
-CIMGUI_API void ImDrawList_AddText_Vec2(ImDrawList* self, const ImVec2 pos, ImU32 col, const char* text_begin, const char* text_end);
-CIMGUI_API void ImDrawList_AddText_FontPtr(ImDrawList* self, const ImFont* font, float font_size, const ImVec2 pos, ImU32 col, const char* text_begin, const char* text_end, float wrap_width, const ImVec4* cpu_fine_clip_rect);
-CIMGUI_API void ImDrawList_AddPolyline(ImDrawList* self, const ImVec2* points, int num_points, ImU32 col, ImDrawFlags flags, float thickness);
-CIMGUI_API void ImDrawList_AddConvexPolyFilled(ImDrawList* self, const ImVec2* points, int num_points, ImU32 col);
-CIMGUI_API void ImDrawList_AddBezierCubic(ImDrawList* self, const ImVec2 p1, const ImVec2 p2, const ImVec2 p3, const ImVec2 p4, ImU32 col, float thickness, int num_segments);
-CIMGUI_API void ImDrawList_AddBezierQuadratic(ImDrawList* self, const ImVec2 p1, const ImVec2 p2, const ImVec2 p3, ImU32 col, float thickness, int num_segments);
-CIMGUI_API void ImDrawList_AddImage(ImDrawList* self, ImTextureID user_texture_id, const ImVec2 p_min, const ImVec2 p_max, const ImVec2 uv_min, const ImVec2 uv_max, ImU32 col);
-CIMGUI_API void ImDrawList_AddImageQuad(ImDrawList* self, ImTextureID user_texture_id, const ImVec2 p1, const ImVec2 p2, const ImVec2 p3, const ImVec2 p4, const ImVec2 uv1, const ImVec2 uv2, const ImVec2 uv3, const ImVec2 uv4, ImU32 col);
-CIMGUI_API void ImDrawList_AddImageRounded(ImDrawList* self, ImTextureID user_texture_id, const ImVec2 p_min, const ImVec2 p_max, const ImVec2 uv_min, const ImVec2 uv_max, ImU32 col, float rounding, ImDrawFlags flags);
+CIMGUI_API void ImDrawList_GetClipRectMin(ImVec2 *pOut,ImDrawList* self);
+CIMGUI_API void ImDrawList_GetClipRectMax(ImVec2 *pOut,ImDrawList* self);
+CIMGUI_API void ImDrawList_AddLine(ImDrawList* self,const ImVec2 p1,const ImVec2 p2,ImU32 col,float thickness);
+CIMGUI_API void ImDrawList_AddRect(ImDrawList* self,const ImVec2 p_min,const ImVec2 p_max,ImU32 col,float rounding,ImDrawFlags flags,float thickness);
+CIMGUI_API void ImDrawList_AddRectFilled(ImDrawList* self,const ImVec2 p_min,const ImVec2 p_max,ImU32 col,float rounding,ImDrawFlags flags);
+CIMGUI_API void ImDrawList_AddRectFilledMultiColor(ImDrawList* self,const ImVec2 p_min,const ImVec2 p_max,ImU32 col_upr_left,ImU32 col_upr_right,ImU32 col_bot_right,ImU32 col_bot_left);
+CIMGUI_API void ImDrawList_AddQuad(ImDrawList* self,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,const ImVec2 p4,ImU32 col,float thickness);
+CIMGUI_API void ImDrawList_AddQuadFilled(ImDrawList* self,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,const ImVec2 p4,ImU32 col);
+CIMGUI_API void ImDrawList_AddTriangle(ImDrawList* self,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,ImU32 col,float thickness);
+CIMGUI_API void ImDrawList_AddTriangleFilled(ImDrawList* self,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,ImU32 col);
+CIMGUI_API void ImDrawList_AddCircle(ImDrawList* self,const ImVec2 center,float radius,ImU32 col,int num_segments,float thickness);
+CIMGUI_API void ImDrawList_AddCircleFilled(ImDrawList* self,const ImVec2 center,float radius,ImU32 col,int num_segments);
+CIMGUI_API void ImDrawList_AddNgon(ImDrawList* self,const ImVec2 center,float radius,ImU32 col,int num_segments,float thickness);
+CIMGUI_API void ImDrawList_AddNgonFilled(ImDrawList* self,const ImVec2 center,float radius,ImU32 col,int num_segments);
+CIMGUI_API void ImDrawList_AddText_Vec2(ImDrawList* self,const ImVec2 pos,ImU32 col,const char* text_begin,const char* text_end);
+CIMGUI_API void ImDrawList_AddText_FontPtr(ImDrawList* self,const ImFont* font,float font_size,const ImVec2 pos,ImU32 col,const char* text_begin,const char* text_end,float wrap_width,const ImVec4* cpu_fine_clip_rect);
+CIMGUI_API void ImDrawList_AddPolyline(ImDrawList* self,const ImVec2* points,int num_points,ImU32 col,ImDrawFlags flags,float thickness);
+CIMGUI_API void ImDrawList_AddConvexPolyFilled(ImDrawList* self,const ImVec2* points,int num_points,ImU32 col);
+CIMGUI_API void ImDrawList_AddBezierCubic(ImDrawList* self,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,const ImVec2 p4,ImU32 col,float thickness,int num_segments);
+CIMGUI_API void ImDrawList_AddBezierQuadratic(ImDrawList* self,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,ImU32 col,float thickness,int num_segments);
+CIMGUI_API void ImDrawList_AddImage(ImDrawList* self,ImTextureID user_texture_id,const ImVec2 p_min,const ImVec2 p_max,const ImVec2 uv_min,const ImVec2 uv_max,ImU32 col);
+CIMGUI_API void ImDrawList_AddImageQuad(ImDrawList* self,ImTextureID user_texture_id,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,const ImVec2 p4,const ImVec2 uv1,const ImVec2 uv2,const ImVec2 uv3,const ImVec2 uv4,ImU32 col);
+CIMGUI_API void ImDrawList_AddImageRounded(ImDrawList* self,ImTextureID user_texture_id,const ImVec2 p_min,const ImVec2 p_max,const ImVec2 uv_min,const ImVec2 uv_max,ImU32 col,float rounding,ImDrawFlags flags);
 CIMGUI_API void ImDrawList_PathClear(ImDrawList* self);
-CIMGUI_API void ImDrawList_PathLineTo(ImDrawList* self, const ImVec2 pos);
-CIMGUI_API void ImDrawList_PathLineToMergeDuplicate(ImDrawList* self, const ImVec2 pos);
-CIMGUI_API void ImDrawList_PathFillConvex(ImDrawList* self, ImU32 col);
-CIMGUI_API void ImDrawList_PathStroke(ImDrawList* self, ImU32 col, ImDrawFlags flags, float thickness);
-CIMGUI_API void ImDrawList_PathArcTo(ImDrawList* self, const ImVec2 center, float radius, float a_min, float a_max, int num_segments);
-CIMGUI_API void ImDrawList_PathArcToFast(ImDrawList* self, const ImVec2 center, float radius, int a_min_of_12, int a_max_of_12);
-CIMGUI_API void ImDrawList_PathBezierCubicCurveTo(ImDrawList* self, const ImVec2 p2, const ImVec2 p3, const ImVec2 p4, int num_segments);
-CIMGUI_API void ImDrawList_PathBezierQuadraticCurveTo(ImDrawList* self, const ImVec2 p2, const ImVec2 p3, int num_segments);
-CIMGUI_API void ImDrawList_PathRect(ImDrawList* self, const ImVec2 rect_min, const ImVec2 rect_max, float rounding, ImDrawFlags flags);
-CIMGUI_API void ImDrawList_AddCallback(ImDrawList* self, ImDrawCallback callback, void* callback_data);
+CIMGUI_API void ImDrawList_PathLineTo(ImDrawList* self,const ImVec2 pos);
+CIMGUI_API void ImDrawList_PathLineToMergeDuplicate(ImDrawList* self,const ImVec2 pos);
+CIMGUI_API void ImDrawList_PathFillConvex(ImDrawList* self,ImU32 col);
+CIMGUI_API void ImDrawList_PathStroke(ImDrawList* self,ImU32 col,ImDrawFlags flags,float thickness);
+CIMGUI_API void ImDrawList_PathArcTo(ImDrawList* self,const ImVec2 center,float radius,float a_min,float a_max,int num_segments);
+CIMGUI_API void ImDrawList_PathArcToFast(ImDrawList* self,const ImVec2 center,float radius,int a_min_of_12,int a_max_of_12);
+CIMGUI_API void ImDrawList_PathBezierCubicCurveTo(ImDrawList* self,const ImVec2 p2,const ImVec2 p3,const ImVec2 p4,int num_segments);
+CIMGUI_API void ImDrawList_PathBezierQuadraticCurveTo(ImDrawList* self,const ImVec2 p2,const ImVec2 p3,int num_segments);
+CIMGUI_API void ImDrawList_PathRect(ImDrawList* self,const ImVec2 rect_min,const ImVec2 rect_max,float rounding,ImDrawFlags flags);
+CIMGUI_API void ImDrawList_AddCallback(ImDrawList* self,ImDrawCallback callback,void* callback_data);
 CIMGUI_API void ImDrawList_AddDrawCmd(ImDrawList* self);
 CIMGUI_API ImDrawList* ImDrawList_CloneOutput(ImDrawList* self);
-CIMGUI_API void ImDrawList_ChannelsSplit(ImDrawList* self, int count);
+CIMGUI_API void ImDrawList_ChannelsSplit(ImDrawList* self,int count);
 CIMGUI_API void ImDrawList_ChannelsMerge(ImDrawList* self);
-CIMGUI_API void ImDrawList_ChannelsSetCurrent(ImDrawList* self, int n);
-CIMGUI_API void ImDrawList_PrimReserve(ImDrawList* self, int idx_count, int vtx_count);
-CIMGUI_API void ImDrawList_PrimUnreserve(ImDrawList* self, int idx_count, int vtx_count);
-CIMGUI_API void ImDrawList_PrimRect(ImDrawList* self, const ImVec2 a, const ImVec2 b, ImU32 col);
-CIMGUI_API void ImDrawList_PrimRectUV(ImDrawList* self, const ImVec2 a, const ImVec2 b, const ImVec2 uv_a, const ImVec2 uv_b, ImU32 col);
-CIMGUI_API void ImDrawList_PrimQuadUV(ImDrawList* self, const ImVec2 a, const ImVec2 b, const ImVec2 c, const ImVec2 d, const ImVec2 uv_a, const ImVec2 uv_b, const ImVec2 uv_c, const ImVec2 uv_d, ImU32 col);
-CIMGUI_API void ImDrawList_PrimWriteVtx(ImDrawList* self, const ImVec2 pos, const ImVec2 uv, ImU32 col);
-CIMGUI_API void ImDrawList_PrimWriteIdx(ImDrawList* self, ImDrawIdx idx);
-CIMGUI_API void ImDrawList_PrimVtx(ImDrawList* self, const ImVec2 pos, const ImVec2 uv, ImU32 col);
+CIMGUI_API void ImDrawList_ChannelsSetCurrent(ImDrawList* self,int n);
+CIMGUI_API void ImDrawList_PrimReserve(ImDrawList* self,int idx_count,int vtx_count);
+CIMGUI_API void ImDrawList_PrimUnreserve(ImDrawList* self,int idx_count,int vtx_count);
+CIMGUI_API void ImDrawList_PrimRect(ImDrawList* self,const ImVec2 a,const ImVec2 b,ImU32 col);
+CIMGUI_API void ImDrawList_PrimRectUV(ImDrawList* self,const ImVec2 a,const ImVec2 b,const ImVec2 uv_a,const ImVec2 uv_b,ImU32 col);
+CIMGUI_API void ImDrawList_PrimQuadUV(ImDrawList* self,const ImVec2 a,const ImVec2 b,const ImVec2 c,const ImVec2 d,const ImVec2 uv_a,const ImVec2 uv_b,const ImVec2 uv_c,const ImVec2 uv_d,ImU32 col);
+CIMGUI_API void ImDrawList_PrimWriteVtx(ImDrawList* self,const ImVec2 pos,const ImVec2 uv,ImU32 col);
+CIMGUI_API void ImDrawList_PrimWriteIdx(ImDrawList* self,ImDrawIdx idx);
+CIMGUI_API void ImDrawList_PrimVtx(ImDrawList* self,const ImVec2 pos,const ImVec2 uv,ImU32 col);
 CIMGUI_API void ImDrawList__ResetForNewFrame(ImDrawList* self);
 CIMGUI_API void ImDrawList__ClearFreeMemory(ImDrawList* self);
 CIMGUI_API void ImDrawList__PopUnusedDrawCmd(ImDrawList* self);
@@ -3648,45 +3641,45 @@ CIMGUI_API void ImDrawList__TryMergeDrawCmds(ImDrawList* self);
 CIMGUI_API void ImDrawList__OnChangedClipRect(ImDrawList* self);
 CIMGUI_API void ImDrawList__OnChangedTextureID(ImDrawList* self);
 CIMGUI_API void ImDrawList__OnChangedVtxOffset(ImDrawList* self);
-CIMGUI_API int ImDrawList__CalcCircleAutoSegmentCount(ImDrawList* self, float radius);
-CIMGUI_API void ImDrawList__PathArcToFastEx(ImDrawList* self, const ImVec2 center, float radius, int a_min_sample, int a_max_sample, int a_step);
-CIMGUI_API void ImDrawList__PathArcToN(ImDrawList* self, const ImVec2 center, float radius, float a_min, float a_max, int num_segments);
+CIMGUI_API int ImDrawList__CalcCircleAutoSegmentCount(ImDrawList* self,float radius);
+CIMGUI_API void ImDrawList__PathArcToFastEx(ImDrawList* self,const ImVec2 center,float radius,int a_min_sample,int a_max_sample,int a_step);
+CIMGUI_API void ImDrawList__PathArcToN(ImDrawList* self,const ImVec2 center,float radius,float a_min,float a_max,int num_segments);
 CIMGUI_API ImDrawData* ImDrawData_ImDrawData(void);
 CIMGUI_API void ImDrawData_destroy(ImDrawData* self);
 CIMGUI_API void ImDrawData_Clear(ImDrawData* self);
 CIMGUI_API void ImDrawData_DeIndexAllBuffers(ImDrawData* self);
-CIMGUI_API void ImDrawData_ScaleClipRects(ImDrawData* self, const ImVec2 fb_scale);
+CIMGUI_API void ImDrawData_ScaleClipRects(ImDrawData* self,const ImVec2 fb_scale);
 CIMGUI_API ImFontConfig* ImFontConfig_ImFontConfig(void);
 CIMGUI_API void ImFontConfig_destroy(ImFontConfig* self);
 CIMGUI_API ImFontGlyphRangesBuilder* ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder(void);
 CIMGUI_API void ImFontGlyphRangesBuilder_destroy(ImFontGlyphRangesBuilder* self);
 CIMGUI_API void ImFontGlyphRangesBuilder_Clear(ImFontGlyphRangesBuilder* self);
-CIMGUI_API bool ImFontGlyphRangesBuilder_GetBit(ImFontGlyphRangesBuilder* self, size_t n);
-CIMGUI_API void ImFontGlyphRangesBuilder_SetBit(ImFontGlyphRangesBuilder* self, size_t n);
-CIMGUI_API void ImFontGlyphRangesBuilder_AddChar(ImFontGlyphRangesBuilder* self, ImWchar c);
-CIMGUI_API void ImFontGlyphRangesBuilder_AddText(ImFontGlyphRangesBuilder* self, const char* text, const char* text_end);
-CIMGUI_API void ImFontGlyphRangesBuilder_AddRanges(ImFontGlyphRangesBuilder* self, const ImWchar* ranges);
-CIMGUI_API void ImFontGlyphRangesBuilder_BuildRanges(ImFontGlyphRangesBuilder* self, ImVector_ImWchar* out_ranges);
+CIMGUI_API bool ImFontGlyphRangesBuilder_GetBit(ImFontGlyphRangesBuilder* self,size_t n);
+CIMGUI_API void ImFontGlyphRangesBuilder_SetBit(ImFontGlyphRangesBuilder* self,size_t n);
+CIMGUI_API void ImFontGlyphRangesBuilder_AddChar(ImFontGlyphRangesBuilder* self,ImWchar c);
+CIMGUI_API void ImFontGlyphRangesBuilder_AddText(ImFontGlyphRangesBuilder* self,const char* text,const char* text_end);
+CIMGUI_API void ImFontGlyphRangesBuilder_AddRanges(ImFontGlyphRangesBuilder* self,const ImWchar* ranges);
+CIMGUI_API void ImFontGlyphRangesBuilder_BuildRanges(ImFontGlyphRangesBuilder* self,ImVector_ImWchar* out_ranges);
 CIMGUI_API ImFontAtlasCustomRect* ImFontAtlasCustomRect_ImFontAtlasCustomRect(void);
 CIMGUI_API void ImFontAtlasCustomRect_destroy(ImFontAtlasCustomRect* self);
 CIMGUI_API bool ImFontAtlasCustomRect_IsPacked(ImFontAtlasCustomRect* self);
 CIMGUI_API ImFontAtlas* ImFontAtlas_ImFontAtlas(void);
 CIMGUI_API void ImFontAtlas_destroy(ImFontAtlas* self);
-CIMGUI_API ImFont* ImFontAtlas_AddFont(ImFontAtlas* self, const ImFontConfig* font_cfg);
-CIMGUI_API ImFont* ImFontAtlas_AddFontDefault(ImFontAtlas* self, const ImFontConfig* font_cfg);
-CIMGUI_API ImFont* ImFontAtlas_AddFontFromFileTTF(ImFontAtlas* self, const char* filename, float size_pixels, const ImFontConfig* font_cfg, const ImWchar* glyph_ranges);
-CIMGUI_API ImFont* ImFontAtlas_AddFontFromMemoryTTF(ImFontAtlas* self, void* font_data, int font_size, float size_pixels, const ImFontConfig* font_cfg, const ImWchar* glyph_ranges);
-CIMGUI_API ImFont* ImFontAtlas_AddFontFromMemoryCompressedTTF(ImFontAtlas* self, const void* compressed_font_data, int compressed_font_size, float size_pixels, const ImFontConfig* font_cfg, const ImWchar* glyph_ranges);
-CIMGUI_API ImFont* ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(ImFontAtlas* self, const char* compressed_font_data_base85, float size_pixels, const ImFontConfig* font_cfg, const ImWchar* glyph_ranges);
+CIMGUI_API ImFont* ImFontAtlas_AddFont(ImFontAtlas* self,const ImFontConfig* font_cfg);
+CIMGUI_API ImFont* ImFontAtlas_AddFontDefault(ImFontAtlas* self,const ImFontConfig* font_cfg);
+CIMGUI_API ImFont* ImFontAtlas_AddFontFromFileTTF(ImFontAtlas* self,const char* filename,float size_pixels,const ImFontConfig* font_cfg,const ImWchar* glyph_ranges);
+CIMGUI_API ImFont* ImFontAtlas_AddFontFromMemoryTTF(ImFontAtlas* self,void* font_data,int font_size,float size_pixels,const ImFontConfig* font_cfg,const ImWchar* glyph_ranges);
+CIMGUI_API ImFont* ImFontAtlas_AddFontFromMemoryCompressedTTF(ImFontAtlas* self,const void* compressed_font_data,int compressed_font_size,float size_pixels,const ImFontConfig* font_cfg,const ImWchar* glyph_ranges);
+CIMGUI_API ImFont* ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(ImFontAtlas* self,const char* compressed_font_data_base85,float size_pixels,const ImFontConfig* font_cfg,const ImWchar* glyph_ranges);
 CIMGUI_API void ImFontAtlas_ClearInputData(ImFontAtlas* self);
 CIMGUI_API void ImFontAtlas_ClearTexData(ImFontAtlas* self);
 CIMGUI_API void ImFontAtlas_ClearFonts(ImFontAtlas* self);
 CIMGUI_API void ImFontAtlas_Clear(ImFontAtlas* self);
 CIMGUI_API bool ImFontAtlas_Build(ImFontAtlas* self);
-CIMGUI_API void ImFontAtlas_GetTexDataAsAlpha8(ImFontAtlas* self, unsigned char** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel);
-CIMGUI_API void ImFontAtlas_GetTexDataAsRGBA32(ImFontAtlas* self, unsigned char** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel);
+CIMGUI_API void ImFontAtlas_GetTexDataAsAlpha8(ImFontAtlas* self,unsigned char** out_pixels,int* out_width,int* out_height,int* out_bytes_per_pixel);
+CIMGUI_API void ImFontAtlas_GetTexDataAsRGBA32(ImFontAtlas* self,unsigned char** out_pixels,int* out_width,int* out_height,int* out_bytes_per_pixel);
 CIMGUI_API bool ImFontAtlas_IsBuilt(ImFontAtlas* self);
-CIMGUI_API void ImFontAtlas_SetTexID(ImFontAtlas* self, ImTextureID id);
+CIMGUI_API void ImFontAtlas_SetTexID(ImFontAtlas* self,ImTextureID id);
 CIMGUI_API const ImWchar* ImFontAtlas_GetGlyphRangesDefault(ImFontAtlas* self);
 CIMGUI_API const ImWchar* ImFontAtlas_GetGlyphRangesGreek(ImFontAtlas* self);
 CIMGUI_API const ImWchar* ImFontAtlas_GetGlyphRangesKorean(ImFontAtlas* self);
@@ -3696,33 +3689,33 @@ CIMGUI_API const ImWchar* ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon(ImFo
 CIMGUI_API const ImWchar* ImFontAtlas_GetGlyphRangesCyrillic(ImFontAtlas* self);
 CIMGUI_API const ImWchar* ImFontAtlas_GetGlyphRangesThai(ImFontAtlas* self);
 CIMGUI_API const ImWchar* ImFontAtlas_GetGlyphRangesVietnamese(ImFontAtlas* self);
-CIMGUI_API int ImFontAtlas_AddCustomRectRegular(ImFontAtlas* self, int width, int height);
-CIMGUI_API int ImFontAtlas_AddCustomRectFontGlyph(ImFontAtlas* self, ImFont* font, ImWchar id, int width, int height, float advance_x, const ImVec2 offset);
-CIMGUI_API ImFontAtlasCustomRect* ImFontAtlas_GetCustomRectByIndex(ImFontAtlas* self, int index);
-CIMGUI_API void ImFontAtlas_CalcCustomRectUV(ImFontAtlas* self, const ImFontAtlasCustomRect* rect, ImVec2* out_uv_min, ImVec2* out_uv_max);
-CIMGUI_API bool ImFontAtlas_GetMouseCursorTexData(ImFontAtlas* self, ImGuiMouseCursor cursor, ImVec2* out_offset, ImVec2* out_size, ImVec2 out_uv_border[2], ImVec2 out_uv_fill[2]);
+CIMGUI_API int ImFontAtlas_AddCustomRectRegular(ImFontAtlas* self,int width,int height);
+CIMGUI_API int ImFontAtlas_AddCustomRectFontGlyph(ImFontAtlas* self,ImFont* font,ImWchar id,int width,int height,float advance_x,const ImVec2 offset);
+CIMGUI_API ImFontAtlasCustomRect* ImFontAtlas_GetCustomRectByIndex(ImFontAtlas* self,int index);
+CIMGUI_API void ImFontAtlas_CalcCustomRectUV(ImFontAtlas* self,const ImFontAtlasCustomRect* rect,ImVec2* out_uv_min,ImVec2* out_uv_max);
+CIMGUI_API bool ImFontAtlas_GetMouseCursorTexData(ImFontAtlas* self,ImGuiMouseCursor cursor,ImVec2* out_offset,ImVec2* out_size,ImVec2 out_uv_border[2],ImVec2 out_uv_fill[2]);
 CIMGUI_API ImFont* ImFont_ImFont(void);
 CIMGUI_API void ImFont_destroy(ImFont* self);
-CIMGUI_API const ImFontGlyph* ImFont_FindGlyph(ImFont* self, ImWchar c);
-CIMGUI_API const ImFontGlyph* ImFont_FindGlyphNoFallback(ImFont* self, ImWchar c);
-CIMGUI_API float ImFont_GetCharAdvance(ImFont* self, ImWchar c);
+CIMGUI_API const ImFontGlyph* ImFont_FindGlyph(ImFont* self,ImWchar c);
+CIMGUI_API const ImFontGlyph* ImFont_FindGlyphNoFallback(ImFont* self,ImWchar c);
+CIMGUI_API float ImFont_GetCharAdvance(ImFont* self,ImWchar c);
 CIMGUI_API bool ImFont_IsLoaded(ImFont* self);
 CIMGUI_API const char* ImFont_GetDebugName(ImFont* self);
-CIMGUI_API void ImFont_CalcTextSizeA(ImVec2* pOut, ImFont* self, float size, float max_width, float wrap_width, const char* text_begin, const char* text_end, const char** remaining);
-CIMGUI_API const char* ImFont_CalcWordWrapPositionA(ImFont* self, float scale, const char* text, const char* text_end, float wrap_width);
-CIMGUI_API void ImFont_RenderChar(ImFont* self, ImDrawList* draw_list, float size, const ImVec2 pos, ImU32 col, ImWchar c);
-CIMGUI_API void ImFont_RenderText(ImFont* self, ImDrawList* draw_list, float size, const ImVec2 pos, ImU32 col, const ImVec4 clip_rect, const char* text_begin, const char* text_end, float wrap_width, bool cpu_fine_clip);
+CIMGUI_API void ImFont_CalcTextSizeA(ImVec2 *pOut,ImFont* self,float size,float max_width,float wrap_width,const char* text_begin,const char* text_end,const char** remaining);
+CIMGUI_API const char* ImFont_CalcWordWrapPositionA(ImFont* self,float scale,const char* text,const char* text_end,float wrap_width);
+CIMGUI_API void ImFont_RenderChar(ImFont* self,ImDrawList* draw_list,float size,const ImVec2 pos,ImU32 col,ImWchar c);
+CIMGUI_API void ImFont_RenderText(ImFont* self,ImDrawList* draw_list,float size,const ImVec2 pos,ImU32 col,const ImVec4 clip_rect,const char* text_begin,const char* text_end,float wrap_width,bool cpu_fine_clip);
 CIMGUI_API void ImFont_BuildLookupTable(ImFont* self);
 CIMGUI_API void ImFont_ClearOutputData(ImFont* self);
-CIMGUI_API void ImFont_GrowIndex(ImFont* self, int new_size);
-CIMGUI_API void ImFont_AddGlyph(ImFont* self, const ImFontConfig* src_cfg, ImWchar c, float x0, float y0, float x1, float y1, float u0, float v0, float u1, float v1, float advance_x);
-CIMGUI_API void ImFont_AddRemapChar(ImFont* self, ImWchar dst, ImWchar src, bool overwrite_dst);
-CIMGUI_API void ImFont_SetGlyphVisible(ImFont* self, ImWchar c, bool visible);
-CIMGUI_API bool ImFont_IsGlyphRangeUnused(ImFont* self, unsigned int c_begin, unsigned int c_last);
+CIMGUI_API void ImFont_GrowIndex(ImFont* self,int new_size);
+CIMGUI_API void ImFont_AddGlyph(ImFont* self,const ImFontConfig* src_cfg,ImWchar c,float x0,float y0,float x1,float y1,float u0,float v0,float u1,float v1,float advance_x);
+CIMGUI_API void ImFont_AddRemapChar(ImFont* self,ImWchar dst,ImWchar src,bool overwrite_dst);
+CIMGUI_API void ImFont_SetGlyphVisible(ImFont* self,ImWchar c,bool visible);
+CIMGUI_API bool ImFont_IsGlyphRangeUnused(ImFont* self,unsigned int c_begin,unsigned int c_last);
 CIMGUI_API ImGuiViewport* ImGuiViewport_ImGuiViewport(void);
 CIMGUI_API void ImGuiViewport_destroy(ImGuiViewport* self);
-CIMGUI_API void ImGuiViewport_GetCenter(ImVec2* pOut, ImGuiViewport* self);
-CIMGUI_API void ImGuiViewport_GetWorkCenter(ImVec2* pOut, ImGuiViewport* self);
+CIMGUI_API void ImGuiViewport_GetCenter(ImVec2 *pOut,ImGuiViewport* self);
+CIMGUI_API void ImGuiViewport_GetWorkCenter(ImVec2 *pOut,ImGuiViewport* self);
 CIMGUI_API ImGuiPlatformIO* ImGuiPlatformIO_ImGuiPlatformIO(void);
 CIMGUI_API void ImGuiPlatformIO_destroy(ImGuiPlatformIO* self);
 CIMGUI_API ImGuiPlatformMonitor* ImGuiPlatformMonitor_ImGuiPlatformMonitor(void);
@@ -3730,53 +3723,53 @@ CIMGUI_API void ImGuiPlatformMonitor_destroy(ImGuiPlatformMonitor* self);
 CIMGUI_API ImGuiPlatformImeData* ImGuiPlatformImeData_ImGuiPlatformImeData(void);
 CIMGUI_API void ImGuiPlatformImeData_destroy(ImGuiPlatformImeData* self);
 CIMGUI_API ImGuiKey igGetKeyIndex(ImGuiKey key);
-CIMGUI_API ImGuiID igImHashData(const void* data, size_t data_size, ImU32 seed);
-CIMGUI_API ImGuiID igImHashStr(const char* data, size_t data_size, ImU32 seed);
-CIMGUI_API void igImQsort(void* base, size_t count, size_t size_of_element, int(*compare_func)(void const*, void const*));
-CIMGUI_API ImU32 igImAlphaBlendColors(ImU32 col_a, ImU32 col_b);
+CIMGUI_API ImGuiID igImHashData(const void* data,size_t data_size,ImU32 seed);
+CIMGUI_API ImGuiID igImHashStr(const char* data,size_t data_size,ImU32 seed);
+CIMGUI_API void igImQsort(void* base,size_t count,size_t size_of_element,int(*compare_func)(void const*,void const*));
+CIMGUI_API ImU32 igImAlphaBlendColors(ImU32 col_a,ImU32 col_b);
 CIMGUI_API bool igImIsPowerOfTwo_Int(int v);
 CIMGUI_API bool igImIsPowerOfTwo_U64(ImU64 v);
 CIMGUI_API int igImUpperPowerOfTwo(int v);
-CIMGUI_API int igImStricmp(const char* str1, const char* str2);
-CIMGUI_API int igImStrnicmp(const char* str1, const char* str2, size_t count);
-CIMGUI_API void igImStrncpy(char* dst, const char* src, size_t count);
+CIMGUI_API int igImStricmp(const char* str1,const char* str2);
+CIMGUI_API int igImStrnicmp(const char* str1,const char* str2,size_t count);
+CIMGUI_API void igImStrncpy(char* dst,const char* src,size_t count);
 CIMGUI_API char* igImStrdup(const char* str);
-CIMGUI_API char* igImStrdupcpy(char* dst, size_t* p_dst_size, const char* str);
-CIMGUI_API const char* igImStrchrRange(const char* str_begin, const char* str_end, char c);
+CIMGUI_API char* igImStrdupcpy(char* dst,size_t* p_dst_size,const char* str);
+CIMGUI_API const char* igImStrchrRange(const char* str_begin,const char* str_end,char c);
 CIMGUI_API int igImStrlenW(const ImWchar* str);
-CIMGUI_API const char* igImStreolRange(const char* str, const char* str_end);
-CIMGUI_API const ImWchar* igImStrbolW(const ImWchar* buf_mid_line, const ImWchar* buf_begin);
-CIMGUI_API const char* igImStristr(const char* haystack, const char* haystack_end, const char* needle, const char* needle_end);
+CIMGUI_API const char* igImStreolRange(const char* str,const char* str_end);
+CIMGUI_API const ImWchar* igImStrbolW(const ImWchar* buf_mid_line,const ImWchar* buf_begin);
+CIMGUI_API const char* igImStristr(const char* haystack,const char* haystack_end,const char* needle,const char* needle_end);
 CIMGUI_API void igImStrTrimBlanks(char* str);
 CIMGUI_API const char* igImStrSkipBlank(const char* str);
 CIMGUI_API char igImToUpper(char c);
 CIMGUI_API bool igImCharIsBlankA(char c);
 CIMGUI_API bool igImCharIsBlankW(unsigned int c);
-CIMGUI_API int igImFormatString(char* buf, size_t buf_size, const char* fmt, ...);
-CIMGUI_API int igImFormatStringV(char* buf, size_t buf_size, const char* fmt, va_list args);
-CIMGUI_API void igImFormatStringToTempBuffer(const char** out_buf, const char** out_buf_end, const char* fmt, ...);
-CIMGUI_API void igImFormatStringToTempBufferV(const char** out_buf, const char** out_buf_end, const char* fmt, va_list args);
+CIMGUI_API int igImFormatString(char* buf,size_t buf_size,const char* fmt,...);
+CIMGUI_API int igImFormatStringV(char* buf,size_t buf_size,const char* fmt,va_list args);
+CIMGUI_API void igImFormatStringToTempBuffer(const char** out_buf,const char** out_buf_end,const char* fmt,...);
+CIMGUI_API void igImFormatStringToTempBufferV(const char** out_buf,const char** out_buf_end,const char* fmt,va_list args);
 CIMGUI_API const char* igImParseFormatFindStart(const char* format);
 CIMGUI_API const char* igImParseFormatFindEnd(const char* format);
-CIMGUI_API const char* igImParseFormatTrimDecorations(const char* format, char* buf, size_t buf_size);
-CIMGUI_API void igImParseFormatSanitizeForPrinting(const char* fmt_in, char* fmt_out, size_t fmt_out_size);
-CIMGUI_API const char* igImParseFormatSanitizeForScanning(const char* fmt_in, char* fmt_out, size_t fmt_out_size);
-CIMGUI_API int igImParseFormatPrecision(const char* format, int default_value);
-CIMGUI_API const char* igImTextCharToUtf8(char out_buf[5], unsigned int c);
-CIMGUI_API int igImTextStrToUtf8(char* out_buf, int out_buf_size, const ImWchar* in_text, const ImWchar* in_text_end);
-CIMGUI_API int igImTextCharFromUtf8(unsigned int* out_char, const char* in_text, const char* in_text_end);
-CIMGUI_API int igImTextStrFromUtf8(ImWchar* out_buf, int out_buf_size, const char* in_text, const char* in_text_end, const char** in_remaining);
-CIMGUI_API int igImTextCountCharsFromUtf8(const char* in_text, const char* in_text_end);
-CIMGUI_API int igImTextCountUtf8BytesFromChar(const char* in_text, const char* in_text_end);
-CIMGUI_API int igImTextCountUtf8BytesFromStr(const ImWchar* in_text, const ImWchar* in_text_end);
-CIMGUI_API ImFileHandle igImFileOpen(const char* filename, const char* mode);
+CIMGUI_API const char* igImParseFormatTrimDecorations(const char* format,char* buf,size_t buf_size);
+CIMGUI_API void igImParseFormatSanitizeForPrinting(const char* fmt_in,char* fmt_out,size_t fmt_out_size);
+CIMGUI_API const char* igImParseFormatSanitizeForScanning(const char* fmt_in,char* fmt_out,size_t fmt_out_size);
+CIMGUI_API int igImParseFormatPrecision(const char* format,int default_value);
+CIMGUI_API const char* igImTextCharToUtf8(char out_buf[5],unsigned int c);
+CIMGUI_API int igImTextStrToUtf8(char* out_buf,int out_buf_size,const ImWchar* in_text,const ImWchar* in_text_end);
+CIMGUI_API int igImTextCharFromUtf8(unsigned int* out_char,const char* in_text,const char* in_text_end);
+CIMGUI_API int igImTextStrFromUtf8(ImWchar* out_buf,int out_buf_size,const char* in_text,const char* in_text_end,const char** in_remaining);
+CIMGUI_API int igImTextCountCharsFromUtf8(const char* in_text,const char* in_text_end);
+CIMGUI_API int igImTextCountUtf8BytesFromChar(const char* in_text,const char* in_text_end);
+CIMGUI_API int igImTextCountUtf8BytesFromStr(const ImWchar* in_text,const ImWchar* in_text_end);
+CIMGUI_API ImFileHandle igImFileOpen(const char* filename,const char* mode);
 CIMGUI_API bool igImFileClose(ImFileHandle file);
 CIMGUI_API ImU64 igImFileGetSize(ImFileHandle file);
-CIMGUI_API ImU64 igImFileRead(void* data, ImU64 size, ImU64 count, ImFileHandle file);
-CIMGUI_API ImU64 igImFileWrite(const void* data, ImU64 size, ImU64 count, ImFileHandle file);
-CIMGUI_API void* igImFileLoadToMemory(const char* filename, const char* mode, size_t* out_file_size, int padding_bytes);
-CIMGUI_API float igImPow_Float(float x, float y);
-CIMGUI_API double igImPow_double(double x, double y);
+CIMGUI_API ImU64 igImFileRead(void* data,ImU64 size,ImU64 count,ImFileHandle file);
+CIMGUI_API ImU64 igImFileWrite(const void* data,ImU64 size,ImU64 count,ImFileHandle file);
+CIMGUI_API void* igImFileLoadToMemory(const char* filename,const char* mode,size_t* out_file_size,int padding_bytes);
+CIMGUI_API float igImPow_Float(float x,float y);
+CIMGUI_API double igImPow_double(double x,double y);
 CIMGUI_API float igImLog_Float(float x);
 CIMGUI_API double igImLog_double(double x);
 CIMGUI_API int igImAbs_Int(int x);
@@ -3786,111 +3779,111 @@ CIMGUI_API float igImSign_Float(float x);
 CIMGUI_API double igImSign_double(double x);
 CIMGUI_API float igImRsqrt_Float(float x);
 CIMGUI_API double igImRsqrt_double(double x);
-CIMGUI_API void igImMin(ImVec2* pOut, const ImVec2 lhs, const ImVec2 rhs);
-CIMGUI_API void igImMax(ImVec2* pOut, const ImVec2 lhs, const ImVec2 rhs);
-CIMGUI_API void igImClamp(ImVec2* pOut, const ImVec2 v, const ImVec2 mn, ImVec2 mx);
-CIMGUI_API void igImLerp_Vec2Float(ImVec2* pOut, const ImVec2 a, const ImVec2 b, float t);
-CIMGUI_API void igImLerp_Vec2Vec2(ImVec2* pOut, const ImVec2 a, const ImVec2 b, const ImVec2 t);
-CIMGUI_API void igImLerp_Vec4(ImVec4* pOut, const ImVec4 a, const ImVec4 b, float t);
+CIMGUI_API void igImMin(ImVec2 *pOut,const ImVec2 lhs,const ImVec2 rhs);
+CIMGUI_API void igImMax(ImVec2 *pOut,const ImVec2 lhs,const ImVec2 rhs);
+CIMGUI_API void igImClamp(ImVec2 *pOut,const ImVec2 v,const ImVec2 mn,ImVec2 mx);
+CIMGUI_API void igImLerp_Vec2Float(ImVec2 *pOut,const ImVec2 a,const ImVec2 b,float t);
+CIMGUI_API void igImLerp_Vec2Vec2(ImVec2 *pOut,const ImVec2 a,const ImVec2 b,const ImVec2 t);
+CIMGUI_API void igImLerp_Vec4(ImVec4 *pOut,const ImVec4 a,const ImVec4 b,float t);
 CIMGUI_API float igImSaturate(float f);
 CIMGUI_API float igImLengthSqr_Vec2(const ImVec2 lhs);
 CIMGUI_API float igImLengthSqr_Vec4(const ImVec4 lhs);
-CIMGUI_API float igImInvLength(const ImVec2 lhs, float fail_value);
+CIMGUI_API float igImInvLength(const ImVec2 lhs,float fail_value);
 CIMGUI_API float igImFloor_Float(float f);
 CIMGUI_API float igImFloorSigned_Float(float f);
-CIMGUI_API void igImFloor_Vec2(ImVec2* pOut, const ImVec2 v);
-CIMGUI_API void igImFloorSigned_Vec2(ImVec2* pOut, const ImVec2 v);
-CIMGUI_API int igImModPositive(int a, int b);
-CIMGUI_API float igImDot(const ImVec2 a, const ImVec2 b);
-CIMGUI_API void igImRotate(ImVec2* pOut, const ImVec2 v, float cos_a, float sin_a);
-CIMGUI_API float igImLinearSweep(float current, float target, float speed);
-CIMGUI_API void igImMul(ImVec2* pOut, const ImVec2 lhs, const ImVec2 rhs);
+CIMGUI_API void igImFloor_Vec2(ImVec2 *pOut,const ImVec2 v);
+CIMGUI_API void igImFloorSigned_Vec2(ImVec2 *pOut,const ImVec2 v);
+CIMGUI_API int igImModPositive(int a,int b);
+CIMGUI_API float igImDot(const ImVec2 a,const ImVec2 b);
+CIMGUI_API void igImRotate(ImVec2 *pOut,const ImVec2 v,float cos_a,float sin_a);
+CIMGUI_API float igImLinearSweep(float current,float target,float speed);
+CIMGUI_API void igImMul(ImVec2 *pOut,const ImVec2 lhs,const ImVec2 rhs);
 CIMGUI_API bool igImIsFloatAboveGuaranteedIntegerPrecision(float f);
-CIMGUI_API void igImBezierCubicCalc(ImVec2* pOut, const ImVec2 p1, const ImVec2 p2, const ImVec2 p3, const ImVec2 p4, float t);
-CIMGUI_API void igImBezierCubicClosestPoint(ImVec2* pOut, const ImVec2 p1, const ImVec2 p2, const ImVec2 p3, const ImVec2 p4, const ImVec2 p, int num_segments);
-CIMGUI_API void igImBezierCubicClosestPointCasteljau(ImVec2* pOut, const ImVec2 p1, const ImVec2 p2, const ImVec2 p3, const ImVec2 p4, const ImVec2 p, float tess_tol);
-CIMGUI_API void igImBezierQuadraticCalc(ImVec2* pOut, const ImVec2 p1, const ImVec2 p2, const ImVec2 p3, float t);
-CIMGUI_API void igImLineClosestPoint(ImVec2* pOut, const ImVec2 a, const ImVec2 b, const ImVec2 p);
-CIMGUI_API bool igImTriangleContainsPoint(const ImVec2 a, const ImVec2 b, const ImVec2 c, const ImVec2 p);
-CIMGUI_API void igImTriangleClosestPoint(ImVec2* pOut, const ImVec2 a, const ImVec2 b, const ImVec2 c, const ImVec2 p);
-CIMGUI_API void igImTriangleBarycentricCoords(const ImVec2 a, const ImVec2 b, const ImVec2 c, const ImVec2 p, float* out_u, float* out_v, float* out_w);
-CIMGUI_API float igImTriangleArea(const ImVec2 a, const ImVec2 b, const ImVec2 c);
-CIMGUI_API ImGuiDir igImGetDirQuadrantFromDelta(float dx, float dy);
+CIMGUI_API void igImBezierCubicCalc(ImVec2 *pOut,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,const ImVec2 p4,float t);
+CIMGUI_API void igImBezierCubicClosestPoint(ImVec2 *pOut,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,const ImVec2 p4,const ImVec2 p,int num_segments);
+CIMGUI_API void igImBezierCubicClosestPointCasteljau(ImVec2 *pOut,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,const ImVec2 p4,const ImVec2 p,float tess_tol);
+CIMGUI_API void igImBezierQuadraticCalc(ImVec2 *pOut,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,float t);
+CIMGUI_API void igImLineClosestPoint(ImVec2 *pOut,const ImVec2 a,const ImVec2 b,const ImVec2 p);
+CIMGUI_API bool igImTriangleContainsPoint(const ImVec2 a,const ImVec2 b,const ImVec2 c,const ImVec2 p);
+CIMGUI_API void igImTriangleClosestPoint(ImVec2 *pOut,const ImVec2 a,const ImVec2 b,const ImVec2 c,const ImVec2 p);
+CIMGUI_API void igImTriangleBarycentricCoords(const ImVec2 a,const ImVec2 b,const ImVec2 c,const ImVec2 p,float* out_u,float* out_v,float* out_w);
+CIMGUI_API float igImTriangleArea(const ImVec2 a,const ImVec2 b,const ImVec2 c);
+CIMGUI_API ImGuiDir igImGetDirQuadrantFromDelta(float dx,float dy);
 CIMGUI_API ImVec1* ImVec1_ImVec1_Nil(void);
 CIMGUI_API void ImVec1_destroy(ImVec1* self);
 CIMGUI_API ImVec1* ImVec1_ImVec1_Float(float _x);
 CIMGUI_API ImVec2ih* ImVec2ih_ImVec2ih_Nil(void);
 CIMGUI_API void ImVec2ih_destroy(ImVec2ih* self);
-CIMGUI_API ImVec2ih* ImVec2ih_ImVec2ih_short(short _x, short _y);
+CIMGUI_API ImVec2ih* ImVec2ih_ImVec2ih_short(short _x,short _y);
 CIMGUI_API ImVec2ih* ImVec2ih_ImVec2ih_Vec2(const ImVec2 rhs);
 CIMGUI_API ImRect* ImRect_ImRect_Nil(void);
 CIMGUI_API void ImRect_destroy(ImRect* self);
-CIMGUI_API ImRect* ImRect_ImRect_Vec2(const ImVec2 min, const ImVec2 max);
+CIMGUI_API ImRect* ImRect_ImRect_Vec2(const ImVec2 min,const ImVec2 max);
 CIMGUI_API ImRect* ImRect_ImRect_Vec4(const ImVec4 v);
-CIMGUI_API ImRect* ImRect_ImRect_Float(float x1, float y1, float x2, float y2);
-CIMGUI_API void ImRect_GetCenter(ImVec2* pOut, ImRect* self);
-CIMGUI_API void ImRect_GetSize(ImVec2* pOut, ImRect* self);
+CIMGUI_API ImRect* ImRect_ImRect_Float(float x1,float y1,float x2,float y2);
+CIMGUI_API void ImRect_GetCenter(ImVec2 *pOut,ImRect* self);
+CIMGUI_API void ImRect_GetSize(ImVec2 *pOut,ImRect* self);
 CIMGUI_API float ImRect_GetWidth(ImRect* self);
 CIMGUI_API float ImRect_GetHeight(ImRect* self);
 CIMGUI_API float ImRect_GetArea(ImRect* self);
-CIMGUI_API void ImRect_GetTL(ImVec2* pOut, ImRect* self);
-CIMGUI_API void ImRect_GetTR(ImVec2* pOut, ImRect* self);
-CIMGUI_API void ImRect_GetBL(ImVec2* pOut, ImRect* self);
-CIMGUI_API void ImRect_GetBR(ImVec2* pOut, ImRect* self);
-CIMGUI_API bool ImRect_Contains_Vec2(ImRect* self, const ImVec2 p);
-CIMGUI_API bool ImRect_Contains_Rect(ImRect* self, const ImRect r);
-CIMGUI_API bool ImRect_Overlaps(ImRect* self, const ImRect r);
-CIMGUI_API void ImRect_Add_Vec2(ImRect* self, const ImVec2 p);
-CIMGUI_API void ImRect_Add_Rect(ImRect* self, const ImRect r);
-CIMGUI_API void ImRect_Expand_Float(ImRect* self, const float amount);
-CIMGUI_API void ImRect_Expand_Vec2(ImRect* self, const ImVec2 amount);
-CIMGUI_API void ImRect_Translate(ImRect* self, const ImVec2 d);
-CIMGUI_API void ImRect_TranslateX(ImRect* self, float dx);
-CIMGUI_API void ImRect_TranslateY(ImRect* self, float dy);
-CIMGUI_API void ImRect_ClipWith(ImRect* self, const ImRect r);
-CIMGUI_API void ImRect_ClipWithFull(ImRect* self, const ImRect r);
+CIMGUI_API void ImRect_GetTL(ImVec2 *pOut,ImRect* self);
+CIMGUI_API void ImRect_GetTR(ImVec2 *pOut,ImRect* self);
+CIMGUI_API void ImRect_GetBL(ImVec2 *pOut,ImRect* self);
+CIMGUI_API void ImRect_GetBR(ImVec2 *pOut,ImRect* self);
+CIMGUI_API bool ImRect_Contains_Vec2(ImRect* self,const ImVec2 p);
+CIMGUI_API bool ImRect_Contains_Rect(ImRect* self,const ImRect r);
+CIMGUI_API bool ImRect_Overlaps(ImRect* self,const ImRect r);
+CIMGUI_API void ImRect_Add_Vec2(ImRect* self,const ImVec2 p);
+CIMGUI_API void ImRect_Add_Rect(ImRect* self,const ImRect r);
+CIMGUI_API void ImRect_Expand_Float(ImRect* self,const float amount);
+CIMGUI_API void ImRect_Expand_Vec2(ImRect* self,const ImVec2 amount);
+CIMGUI_API void ImRect_Translate(ImRect* self,const ImVec2 d);
+CIMGUI_API void ImRect_TranslateX(ImRect* self,float dx);
+CIMGUI_API void ImRect_TranslateY(ImRect* self,float dy);
+CIMGUI_API void ImRect_ClipWith(ImRect* self,const ImRect r);
+CIMGUI_API void ImRect_ClipWithFull(ImRect* self,const ImRect r);
 CIMGUI_API void ImRect_Floor(ImRect* self);
 CIMGUI_API bool ImRect_IsInverted(ImRect* self);
-CIMGUI_API void ImRect_ToVec4(ImVec4* pOut, ImRect* self);
-CIMGUI_API bool igImBitArrayTestBit(const ImU32* arr, int n);
-CIMGUI_API void igImBitArrayClearBit(ImU32* arr, int n);
-CIMGUI_API void igImBitArraySetBit(ImU32* arr, int n);
-CIMGUI_API void igImBitArraySetBitRange(ImU32* arr, int n, int n2);
-CIMGUI_API void ImBitVector_Create(ImBitVector* self, int sz);
+CIMGUI_API void ImRect_ToVec4(ImVec4 *pOut,ImRect* self);
+CIMGUI_API bool igImBitArrayTestBit(const ImU32* arr,int n);
+CIMGUI_API void igImBitArrayClearBit(ImU32* arr,int n);
+CIMGUI_API void igImBitArraySetBit(ImU32* arr,int n);
+CIMGUI_API void igImBitArraySetBitRange(ImU32* arr,int n,int n2);
+CIMGUI_API void ImBitVector_Create(ImBitVector* self,int sz);
 CIMGUI_API void ImBitVector_Clear(ImBitVector* self);
-CIMGUI_API bool ImBitVector_TestBit(ImBitVector* self, int n);
-CIMGUI_API void ImBitVector_SetBit(ImBitVector* self, int n);
-CIMGUI_API void ImBitVector_ClearBit(ImBitVector* self, int n);
+CIMGUI_API bool ImBitVector_TestBit(ImBitVector* self,int n);
+CIMGUI_API void ImBitVector_SetBit(ImBitVector* self,int n);
+CIMGUI_API void ImBitVector_ClearBit(ImBitVector* self,int n);
 CIMGUI_API void ImGuiTextIndex_clear(ImGuiTextIndex* self);
 CIMGUI_API int ImGuiTextIndex_size(ImGuiTextIndex* self);
-CIMGUI_API const char* ImGuiTextIndex_get_line_begin(ImGuiTextIndex* self, const char* base, int n);
-CIMGUI_API const char* ImGuiTextIndex_get_line_end(ImGuiTextIndex* self, const char* base, int n);
-CIMGUI_API void ImGuiTextIndex_append(ImGuiTextIndex* self, const char* base, int old_size, int new_size);
+CIMGUI_API const char* ImGuiTextIndex_get_line_begin(ImGuiTextIndex* self,const char* base,int n);
+CIMGUI_API const char* ImGuiTextIndex_get_line_end(ImGuiTextIndex* self,const char* base,int n);
+CIMGUI_API void ImGuiTextIndex_append(ImGuiTextIndex* self,const char* base,int old_size,int new_size);
 CIMGUI_API ImDrawListSharedData* ImDrawListSharedData_ImDrawListSharedData(void);
 CIMGUI_API void ImDrawListSharedData_destroy(ImDrawListSharedData* self);
-CIMGUI_API void ImDrawListSharedData_SetCircleTessellationMaxError(ImDrawListSharedData* self, float max_error);
+CIMGUI_API void ImDrawListSharedData_SetCircleTessellationMaxError(ImDrawListSharedData* self,float max_error);
 CIMGUI_API void ImDrawDataBuilder_Clear(ImDrawDataBuilder* self);
 CIMGUI_API void ImDrawDataBuilder_ClearFreeMemory(ImDrawDataBuilder* self);
 CIMGUI_API int ImDrawDataBuilder_GetDrawListCount(ImDrawDataBuilder* self);
 CIMGUI_API void ImDrawDataBuilder_FlattenIntoSingleLayer(ImDrawDataBuilder* self);
-CIMGUI_API ImGuiStyleMod* ImGuiStyleMod_ImGuiStyleMod_Int(ImGuiStyleVar idx, int v);
+CIMGUI_API ImGuiStyleMod* ImGuiStyleMod_ImGuiStyleMod_Int(ImGuiStyleVar idx,int v);
 CIMGUI_API void ImGuiStyleMod_destroy(ImGuiStyleMod* self);
-CIMGUI_API ImGuiStyleMod* ImGuiStyleMod_ImGuiStyleMod_Float(ImGuiStyleVar idx, float v);
-CIMGUI_API ImGuiStyleMod* ImGuiStyleMod_ImGuiStyleMod_Vec2(ImGuiStyleVar idx, ImVec2 v);
+CIMGUI_API ImGuiStyleMod* ImGuiStyleMod_ImGuiStyleMod_Float(ImGuiStyleVar idx,float v);
+CIMGUI_API ImGuiStyleMod* ImGuiStyleMod_ImGuiStyleMod_Vec2(ImGuiStyleVar idx,ImVec2 v);
 CIMGUI_API ImGuiComboPreviewData* ImGuiComboPreviewData_ImGuiComboPreviewData(void);
 CIMGUI_API void ImGuiComboPreviewData_destroy(ImGuiComboPreviewData* self);
 CIMGUI_API ImGuiMenuColumns* ImGuiMenuColumns_ImGuiMenuColumns(void);
 CIMGUI_API void ImGuiMenuColumns_destroy(ImGuiMenuColumns* self);
-CIMGUI_API void ImGuiMenuColumns_Update(ImGuiMenuColumns* self, float spacing, bool window_reappearing);
-CIMGUI_API float ImGuiMenuColumns_DeclColumns(ImGuiMenuColumns* self, float w_icon, float w_label, float w_shortcut, float w_mark);
-CIMGUI_API void ImGuiMenuColumns_CalcNextTotalWidth(ImGuiMenuColumns* self, bool update_offsets);
+CIMGUI_API void ImGuiMenuColumns_Update(ImGuiMenuColumns* self,float spacing,bool window_reappearing);
+CIMGUI_API float ImGuiMenuColumns_DeclColumns(ImGuiMenuColumns* self,float w_icon,float w_label,float w_shortcut,float w_mark);
+CIMGUI_API void ImGuiMenuColumns_CalcNextTotalWidth(ImGuiMenuColumns* self,bool update_offsets);
 CIMGUI_API ImGuiInputTextState* ImGuiInputTextState_ImGuiInputTextState(void);
 CIMGUI_API void ImGuiInputTextState_destroy(ImGuiInputTextState* self);
 CIMGUI_API void ImGuiInputTextState_ClearText(ImGuiInputTextState* self);
 CIMGUI_API void ImGuiInputTextState_ClearFreeMemory(ImGuiInputTextState* self);
 CIMGUI_API int ImGuiInputTextState_GetUndoAvailCount(ImGuiInputTextState* self);
 CIMGUI_API int ImGuiInputTextState_GetRedoAvailCount(ImGuiInputTextState* self);
-CIMGUI_API void ImGuiInputTextState_OnKeyPressed(ImGuiInputTextState* self, int key);
+CIMGUI_API void ImGuiInputTextState_OnKeyPressed(ImGuiInputTextState* self,int key);
 CIMGUI_API void ImGuiInputTextState_CursorAnimReset(ImGuiInputTextState* self);
 CIMGUI_API void ImGuiInputTextState_CursorClamp(ImGuiInputTextState* self);
 CIMGUI_API bool ImGuiInputTextState_HasSelection(ImGuiInputTextState* self);
@@ -3925,11 +3918,11 @@ CIMGUI_API void ImGuiKeyRoutingTable_destroy(ImGuiKeyRoutingTable* self);
 CIMGUI_API void ImGuiKeyRoutingTable_Clear(ImGuiKeyRoutingTable* self);
 CIMGUI_API ImGuiKeyOwnerData* ImGuiKeyOwnerData_ImGuiKeyOwnerData(void);
 CIMGUI_API void ImGuiKeyOwnerData_destroy(ImGuiKeyOwnerData* self);
-CIMGUI_API ImGuiListClipperRange ImGuiListClipperRange_FromIndices(int min, int max);
-CIMGUI_API ImGuiListClipperRange ImGuiListClipperRange_FromPositions(float y1, float y2, int off_min, int off_max);
+CIMGUI_API ImGuiListClipperRange ImGuiListClipperRange_FromIndices(int min,int max);
+CIMGUI_API ImGuiListClipperRange ImGuiListClipperRange_FromPositions(float y1,float y2,int off_min,int off_max);
 CIMGUI_API ImGuiListClipperData* ImGuiListClipperData_ImGuiListClipperData(void);
 CIMGUI_API void ImGuiListClipperData_destroy(ImGuiListClipperData* self);
-CIMGUI_API void ImGuiListClipperData_Reset(ImGuiListClipperData* self, ImGuiListClipper* clipper);
+CIMGUI_API void ImGuiListClipperData_Reset(ImGuiListClipperData* self,ImGuiListClipper* clipper);
 CIMGUI_API ImGuiNavItemData* ImGuiNavItemData_ImGuiNavItemData(void);
 CIMGUI_API void ImGuiNavItemData_destroy(ImGuiNavItemData* self);
 CIMGUI_API void ImGuiNavItemData_Clear(ImGuiNavItemData* self);
@@ -3948,20 +3941,20 @@ CIMGUI_API bool ImGuiDockNode_IsNoTabBar(ImGuiDockNode* self);
 CIMGUI_API bool ImGuiDockNode_IsSplitNode(ImGuiDockNode* self);
 CIMGUI_API bool ImGuiDockNode_IsLeafNode(ImGuiDockNode* self);
 CIMGUI_API bool ImGuiDockNode_IsEmpty(ImGuiDockNode* self);
-CIMGUI_API void ImGuiDockNode_Rect(ImRect* pOut, ImGuiDockNode* self);
-CIMGUI_API void ImGuiDockNode_SetLocalFlags(ImGuiDockNode* self, ImGuiDockNodeFlags flags);
+CIMGUI_API void ImGuiDockNode_Rect(ImRect *pOut,ImGuiDockNode* self);
+CIMGUI_API void ImGuiDockNode_SetLocalFlags(ImGuiDockNode* self,ImGuiDockNodeFlags flags);
 CIMGUI_API void ImGuiDockNode_UpdateMergedFlags(ImGuiDockNode* self);
 CIMGUI_API ImGuiDockContext* ImGuiDockContext_ImGuiDockContext(void);
 CIMGUI_API void ImGuiDockContext_destroy(ImGuiDockContext* self);
 CIMGUI_API ImGuiViewportP* ImGuiViewportP_ImGuiViewportP(void);
 CIMGUI_API void ImGuiViewportP_destroy(ImGuiViewportP* self);
 CIMGUI_API void ImGuiViewportP_ClearRequestFlags(ImGuiViewportP* self);
-CIMGUI_API void ImGuiViewportP_CalcWorkRectPos(ImVec2* pOut, ImGuiViewportP* self, const ImVec2 off_min);
-CIMGUI_API void ImGuiViewportP_CalcWorkRectSize(ImVec2* pOut, ImGuiViewportP* self, const ImVec2 off_min, const ImVec2 off_max);
+CIMGUI_API void ImGuiViewportP_CalcWorkRectPos(ImVec2 *pOut,ImGuiViewportP* self,const ImVec2 off_min);
+CIMGUI_API void ImGuiViewportP_CalcWorkRectSize(ImVec2 *pOut,ImGuiViewportP* self,const ImVec2 off_min,const ImVec2 off_max);
 CIMGUI_API void ImGuiViewportP_UpdateWorkRect(ImGuiViewportP* self);
-CIMGUI_API void ImGuiViewportP_GetMainRect(ImRect* pOut, ImGuiViewportP* self);
-CIMGUI_API void ImGuiViewportP_GetWorkRect(ImRect* pOut, ImGuiViewportP* self);
-CIMGUI_API void ImGuiViewportP_GetBuildWorkRect(ImRect* pOut, ImGuiViewportP* self);
+CIMGUI_API void ImGuiViewportP_GetMainRect(ImRect *pOut,ImGuiViewportP* self);
+CIMGUI_API void ImGuiViewportP_GetWorkRect(ImRect *pOut,ImGuiViewportP* self);
+CIMGUI_API void ImGuiViewportP_GetBuildWorkRect(ImRect *pOut,ImGuiViewportP* self);
 CIMGUI_API ImGuiWindowSettings* ImGuiWindowSettings_ImGuiWindowSettings(void);
 CIMGUI_API void ImGuiWindowSettings_destroy(ImGuiWindowSettings* self);
 CIMGUI_API char* ImGuiWindowSettings_GetName(ImGuiWindowSettings* self);
@@ -3977,24 +3970,24 @@ CIMGUI_API ImGuiContextHook* ImGuiContextHook_ImGuiContextHook(void);
 CIMGUI_API void ImGuiContextHook_destroy(ImGuiContextHook* self);
 CIMGUI_API ImGuiContext* ImGuiContext_ImGuiContext(ImFontAtlas* shared_font_atlas);
 CIMGUI_API void ImGuiContext_destroy(ImGuiContext* self);
-CIMGUI_API ImGuiWindow* ImGuiWindow_ImGuiWindow(ImGuiContext* context, const char* name);
+CIMGUI_API ImGuiWindow* ImGuiWindow_ImGuiWindow(ImGuiContext* context,const char* name);
 CIMGUI_API void ImGuiWindow_destroy(ImGuiWindow* self);
-CIMGUI_API ImGuiID ImGuiWindow_GetID_Str(ImGuiWindow* self, const char* str, const char* str_end);
-CIMGUI_API ImGuiID ImGuiWindow_GetID_Ptr(ImGuiWindow* self, const void* ptr);
-CIMGUI_API ImGuiID ImGuiWindow_GetID_Int(ImGuiWindow* self, int n);
-CIMGUI_API ImGuiID ImGuiWindow_GetIDFromRectangle(ImGuiWindow* self, const ImRect r_abs);
-CIMGUI_API void ImGuiWindow_Rect(ImRect* pOut, ImGuiWindow* self);
+CIMGUI_API ImGuiID ImGuiWindow_GetID_Str(ImGuiWindow* self,const char* str,const char* str_end);
+CIMGUI_API ImGuiID ImGuiWindow_GetID_Ptr(ImGuiWindow* self,const void* ptr);
+CIMGUI_API ImGuiID ImGuiWindow_GetID_Int(ImGuiWindow* self,int n);
+CIMGUI_API ImGuiID ImGuiWindow_GetIDFromRectangle(ImGuiWindow* self,const ImRect r_abs);
+CIMGUI_API void ImGuiWindow_Rect(ImRect *pOut,ImGuiWindow* self);
 CIMGUI_API float ImGuiWindow_CalcFontSize(ImGuiWindow* self);
 CIMGUI_API float ImGuiWindow_TitleBarHeight(ImGuiWindow* self);
-CIMGUI_API void ImGuiWindow_TitleBarRect(ImRect* pOut, ImGuiWindow* self);
+CIMGUI_API void ImGuiWindow_TitleBarRect(ImRect *pOut,ImGuiWindow* self);
 CIMGUI_API float ImGuiWindow_MenuBarHeight(ImGuiWindow* self);
-CIMGUI_API void ImGuiWindow_MenuBarRect(ImRect* pOut, ImGuiWindow* self);
+CIMGUI_API void ImGuiWindow_MenuBarRect(ImRect *pOut,ImGuiWindow* self);
 CIMGUI_API ImGuiTabItem* ImGuiTabItem_ImGuiTabItem(void);
 CIMGUI_API void ImGuiTabItem_destroy(ImGuiTabItem* self);
 CIMGUI_API ImGuiTabBar* ImGuiTabBar_ImGuiTabBar(void);
 CIMGUI_API void ImGuiTabBar_destroy(ImGuiTabBar* self);
-CIMGUI_API int ImGuiTabBar_GetTabOrder(ImGuiTabBar* self, const ImGuiTabItem* tab);
-CIMGUI_API const char* ImGuiTabBar_GetTabName(ImGuiTabBar* self, const ImGuiTabItem* tab);
+CIMGUI_API int ImGuiTabBar_GetTabOrder(ImGuiTabBar* self,const ImGuiTabItem* tab);
+CIMGUI_API const char* ImGuiTabBar_GetTabName(ImGuiTabBar* self,const ImGuiTabItem* tab);
 CIMGUI_API ImGuiTableColumn* ImGuiTableColumn_ImGuiTableColumn(void);
 CIMGUI_API void ImGuiTableColumn_destroy(ImGuiTableColumn* self);
 CIMGUI_API ImGuiTableInstanceData* ImGuiTableInstanceData_ImGuiTableInstanceData(void);
@@ -4012,24 +4005,24 @@ CIMGUI_API ImGuiWindow* igGetCurrentWindowRead(void);
 CIMGUI_API ImGuiWindow* igGetCurrentWindow(void);
 CIMGUI_API ImGuiWindow* igFindWindowByID(ImGuiID id);
 CIMGUI_API ImGuiWindow* igFindWindowByName(const char* name);
-CIMGUI_API void igUpdateWindowParentAndRootLinks(ImGuiWindow* window, ImGuiWindowFlags flags, ImGuiWindow* parent_window);
-CIMGUI_API void igCalcWindowNextAutoFitSize(ImVec2* pOut, ImGuiWindow* window);
-CIMGUI_API bool igIsWindowChildOf(ImGuiWindow* window, ImGuiWindow* potential_parent, bool popup_hierarchy, bool dock_hierarchy);
-CIMGUI_API bool igIsWindowWithinBeginStackOf(ImGuiWindow* window, ImGuiWindow* potential_parent);
-CIMGUI_API bool igIsWindowAbove(ImGuiWindow* potential_above, ImGuiWindow* potential_below);
+CIMGUI_API void igUpdateWindowParentAndRootLinks(ImGuiWindow* window,ImGuiWindowFlags flags,ImGuiWindow* parent_window);
+CIMGUI_API void igCalcWindowNextAutoFitSize(ImVec2 *pOut,ImGuiWindow* window);
+CIMGUI_API bool igIsWindowChildOf(ImGuiWindow* window,ImGuiWindow* potential_parent,bool popup_hierarchy,bool dock_hierarchy);
+CIMGUI_API bool igIsWindowWithinBeginStackOf(ImGuiWindow* window,ImGuiWindow* potential_parent);
+CIMGUI_API bool igIsWindowAbove(ImGuiWindow* potential_above,ImGuiWindow* potential_below);
 CIMGUI_API bool igIsWindowNavFocusable(ImGuiWindow* window);
-CIMGUI_API void igSetWindowPos_WindowPtr(ImGuiWindow* window, const ImVec2 pos, ImGuiCond cond);
-CIMGUI_API void igSetWindowSize_WindowPtr(ImGuiWindow* window, const ImVec2 size, ImGuiCond cond);
-CIMGUI_API void igSetWindowCollapsed_WindowPtr(ImGuiWindow* window, bool collapsed, ImGuiCond cond);
-CIMGUI_API void igSetWindowHitTestHole(ImGuiWindow* window, const ImVec2 pos, const ImVec2 size);
-CIMGUI_API void igWindowRectAbsToRel(ImRect* pOut, ImGuiWindow* window, const ImRect r);
-CIMGUI_API void igWindowRectRelToAbs(ImRect* pOut, ImGuiWindow* window, const ImRect r);
+CIMGUI_API void igSetWindowPos_WindowPtr(ImGuiWindow* window,const ImVec2 pos,ImGuiCond cond);
+CIMGUI_API void igSetWindowSize_WindowPtr(ImGuiWindow* window,const ImVec2 size,ImGuiCond cond);
+CIMGUI_API void igSetWindowCollapsed_WindowPtr(ImGuiWindow* window,bool collapsed,ImGuiCond cond);
+CIMGUI_API void igSetWindowHitTestHole(ImGuiWindow* window,const ImVec2 pos,const ImVec2 size);
+CIMGUI_API void igWindowRectAbsToRel(ImRect *pOut,ImGuiWindow* window,const ImRect r);
+CIMGUI_API void igWindowRectRelToAbs(ImRect *pOut,ImGuiWindow* window,const ImRect r);
 CIMGUI_API void igFocusWindow(ImGuiWindow* window);
-CIMGUI_API void igFocusTopMostWindowUnderOne(ImGuiWindow* under_this_window, ImGuiWindow* ignore_window);
+CIMGUI_API void igFocusTopMostWindowUnderOne(ImGuiWindow* under_this_window,ImGuiWindow* ignore_window);
 CIMGUI_API void igBringWindowToFocusFront(ImGuiWindow* window);
 CIMGUI_API void igBringWindowToDisplayFront(ImGuiWindow* window);
 CIMGUI_API void igBringWindowToDisplayBack(ImGuiWindow* window);
-CIMGUI_API void igBringWindowToDisplayBehind(ImGuiWindow* window, ImGuiWindow* above_window);
+CIMGUI_API void igBringWindowToDisplayBehind(ImGuiWindow* window,ImGuiWindow* above_window);
 CIMGUI_API int igFindWindowDisplayIndex(ImGuiWindow* window);
 CIMGUI_API ImGuiWindow* igFindBottomMostVisibleWindowWithinBeginStack(ImGuiWindow* window);
 CIMGUI_API void igSetCurrentFont(ImFont* font);
@@ -4040,17 +4033,17 @@ CIMGUI_API void igShutdown(void);
 CIMGUI_API void igUpdateInputEvents(bool trickle_fast_inputs);
 CIMGUI_API void igUpdateHoveredWindowAndCaptureFlags(void);
 CIMGUI_API void igStartMouseMovingWindow(ImGuiWindow* window);
-CIMGUI_API void igStartMouseMovingWindowOrNode(ImGuiWindow* window, ImGuiDockNode* node, bool undock_floating_node);
+CIMGUI_API void igStartMouseMovingWindowOrNode(ImGuiWindow* window,ImGuiDockNode* node,bool undock_floating_node);
 CIMGUI_API void igUpdateMouseMovingWindowNewFrame(void);
 CIMGUI_API void igUpdateMouseMovingWindowEndFrame(void);
-CIMGUI_API ImGuiID igAddContextHook(ImGuiContext* context, const ImGuiContextHook* hook);
-CIMGUI_API void igRemoveContextHook(ImGuiContext* context, ImGuiID hook_to_remove);
-CIMGUI_API void igCallContextHooks(ImGuiContext* context, ImGuiContextHookType type);
-CIMGUI_API void igTranslateWindowsInViewport(ImGuiViewportP* viewport, const ImVec2 old_pos, const ImVec2 new_pos);
-CIMGUI_API void igScaleWindowsInViewport(ImGuiViewportP* viewport, float scale);
+CIMGUI_API ImGuiID igAddContextHook(ImGuiContext* context,const ImGuiContextHook* hook);
+CIMGUI_API void igRemoveContextHook(ImGuiContext* context,ImGuiID hook_to_remove);
+CIMGUI_API void igCallContextHooks(ImGuiContext* context,ImGuiContextHookType type);
+CIMGUI_API void igTranslateWindowsInViewport(ImGuiViewportP* viewport,const ImVec2 old_pos,const ImVec2 new_pos);
+CIMGUI_API void igScaleWindowsInViewport(ImGuiViewportP* viewport,float scale);
 CIMGUI_API void igDestroyPlatformWindow(ImGuiViewportP* viewport);
-CIMGUI_API void igSetWindowViewport(ImGuiWindow* window, ImGuiViewportP* viewport);
-CIMGUI_API void igSetCurrentViewport(ImGuiWindow* window, ImGuiViewportP* viewport);
+CIMGUI_API void igSetWindowViewport(ImGuiWindow* window,ImGuiViewportP* viewport);
+CIMGUI_API void igSetCurrentViewport(ImGuiWindow* window,ImGuiViewportP* viewport);
 CIMGUI_API const ImGuiPlatformMonitor* igGetViewportPlatformMonitor(ImGuiViewport* viewport);
 CIMGUI_API ImGuiViewportP* igFindHoveredViewportFromPlatformWindowStack(const ImVec2 mouse_platform_pos);
 CIMGUI_API void igMarkIniSettingsDirty_Nil(void);
@@ -4062,79 +4055,79 @@ CIMGUI_API ImGuiWindowSettings* igFindOrCreateWindowSettings(const char* name);
 CIMGUI_API void igAddSettingsHandler(const ImGuiSettingsHandler* handler);
 CIMGUI_API void igRemoveSettingsHandler(const char* type_name);
 CIMGUI_API ImGuiSettingsHandler* igFindSettingsHandler(const char* type_name);
-//CIMGUI_API void igLocalizeRegisterEntries(const ImGuiLocEntry* entries, int count);
-//CIMGUI_API const char* igLocalizeGetMsg(ImGuiLocKey key);
-CIMGUI_API void igSetScrollX_WindowPtr(ImGuiWindow* window, float scroll_x);
-CIMGUI_API void igSetScrollY_WindowPtr(ImGuiWindow* window, float scroll_y);
-CIMGUI_API void igSetScrollFromPosX_WindowPtr(ImGuiWindow* window, float local_x, float center_x_ratio);
-CIMGUI_API void igSetScrollFromPosY_WindowPtr(ImGuiWindow* window, float local_y, float center_y_ratio);
+CIMGUI_API void igLocalizeRegisterEntries(const ImGuiLocEntry* entries,int count);
+CIMGUI_API const char* igLocalizeGetMsg(ImGuiLocKey key);
+CIMGUI_API void igSetScrollX_WindowPtr(ImGuiWindow* window,float scroll_x);
+CIMGUI_API void igSetScrollY_WindowPtr(ImGuiWindow* window,float scroll_y);
+CIMGUI_API void igSetScrollFromPosX_WindowPtr(ImGuiWindow* window,float local_x,float center_x_ratio);
+CIMGUI_API void igSetScrollFromPosY_WindowPtr(ImGuiWindow* window,float local_y,float center_y_ratio);
 CIMGUI_API void igScrollToItem(ImGuiScrollFlags flags);
-CIMGUI_API void igScrollToRect(ImGuiWindow* window, const ImRect rect, ImGuiScrollFlags flags);
-CIMGUI_API void igScrollToRectEx(ImVec2* pOut, ImGuiWindow* window, const ImRect rect, ImGuiScrollFlags flags);
-CIMGUI_API void igScrollToBringRectIntoView(ImGuiWindow* window, const ImRect rect);
+CIMGUI_API void igScrollToRect(ImGuiWindow* window,const ImRect rect,ImGuiScrollFlags flags);
+CIMGUI_API void igScrollToRectEx(ImVec2 *pOut,ImGuiWindow* window,const ImRect rect,ImGuiScrollFlags flags);
+CIMGUI_API void igScrollToBringRectIntoView(ImGuiWindow* window,const ImRect rect);
 CIMGUI_API ImGuiID igGetItemID(void);
 CIMGUI_API ImGuiItemStatusFlags igGetItemStatusFlags(void);
 CIMGUI_API ImGuiItemFlags igGetItemFlags(void);
 CIMGUI_API ImGuiID igGetActiveID(void);
 CIMGUI_API ImGuiID igGetFocusID(void);
-CIMGUI_API void igSetActiveID(ImGuiID id, ImGuiWindow* window);
-CIMGUI_API void igSetFocusID(ImGuiID id, ImGuiWindow* window);
+CIMGUI_API void igSetActiveID(ImGuiID id,ImGuiWindow* window);
+CIMGUI_API void igSetFocusID(ImGuiID id,ImGuiWindow* window);
 CIMGUI_API void igClearActiveID(void);
 CIMGUI_API ImGuiID igGetHoveredID(void);
 CIMGUI_API void igSetHoveredID(ImGuiID id);
 CIMGUI_API void igKeepAliveID(ImGuiID id);
 CIMGUI_API void igMarkItemEdited(ImGuiID id);
 CIMGUI_API void igPushOverrideID(ImGuiID id);
-CIMGUI_API ImGuiID igGetIDWithSeed(const char* str_id_begin, const char* str_id_end, ImGuiID seed);
-CIMGUI_API void igItemSize_Vec2(const ImVec2 size, float text_baseline_y);
-CIMGUI_API void igItemSize_Rect(const ImRect bb, float text_baseline_y);
-CIMGUI_API bool igItemAdd(const ImRect bb, ImGuiID id, const ImRect* nav_bb, ImGuiItemFlags extra_flags);
-CIMGUI_API bool igItemHoverable(const ImRect bb, ImGuiID id);
-CIMGUI_API bool igIsClippedEx(const ImRect bb, ImGuiID id);
-CIMGUI_API void igSetLastItemData(ImGuiID item_id, ImGuiItemFlags in_flags, ImGuiItemStatusFlags status_flags, const ImRect item_rect);
-CIMGUI_API void igCalcItemSize(ImVec2* pOut, ImVec2 size, float default_w, float default_h);
-CIMGUI_API float igCalcWrapWidthForPos(const ImVec2 pos, float wrap_pos_x);
-CIMGUI_API void igPushMultiItemsWidths(int components, float width_full);
+CIMGUI_API ImGuiID igGetIDWithSeed(const char* str_id_begin,const char* str_id_end,ImGuiID seed);
+CIMGUI_API void igItemSize_Vec2(const ImVec2 size,float text_baseline_y);
+CIMGUI_API void igItemSize_Rect(const ImRect bb,float text_baseline_y);
+CIMGUI_API bool igItemAdd(const ImRect bb,ImGuiID id,const ImRect* nav_bb,ImGuiItemFlags extra_flags);
+CIMGUI_API bool igItemHoverable(const ImRect bb,ImGuiID id);
+CIMGUI_API bool igIsClippedEx(const ImRect bb,ImGuiID id);
+CIMGUI_API void igSetLastItemData(ImGuiID item_id,ImGuiItemFlags in_flags,ImGuiItemStatusFlags status_flags,const ImRect item_rect);
+CIMGUI_API void igCalcItemSize(ImVec2 *pOut,ImVec2 size,float default_w,float default_h);
+CIMGUI_API float igCalcWrapWidthForPos(const ImVec2 pos,float wrap_pos_x);
+CIMGUI_API void igPushMultiItemsWidths(int components,float width_full);
 CIMGUI_API bool igIsItemToggledSelection(void);
-CIMGUI_API void igGetContentRegionMaxAbs(ImVec2* pOut);
-CIMGUI_API void igShrinkWidths(ImGuiShrinkWidthItem* items, int count, float width_excess);
-CIMGUI_API void igPushItemFlag(ImGuiItemFlags option, bool enabled);
+CIMGUI_API void igGetContentRegionMaxAbs(ImVec2 *pOut);
+CIMGUI_API void igShrinkWidths(ImGuiShrinkWidthItem* items,int count,float width_excess);
+CIMGUI_API void igPushItemFlag(ImGuiItemFlags option,bool enabled);
 CIMGUI_API void igPopItemFlag(void);
-CIMGUI_API void igLogBegin(ImGuiLogType type, int auto_open_depth);
+CIMGUI_API void igLogBegin(ImGuiLogType type,int auto_open_depth);
 CIMGUI_API void igLogToBuffer(int auto_open_depth);
-CIMGUI_API void igLogRenderedText(const ImVec2* ref_pos, const char* text, const char* text_end);
-CIMGUI_API void igLogSetNextTextDecoration(const char* prefix, const char* suffix);
-CIMGUI_API bool igBeginChildEx(const char* name, ImGuiID id, const ImVec2 size_arg, bool border, ImGuiWindowFlags flags);
-CIMGUI_API void igOpenPopupEx(ImGuiID id, ImGuiPopupFlags popup_flags);
-CIMGUI_API void igClosePopupToLevel(int remaining, bool restore_focus_to_window_under_popup);
-CIMGUI_API void igClosePopupsOverWindow(ImGuiWindow* ref_window, bool restore_focus_to_window_under_popup);
+CIMGUI_API void igLogRenderedText(const ImVec2* ref_pos,const char* text,const char* text_end);
+CIMGUI_API void igLogSetNextTextDecoration(const char* prefix,const char* suffix);
+CIMGUI_API bool igBeginChildEx(const char* name,ImGuiID id,const ImVec2 size_arg,bool border,ImGuiWindowFlags flags);
+CIMGUI_API void igOpenPopupEx(ImGuiID id,ImGuiPopupFlags popup_flags);
+CIMGUI_API void igClosePopupToLevel(int remaining,bool restore_focus_to_window_under_popup);
+CIMGUI_API void igClosePopupsOverWindow(ImGuiWindow* ref_window,bool restore_focus_to_window_under_popup);
 CIMGUI_API void igClosePopupsExceptModals(void);
-CIMGUI_API bool igIsPopupOpen_ID(ImGuiID id, ImGuiPopupFlags popup_flags);
-CIMGUI_API bool igBeginPopupEx(ImGuiID id, ImGuiWindowFlags extra_flags);
-CIMGUI_API void igBeginTooltipEx(ImGuiTooltipFlags tooltip_flags, ImGuiWindowFlags extra_window_flags);
-CIMGUI_API void igGetPopupAllowedExtentRect(ImRect* pOut, ImGuiWindow* window);
+CIMGUI_API bool igIsPopupOpen_ID(ImGuiID id,ImGuiPopupFlags popup_flags);
+CIMGUI_API bool igBeginPopupEx(ImGuiID id,ImGuiWindowFlags extra_flags);
+CIMGUI_API void igBeginTooltipEx(ImGuiTooltipFlags tooltip_flags,ImGuiWindowFlags extra_window_flags);
+CIMGUI_API void igGetPopupAllowedExtentRect(ImRect *pOut,ImGuiWindow* window);
 CIMGUI_API ImGuiWindow* igGetTopMostPopupModal(void);
 CIMGUI_API ImGuiWindow* igGetTopMostAndVisiblePopupModal(void);
-CIMGUI_API void igFindBestWindowPosForPopup(ImVec2* pOut, ImGuiWindow* window);
-CIMGUI_API void igFindBestWindowPosForPopupEx(ImVec2* pOut, const ImVec2 ref_pos, const ImVec2 size, ImGuiDir* last_dir, const ImRect r_outer, const ImRect r_avoid, ImGuiPopupPositionPolicy policy);
-CIMGUI_API bool igBeginViewportSideBar(const char* name, ImGuiViewport* viewport, ImGuiDir dir, float size, ImGuiWindowFlags window_flags);
-CIMGUI_API bool igBeginMenuEx(const char* label, const char* icon, bool enabled);
-CIMGUI_API bool igMenuItemEx(const char* label, const char* icon, const char* shortcut, bool selected, bool enabled);
-CIMGUI_API bool igBeginComboPopup(ImGuiID popup_id, const ImRect bb, ImGuiComboFlags flags);
+CIMGUI_API void igFindBestWindowPosForPopup(ImVec2 *pOut,ImGuiWindow* window);
+CIMGUI_API void igFindBestWindowPosForPopupEx(ImVec2 *pOut,const ImVec2 ref_pos,const ImVec2 size,ImGuiDir* last_dir,const ImRect r_outer,const ImRect r_avoid,ImGuiPopupPositionPolicy policy);
+CIMGUI_API bool igBeginViewportSideBar(const char* name,ImGuiViewport* viewport,ImGuiDir dir,float size,ImGuiWindowFlags window_flags);
+CIMGUI_API bool igBeginMenuEx(const char* label,const char* icon,bool enabled);
+CIMGUI_API bool igMenuItemEx(const char* label,const char* icon,const char* shortcut,bool selected,bool enabled);
+CIMGUI_API bool igBeginComboPopup(ImGuiID popup_id,const ImRect bb,ImGuiComboFlags flags);
 CIMGUI_API bool igBeginComboPreview(void);
 CIMGUI_API void igEndComboPreview(void);
-CIMGUI_API void igNavInitWindow(ImGuiWindow* window, bool force_reinit);
+CIMGUI_API void igNavInitWindow(ImGuiWindow* window,bool force_reinit);
 CIMGUI_API void igNavInitRequestApplyResult(void);
 CIMGUI_API bool igNavMoveRequestButNoResultYet(void);
-CIMGUI_API void igNavMoveRequestSubmit(ImGuiDir move_dir, ImGuiDir clip_dir, ImGuiNavMoveFlags move_flags, ImGuiScrollFlags scroll_flags);
-CIMGUI_API void igNavMoveRequestForward(ImGuiDir move_dir, ImGuiDir clip_dir, ImGuiNavMoveFlags move_flags, ImGuiScrollFlags scroll_flags);
+CIMGUI_API void igNavMoveRequestSubmit(ImGuiDir move_dir,ImGuiDir clip_dir,ImGuiNavMoveFlags move_flags,ImGuiScrollFlags scroll_flags);
+CIMGUI_API void igNavMoveRequestForward(ImGuiDir move_dir,ImGuiDir clip_dir,ImGuiNavMoveFlags move_flags,ImGuiScrollFlags scroll_flags);
 CIMGUI_API void igNavMoveRequestResolveWithLastItem(ImGuiNavItemData* result);
 CIMGUI_API void igNavMoveRequestCancel(void);
 CIMGUI_API void igNavMoveRequestApplyResult(void);
-CIMGUI_API void igNavMoveRequestTryWrapping(ImGuiWindow* window, ImGuiNavMoveFlags move_flags);
+CIMGUI_API void igNavMoveRequestTryWrapping(ImGuiWindow* window,ImGuiNavMoveFlags move_flags);
 CIMGUI_API void igActivateItem(ImGuiID id);
 CIMGUI_API void igSetNavWindow(ImGuiWindow* window);
-CIMGUI_API void igSetNavID(ImGuiID id, ImGuiNavLayer nav_layer, ImGuiID focus_scope_id, const ImRect rect_rel);
+CIMGUI_API void igSetNavID(ImGuiID id,ImGuiNavLayer nav_layer,ImGuiID focus_scope_id,const ImRect rect_rel);
 CIMGUI_API bool igIsNamedKey(ImGuiKey key);
 CIMGUI_API bool igIsNamedKeyOrModKey(ImGuiKey key);
 CIMGUI_API bool igIsLegacyKey(ImGuiKey key);
@@ -4144,98 +4137,98 @@ CIMGUI_API bool igIsMouseKey(ImGuiKey key);
 CIMGUI_API bool igIsAliasKey(ImGuiKey key);
 CIMGUI_API ImGuiKey igConvertSingleModFlagToKey(ImGuiKey key);
 CIMGUI_API ImGuiKeyData* igGetKeyData(ImGuiKey key);
-CIMGUI_API void igGetKeyChordName(ImGuiKeyChord key_chord, char* out_buf, int out_buf_size);
+CIMGUI_API void igGetKeyChordName(ImGuiKeyChord key_chord,char* out_buf,int out_buf_size);
 CIMGUI_API ImGuiKey igMouseButtonToKey(ImGuiMouseButton button);
-CIMGUI_API bool igIsMouseDragPastThreshold(ImGuiMouseButton button, float lock_threshold);
-CIMGUI_API void igGetKeyVector2d(ImVec2* pOut, ImGuiKey key_left, ImGuiKey key_right, ImGuiKey key_up, ImGuiKey key_down);
+CIMGUI_API bool igIsMouseDragPastThreshold(ImGuiMouseButton button,float lock_threshold);
+CIMGUI_API void igGetKeyVector2d(ImVec2 *pOut,ImGuiKey key_left,ImGuiKey key_right,ImGuiKey key_up,ImGuiKey key_down);
 CIMGUI_API float igGetNavTweakPressedAmount(ImGuiAxis axis);
-CIMGUI_API int igCalcTypematicRepeatAmount(float t0, float t1, float repeat_delay, float repeat_rate);
-CIMGUI_API void igGetTypematicRepeatRate(ImGuiInputFlags flags, float* repeat_delay, float* repeat_rate);
+CIMGUI_API int igCalcTypematicRepeatAmount(float t0,float t1,float repeat_delay,float repeat_rate);
+CIMGUI_API void igGetTypematicRepeatRate(ImGuiInputFlags flags,float* repeat_delay,float* repeat_rate);
 CIMGUI_API void igSetActiveIdUsingAllKeyboardKeys(void);
 CIMGUI_API bool igIsActiveIdUsingNavDir(ImGuiDir dir);
 CIMGUI_API ImGuiID igGetKeyOwner(ImGuiKey key);
-CIMGUI_API void igSetKeyOwner(ImGuiKey key, ImGuiID owner_id, ImGuiInputFlags flags);
-CIMGUI_API void igSetItemKeyOwner(ImGuiKey key, ImGuiInputFlags flags);
-CIMGUI_API bool igTestKeyOwner(ImGuiKey key, ImGuiID owner_id);
+CIMGUI_API void igSetKeyOwner(ImGuiKey key,ImGuiID owner_id,ImGuiInputFlags flags);
+CIMGUI_API void igSetItemKeyOwner(ImGuiKey key,ImGuiInputFlags flags);
+CIMGUI_API bool igTestKeyOwner(ImGuiKey key,ImGuiID owner_id);
 CIMGUI_API ImGuiKeyOwnerData* igGetKeyOwnerData(ImGuiKey key);
-CIMGUI_API bool igIsKeyDown_ID(ImGuiKey key, ImGuiID owner_id);
-CIMGUI_API bool igIsKeyPressed_ID(ImGuiKey key, ImGuiID owner_id, ImGuiInputFlags flags);
-CIMGUI_API bool igIsKeyReleased_ID(ImGuiKey key, ImGuiID owner_id);
-CIMGUI_API bool igIsMouseDown_ID(ImGuiMouseButton button, ImGuiID owner_id);
-CIMGUI_API bool igIsMouseClicked_ID(ImGuiMouseButton button, ImGuiID owner_id, ImGuiInputFlags flags);
-CIMGUI_API bool igIsMouseReleased_ID(ImGuiMouseButton button, ImGuiID owner_id);
-CIMGUI_API bool igShortcut(ImGuiKeyChord key_chord, ImGuiID owner_id, ImGuiInputFlags flags);
-CIMGUI_API bool igSetShortcutRouting(ImGuiKeyChord key_chord, ImGuiID owner_id, ImGuiInputFlags flags);
-CIMGUI_API bool igTestShortcutRouting(ImGuiKeyChord key_chord, ImGuiID owner_id);
+CIMGUI_API bool igIsKeyDown_ID(ImGuiKey key,ImGuiID owner_id);
+CIMGUI_API bool igIsKeyPressed_ID(ImGuiKey key,ImGuiID owner_id,ImGuiInputFlags flags);
+CIMGUI_API bool igIsKeyReleased_ID(ImGuiKey key,ImGuiID owner_id);
+CIMGUI_API bool igIsMouseDown_ID(ImGuiMouseButton button,ImGuiID owner_id);
+CIMGUI_API bool igIsMouseClicked_ID(ImGuiMouseButton button,ImGuiID owner_id,ImGuiInputFlags flags);
+CIMGUI_API bool igIsMouseReleased_ID(ImGuiMouseButton button,ImGuiID owner_id);
+CIMGUI_API bool igShortcut(ImGuiKeyChord key_chord,ImGuiID owner_id,ImGuiInputFlags flags);
+CIMGUI_API bool igSetShortcutRouting(ImGuiKeyChord key_chord,ImGuiID owner_id,ImGuiInputFlags flags);
+CIMGUI_API bool igTestShortcutRouting(ImGuiKeyChord key_chord,ImGuiID owner_id);
 CIMGUI_API ImGuiKeyRoutingData* igGetShortcutRoutingData(ImGuiKeyChord key_chord);
 CIMGUI_API void igDockContextInitialize(ImGuiContext* ctx);
 CIMGUI_API void igDockContextShutdown(ImGuiContext* ctx);
-CIMGUI_API void igDockContextClearNodes(ImGuiContext* ctx, ImGuiID root_id, bool clear_settings_refs);
+CIMGUI_API void igDockContextClearNodes(ImGuiContext* ctx,ImGuiID root_id,bool clear_settings_refs);
 CIMGUI_API void igDockContextRebuildNodes(ImGuiContext* ctx);
 CIMGUI_API void igDockContextNewFrameUpdateUndocking(ImGuiContext* ctx);
 CIMGUI_API void igDockContextNewFrameUpdateDocking(ImGuiContext* ctx);
 CIMGUI_API void igDockContextEndFrame(ImGuiContext* ctx);
 CIMGUI_API ImGuiID igDockContextGenNodeID(ImGuiContext* ctx);
-CIMGUI_API void igDockContextQueueDock(ImGuiContext* ctx, ImGuiWindow* target, ImGuiDockNode* target_node, ImGuiWindow* payload, ImGuiDir split_dir, float split_ratio, bool split_outer);
-CIMGUI_API void igDockContextQueueUndockWindow(ImGuiContext* ctx, ImGuiWindow* window);
-CIMGUI_API void igDockContextQueueUndockNode(ImGuiContext* ctx, ImGuiDockNode* node);
-CIMGUI_API bool igDockContextCalcDropPosForDocking(ImGuiWindow* target, ImGuiDockNode* target_node, ImGuiWindow* payload_window, ImGuiDockNode* payload_node, ImGuiDir split_dir, bool split_outer, ImVec2* out_pos);
-CIMGUI_API ImGuiDockNode* igDockContextFindNodeByID(ImGuiContext* ctx, ImGuiID id);
+CIMGUI_API void igDockContextQueueDock(ImGuiContext* ctx,ImGuiWindow* target,ImGuiDockNode* target_node,ImGuiWindow* payload,ImGuiDir split_dir,float split_ratio,bool split_outer);
+CIMGUI_API void igDockContextQueueUndockWindow(ImGuiContext* ctx,ImGuiWindow* window);
+CIMGUI_API void igDockContextQueueUndockNode(ImGuiContext* ctx,ImGuiDockNode* node);
+CIMGUI_API bool igDockContextCalcDropPosForDocking(ImGuiWindow* target,ImGuiDockNode* target_node,ImGuiWindow* payload_window,ImGuiDockNode* payload_node,ImGuiDir split_dir,bool split_outer,ImVec2* out_pos);
+CIMGUI_API ImGuiDockNode* igDockContextFindNodeByID(ImGuiContext* ctx,ImGuiID id);
 CIMGUI_API bool igDockNodeBeginAmendTabBar(ImGuiDockNode* node);
 CIMGUI_API void igDockNodeEndAmendTabBar(void);
 CIMGUI_API ImGuiDockNode* igDockNodeGetRootNode(ImGuiDockNode* node);
-CIMGUI_API bool igDockNodeIsInHierarchyOf(ImGuiDockNode* node, ImGuiDockNode* parent);
+CIMGUI_API bool igDockNodeIsInHierarchyOf(ImGuiDockNode* node,ImGuiDockNode* parent);
 CIMGUI_API int igDockNodeGetDepth(const ImGuiDockNode* node);
 CIMGUI_API ImGuiID igDockNodeGetWindowMenuButtonId(const ImGuiDockNode* node);
 CIMGUI_API ImGuiDockNode* igGetWindowDockNode(void);
 CIMGUI_API bool igGetWindowAlwaysWantOwnTabBar(ImGuiWindow* window);
-CIMGUI_API void igBeginDocked(ImGuiWindow* window, bool* p_open);
+CIMGUI_API void igBeginDocked(ImGuiWindow* window,bool* p_open);
 CIMGUI_API void igBeginDockableDragDropSource(ImGuiWindow* window);
 CIMGUI_API void igBeginDockableDragDropTarget(ImGuiWindow* window);
-CIMGUI_API void igSetWindowDock(ImGuiWindow* window, ImGuiID dock_id, ImGuiCond cond);
-CIMGUI_API void igDockBuilderDockWindow(const char* window_name, ImGuiID node_id);
+CIMGUI_API void igSetWindowDock(ImGuiWindow* window,ImGuiID dock_id,ImGuiCond cond);
+CIMGUI_API void igDockBuilderDockWindow(const char* window_name,ImGuiID node_id);
 CIMGUI_API ImGuiDockNode* igDockBuilderGetNode(ImGuiID node_id);
 CIMGUI_API ImGuiDockNode* igDockBuilderGetCentralNode(ImGuiID node_id);
-CIMGUI_API ImGuiID igDockBuilderAddNode(ImGuiID node_id, ImGuiDockNodeFlags flags);
+CIMGUI_API ImGuiID igDockBuilderAddNode(ImGuiID node_id,ImGuiDockNodeFlags flags);
 CIMGUI_API void igDockBuilderRemoveNode(ImGuiID node_id);
-CIMGUI_API void igDockBuilderRemoveNodeDockedWindows(ImGuiID node_id, bool clear_settings_refs);
+CIMGUI_API void igDockBuilderRemoveNodeDockedWindows(ImGuiID node_id,bool clear_settings_refs);
 CIMGUI_API void igDockBuilderRemoveNodeChildNodes(ImGuiID node_id);
-CIMGUI_API void igDockBuilderSetNodePos(ImGuiID node_id, ImVec2 pos);
-CIMGUI_API void igDockBuilderSetNodeSize(ImGuiID node_id, ImVec2 size);
-CIMGUI_API ImGuiID igDockBuilderSplitNode(ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir, ImGuiID* out_id_at_dir, ImGuiID* out_id_at_opposite_dir);
-CIMGUI_API void igDockBuilderCopyDockSpace(ImGuiID src_dockspace_id, ImGuiID dst_dockspace_id, ImVector_const_charPtr* in_window_remap_pairs);
-CIMGUI_API void igDockBuilderCopyNode(ImGuiID src_node_id, ImGuiID dst_node_id, ImVector_ImGuiID* out_node_remap_pairs);
-CIMGUI_API void igDockBuilderCopyWindowSettings(const char* src_name, const char* dst_name);
+CIMGUI_API void igDockBuilderSetNodePos(ImGuiID node_id,ImVec2 pos);
+CIMGUI_API void igDockBuilderSetNodeSize(ImGuiID node_id,ImVec2 size);
+CIMGUI_API ImGuiID igDockBuilderSplitNode(ImGuiID node_id,ImGuiDir split_dir,float size_ratio_for_node_at_dir,ImGuiID* out_id_at_dir,ImGuiID* out_id_at_opposite_dir);
+CIMGUI_API void igDockBuilderCopyDockSpace(ImGuiID src_dockspace_id,ImGuiID dst_dockspace_id,ImVector_const_charPtr* in_window_remap_pairs);
+CIMGUI_API void igDockBuilderCopyNode(ImGuiID src_node_id,ImGuiID dst_node_id,ImVector_ImGuiID* out_node_remap_pairs);
+CIMGUI_API void igDockBuilderCopyWindowSettings(const char* src_name,const char* dst_name);
 CIMGUI_API void igDockBuilderFinish(ImGuiID node_id);
 CIMGUI_API void igPushFocusScope(ImGuiID id);
 CIMGUI_API void igPopFocusScope(void);
 CIMGUI_API ImGuiID igGetCurrentFocusScope(void);
 CIMGUI_API bool igIsDragDropActive(void);
-CIMGUI_API bool igBeginDragDropTargetCustom(const ImRect bb, ImGuiID id);
+CIMGUI_API bool igBeginDragDropTargetCustom(const ImRect bb,ImGuiID id);
 CIMGUI_API void igClearDragDrop(void);
 CIMGUI_API bool igIsDragDropPayloadBeingAccepted(void);
 CIMGUI_API void igRenderDragDropTargetRect(const ImRect bb);
-CIMGUI_API void igSetWindowClipRectBeforeSetChannel(ImGuiWindow* window, const ImRect clip_rect);
-CIMGUI_API void igBeginColumns(const char* str_id, int count, ImGuiOldColumnFlags flags);
+CIMGUI_API void igSetWindowClipRectBeforeSetChannel(ImGuiWindow* window,const ImRect clip_rect);
+CIMGUI_API void igBeginColumns(const char* str_id,int count,ImGuiOldColumnFlags flags);
 CIMGUI_API void igEndColumns(void);
 CIMGUI_API void igPushColumnClipRect(int column_index);
 CIMGUI_API void igPushColumnsBackground(void);
 CIMGUI_API void igPopColumnsBackground(void);
-CIMGUI_API ImGuiID igGetColumnsID(const char* str_id, int count);
-CIMGUI_API ImGuiOldColumns* igFindOrCreateColumns(ImGuiWindow* window, ImGuiID id);
-CIMGUI_API float igGetColumnOffsetFromNorm(const ImGuiOldColumns* columns, float offset_norm);
-CIMGUI_API float igGetColumnNormFromOffset(const ImGuiOldColumns* columns, float offset);
+CIMGUI_API ImGuiID igGetColumnsID(const char* str_id,int count);
+CIMGUI_API ImGuiOldColumns* igFindOrCreateColumns(ImGuiWindow* window,ImGuiID id);
+CIMGUI_API float igGetColumnOffsetFromNorm(const ImGuiOldColumns* columns,float offset_norm);
+CIMGUI_API float igGetColumnNormFromOffset(const ImGuiOldColumns* columns,float offset);
 CIMGUI_API void igTableOpenContextMenu(int column_n);
-CIMGUI_API void igTableSetColumnWidth(int column_n, float width);
-CIMGUI_API void igTableSetColumnSortDirection(int column_n, ImGuiSortDirection sort_direction, bool append_to_sort_specs);
+CIMGUI_API void igTableSetColumnWidth(int column_n,float width);
+CIMGUI_API void igTableSetColumnSortDirection(int column_n,ImGuiSortDirection sort_direction,bool append_to_sort_specs);
 CIMGUI_API int igTableGetHoveredColumn(void);
 CIMGUI_API float igTableGetHeaderRowHeight(void);
 CIMGUI_API void igTablePushBackgroundChannel(void);
 CIMGUI_API void igTablePopBackgroundChannel(void);
 CIMGUI_API ImGuiTable* igGetCurrentTable(void);
 CIMGUI_API ImGuiTable* igTableFindByID(ImGuiID id);
-CIMGUI_API bool igBeginTableEx(const char* name, ImGuiID id, int columns_count, ImGuiTableFlags flags, const ImVec2 outer_size, float inner_width);
-CIMGUI_API void igTableBeginInitMemory(ImGuiTable* table, int columns_count);
+CIMGUI_API bool igBeginTableEx(const char* name,ImGuiID id,int columns_count,ImGuiTableFlags flags,const ImVec2 outer_size,float inner_width);
+CIMGUI_API void igTableBeginInitMemory(ImGuiTable* table,int columns_count);
 CIMGUI_API void igTableBeginApplyRequests(ImGuiTable* table);
 CIMGUI_API void igTableSetupDrawChannels(ImGuiTable* table);
 CIMGUI_API void igTableUpdateLayout(ImGuiTable* table);
@@ -4245,21 +4238,21 @@ CIMGUI_API void igTableDrawBorders(ImGuiTable* table);
 CIMGUI_API void igTableDrawContextMenu(ImGuiTable* table);
 CIMGUI_API bool igTableBeginContextMenuPopup(ImGuiTable* table);
 CIMGUI_API void igTableMergeDrawChannels(ImGuiTable* table);
-CIMGUI_API ImGuiTableInstanceData* igTableGetInstanceData(ImGuiTable* table, int instance_no);
+CIMGUI_API ImGuiTableInstanceData* igTableGetInstanceData(ImGuiTable* table,int instance_no);
 CIMGUI_API void igTableSortSpecsSanitize(ImGuiTable* table);
 CIMGUI_API void igTableSortSpecsBuild(ImGuiTable* table);
 CIMGUI_API ImGuiSortDirection igTableGetColumnNextSortDirection(ImGuiTableColumn* column);
-CIMGUI_API void igTableFixColumnSortDirection(ImGuiTable* table, ImGuiTableColumn* column);
-CIMGUI_API float igTableGetColumnWidthAuto(ImGuiTable* table, ImGuiTableColumn* column);
+CIMGUI_API void igTableFixColumnSortDirection(ImGuiTable* table,ImGuiTableColumn* column);
+CIMGUI_API float igTableGetColumnWidthAuto(ImGuiTable* table,ImGuiTableColumn* column);
 CIMGUI_API void igTableBeginRow(ImGuiTable* table);
 CIMGUI_API void igTableEndRow(ImGuiTable* table);
-CIMGUI_API void igTableBeginCell(ImGuiTable* table, int column_n);
+CIMGUI_API void igTableBeginCell(ImGuiTable* table,int column_n);
 CIMGUI_API void igTableEndCell(ImGuiTable* table);
-CIMGUI_API void igTableGetCellBgRect(ImRect* pOut, const ImGuiTable* table, int column_n);
-CIMGUI_API const char* igTableGetColumnName_TablePtr(const ImGuiTable* table, int column_n);
-CIMGUI_API ImGuiID igTableGetColumnResizeID(const ImGuiTable* table, int column_n, int instance_no);
-CIMGUI_API float igTableGetMaxColumnWidth(const ImGuiTable* table, int column_n);
-CIMGUI_API void igTableSetColumnWidthAutoSingle(ImGuiTable* table, int column_n);
+CIMGUI_API void igTableGetCellBgRect(ImRect *pOut,const ImGuiTable* table,int column_n);
+CIMGUI_API const char* igTableGetColumnName_TablePtr(const ImGuiTable* table,int column_n);
+CIMGUI_API ImGuiID igTableGetColumnResizeID(const ImGuiTable* table,int column_n,int instance_no);
+CIMGUI_API float igTableGetMaxColumnWidth(const ImGuiTable* table,int column_n);
+CIMGUI_API void igTableSetColumnWidthAutoSingle(ImGuiTable* table,int column_n);
 CIMGUI_API void igTableSetColumnWidthAutoAll(ImGuiTable* table);
 CIMGUI_API void igTableRemove(ImGuiTable* table);
 CIMGUI_API void igTableGcCompactTransientBuffers_TablePtr(ImGuiTable* table);
@@ -4270,88 +4263,88 @@ CIMGUI_API void igTableSaveSettings(ImGuiTable* table);
 CIMGUI_API void igTableResetSettings(ImGuiTable* table);
 CIMGUI_API ImGuiTableSettings* igTableGetBoundSettings(ImGuiTable* table);
 CIMGUI_API void igTableSettingsAddSettingsHandler(void);
-CIMGUI_API ImGuiTableSettings* igTableSettingsCreate(ImGuiID id, int columns_count);
+CIMGUI_API ImGuiTableSettings* igTableSettingsCreate(ImGuiID id,int columns_count);
 CIMGUI_API ImGuiTableSettings* igTableSettingsFindByID(ImGuiID id);
-CIMGUI_API bool igBeginTabBarEx(ImGuiTabBar* tab_bar, const ImRect bb, ImGuiTabBarFlags flags, ImGuiDockNode* dock_node);
-CIMGUI_API ImGuiTabItem* igTabBarFindTabByID(ImGuiTabBar* tab_bar, ImGuiID tab_id);
+CIMGUI_API bool igBeginTabBarEx(ImGuiTabBar* tab_bar,const ImRect bb,ImGuiTabBarFlags flags,ImGuiDockNode* dock_node);
+CIMGUI_API ImGuiTabItem* igTabBarFindTabByID(ImGuiTabBar* tab_bar,ImGuiID tab_id);
 CIMGUI_API ImGuiTabItem* igTabBarFindMostRecentlySelectedTabForActiveWindow(ImGuiTabBar* tab_bar);
-CIMGUI_API void igTabBarAddTab(ImGuiTabBar* tab_bar, ImGuiTabItemFlags tab_flags, ImGuiWindow* window);
-CIMGUI_API void igTabBarRemoveTab(ImGuiTabBar* tab_bar, ImGuiID tab_id);
-CIMGUI_API void igTabBarCloseTab(ImGuiTabBar* tab_bar, ImGuiTabItem* tab);
-CIMGUI_API void igTabBarQueueReorder(ImGuiTabBar* tab_bar, const ImGuiTabItem* tab, int offset);
-CIMGUI_API void igTabBarQueueReorderFromMousePos(ImGuiTabBar* tab_bar, const ImGuiTabItem* tab, ImVec2 mouse_pos);
+CIMGUI_API void igTabBarAddTab(ImGuiTabBar* tab_bar,ImGuiTabItemFlags tab_flags,ImGuiWindow* window);
+CIMGUI_API void igTabBarRemoveTab(ImGuiTabBar* tab_bar,ImGuiID tab_id);
+CIMGUI_API void igTabBarCloseTab(ImGuiTabBar* tab_bar,ImGuiTabItem* tab);
+CIMGUI_API void igTabBarQueueReorder(ImGuiTabBar* tab_bar,const ImGuiTabItem* tab,int offset);
+CIMGUI_API void igTabBarQueueReorderFromMousePos(ImGuiTabBar* tab_bar,const ImGuiTabItem* tab,ImVec2 mouse_pos);
 CIMGUI_API bool igTabBarProcessReorder(ImGuiTabBar* tab_bar);
-CIMGUI_API bool igTabItemEx(ImGuiTabBar* tab_bar, const char* label, bool* p_open, ImGuiTabItemFlags flags, ImGuiWindow* docked_window);
-CIMGUI_API void igTabItemCalcSize_Str(ImVec2* pOut, const char* label, bool has_close_button_or_unsaved_marker);
-CIMGUI_API void igTabItemCalcSize_WindowPtr(ImVec2* pOut, ImGuiWindow* window);
-CIMGUI_API void igTabItemBackground(ImDrawList* draw_list, const ImRect bb, ImGuiTabItemFlags flags, ImU32 col);
-CIMGUI_API void igTabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect bb, ImGuiTabItemFlags flags, ImVec2 frame_padding, const char* label, ImGuiID tab_id, ImGuiID close_button_id, bool is_contents_visible, bool* out_just_closed, bool* out_text_clipped);
-CIMGUI_API void igRenderText(ImVec2 pos, const char* text, const char* text_end, bool hide_text_after_hash);
-CIMGUI_API void igRenderTextWrapped(ImVec2 pos, const char* text, const char* text_end, float wrap_width);
-CIMGUI_API void igRenderTextClipped(const ImVec2 pos_min, const ImVec2 pos_max, const char* text, const char* text_end, const ImVec2* text_size_if_known, const ImVec2 align, const ImRect* clip_rect);
-CIMGUI_API void igRenderTextClippedEx(ImDrawList* draw_list, const ImVec2 pos_min, const ImVec2 pos_max, const char* text, const char* text_end, const ImVec2* text_size_if_known, const ImVec2 align, const ImRect* clip_rect);
-CIMGUI_API void igRenderTextEllipsis(ImDrawList* draw_list, const ImVec2 pos_min, const ImVec2 pos_max, float clip_max_x, float ellipsis_max_x, const char* text, const char* text_end, const ImVec2* text_size_if_known);
-CIMGUI_API void igRenderFrame(ImVec2 p_min, ImVec2 p_max, ImU32 fill_col, bool border, float rounding);
-CIMGUI_API void igRenderFrameBorder(ImVec2 p_min, ImVec2 p_max, float rounding);
-CIMGUI_API void igRenderColorRectWithAlphaCheckerboard(ImDrawList* draw_list, ImVec2 p_min, ImVec2 p_max, ImU32 fill_col, float grid_step, ImVec2 grid_off, float rounding, ImDrawFlags flags);
-CIMGUI_API void igRenderNavHighlight(const ImRect bb, ImGuiID id, ImGuiNavHighlightFlags flags);
-CIMGUI_API const char* igFindRenderedTextEnd(const char* text, const char* text_end);
-CIMGUI_API void igRenderMouseCursor(ImVec2 pos, float scale, ImGuiMouseCursor mouse_cursor, ImU32 col_fill, ImU32 col_border, ImU32 col_shadow);
-CIMGUI_API void igRenderArrow(ImDrawList* draw_list, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale);
-CIMGUI_API void igRenderBullet(ImDrawList* draw_list, ImVec2 pos, ImU32 col);
-CIMGUI_API void igRenderCheckMark(ImDrawList* draw_list, ImVec2 pos, ImU32 col, float sz);
-CIMGUI_API void igRenderArrowPointingAt(ImDrawList* draw_list, ImVec2 pos, ImVec2 half_sz, ImGuiDir direction, ImU32 col);
-CIMGUI_API void igRenderArrowDockMenu(ImDrawList* draw_list, ImVec2 p_min, float sz, ImU32 col);
-CIMGUI_API void igRenderRectFilledRangeH(ImDrawList* draw_list, const ImRect rect, ImU32 col, float x_start_norm, float x_end_norm, float rounding);
-CIMGUI_API void igRenderRectFilledWithHole(ImDrawList* draw_list, const ImRect outer, const ImRect inner, ImU32 col, float rounding);
-CIMGUI_API ImDrawFlags igCalcRoundingFlagsForRectInRect(const ImRect r_in, const ImRect r_outer, float threshold);
-CIMGUI_API void igTextEx(const char* text, const char* text_end, ImGuiTextFlags flags);
-CIMGUI_API bool igButtonEx(const char* label, const ImVec2 size_arg, ImGuiButtonFlags flags);
-CIMGUI_API bool igCloseButton(ImGuiID id, const ImVec2 pos);
-CIMGUI_API bool igCollapseButton(ImGuiID id, const ImVec2 pos, ImGuiDockNode* dock_node);
-CIMGUI_API bool igArrowButtonEx(const char* str_id, ImGuiDir dir, ImVec2 size_arg, ImGuiButtonFlags flags);
+CIMGUI_API bool igTabItemEx(ImGuiTabBar* tab_bar,const char* label,bool* p_open,ImGuiTabItemFlags flags,ImGuiWindow* docked_window);
+CIMGUI_API void igTabItemCalcSize_Str(ImVec2 *pOut,const char* label,bool has_close_button_or_unsaved_marker);
+CIMGUI_API void igTabItemCalcSize_WindowPtr(ImVec2 *pOut,ImGuiWindow* window);
+CIMGUI_API void igTabItemBackground(ImDrawList* draw_list,const ImRect bb,ImGuiTabItemFlags flags,ImU32 col);
+CIMGUI_API void igTabItemLabelAndCloseButton(ImDrawList* draw_list,const ImRect bb,ImGuiTabItemFlags flags,ImVec2 frame_padding,const char* label,ImGuiID tab_id,ImGuiID close_button_id,bool is_contents_visible,bool* out_just_closed,bool* out_text_clipped);
+CIMGUI_API void igRenderText(ImVec2 pos,const char* text,const char* text_end,bool hide_text_after_hash);
+CIMGUI_API void igRenderTextWrapped(ImVec2 pos,const char* text,const char* text_end,float wrap_width);
+CIMGUI_API void igRenderTextClipped(const ImVec2 pos_min,const ImVec2 pos_max,const char* text,const char* text_end,const ImVec2* text_size_if_known,const ImVec2 align,const ImRect* clip_rect);
+CIMGUI_API void igRenderTextClippedEx(ImDrawList* draw_list,const ImVec2 pos_min,const ImVec2 pos_max,const char* text,const char* text_end,const ImVec2* text_size_if_known,const ImVec2 align,const ImRect* clip_rect);
+CIMGUI_API void igRenderTextEllipsis(ImDrawList* draw_list,const ImVec2 pos_min,const ImVec2 pos_max,float clip_max_x,float ellipsis_max_x,const char* text,const char* text_end,const ImVec2* text_size_if_known);
+CIMGUI_API void igRenderFrame(ImVec2 p_min,ImVec2 p_max,ImU32 fill_col,bool border,float rounding);
+CIMGUI_API void igRenderFrameBorder(ImVec2 p_min,ImVec2 p_max,float rounding);
+CIMGUI_API void igRenderColorRectWithAlphaCheckerboard(ImDrawList* draw_list,ImVec2 p_min,ImVec2 p_max,ImU32 fill_col,float grid_step,ImVec2 grid_off,float rounding,ImDrawFlags flags);
+CIMGUI_API void igRenderNavHighlight(const ImRect bb,ImGuiID id,ImGuiNavHighlightFlags flags);
+CIMGUI_API const char* igFindRenderedTextEnd(const char* text,const char* text_end);
+CIMGUI_API void igRenderMouseCursor(ImVec2 pos,float scale,ImGuiMouseCursor mouse_cursor,ImU32 col_fill,ImU32 col_border,ImU32 col_shadow);
+CIMGUI_API void igRenderArrow(ImDrawList* draw_list,ImVec2 pos,ImU32 col,ImGuiDir dir,float scale);
+CIMGUI_API void igRenderBullet(ImDrawList* draw_list,ImVec2 pos,ImU32 col);
+CIMGUI_API void igRenderCheckMark(ImDrawList* draw_list,ImVec2 pos,ImU32 col,float sz);
+CIMGUI_API void igRenderArrowPointingAt(ImDrawList* draw_list,ImVec2 pos,ImVec2 half_sz,ImGuiDir direction,ImU32 col);
+CIMGUI_API void igRenderArrowDockMenu(ImDrawList* draw_list,ImVec2 p_min,float sz,ImU32 col);
+CIMGUI_API void igRenderRectFilledRangeH(ImDrawList* draw_list,const ImRect rect,ImU32 col,float x_start_norm,float x_end_norm,float rounding);
+CIMGUI_API void igRenderRectFilledWithHole(ImDrawList* draw_list,const ImRect outer,const ImRect inner,ImU32 col,float rounding);
+CIMGUI_API ImDrawFlags igCalcRoundingFlagsForRectInRect(const ImRect r_in,const ImRect r_outer,float threshold);
+CIMGUI_API void igTextEx(const char* text,const char* text_end,ImGuiTextFlags flags);
+CIMGUI_API bool igButtonEx(const char* label,const ImVec2 size_arg,ImGuiButtonFlags flags);
+CIMGUI_API bool igCloseButton(ImGuiID id,const ImVec2 pos);
+CIMGUI_API bool igCollapseButton(ImGuiID id,const ImVec2 pos,ImGuiDockNode* dock_node);
+CIMGUI_API bool igArrowButtonEx(const char* str_id,ImGuiDir dir,ImVec2 size_arg,ImGuiButtonFlags flags);
 CIMGUI_API void igScrollbar(ImGuiAxis axis);
-CIMGUI_API bool igScrollbarEx(const ImRect bb, ImGuiID id, ImGuiAxis axis, ImS64* p_scroll_v, ImS64 avail_v, ImS64 contents_v, ImDrawFlags flags);
-CIMGUI_API bool igImageButtonEx(ImGuiID id, ImTextureID texture_id, const ImVec2 size, const ImVec2 uv0, const ImVec2 uv1, const ImVec4 bg_col, const ImVec4 tint_col);
-CIMGUI_API void igGetWindowScrollbarRect(ImRect* pOut, ImGuiWindow* window, ImGuiAxis axis);
-CIMGUI_API ImGuiID igGetWindowScrollbarID(ImGuiWindow* window, ImGuiAxis axis);
-CIMGUI_API ImGuiID igGetWindowResizeCornerID(ImGuiWindow* window, int n);
-CIMGUI_API ImGuiID igGetWindowResizeBorderID(ImGuiWindow* window, ImGuiDir dir);
+CIMGUI_API bool igScrollbarEx(const ImRect bb,ImGuiID id,ImGuiAxis axis,ImS64* p_scroll_v,ImS64 avail_v,ImS64 contents_v,ImDrawFlags flags);
+CIMGUI_API bool igImageButtonEx(ImGuiID id,ImTextureID texture_id,const ImVec2 size,const ImVec2 uv0,const ImVec2 uv1,const ImVec4 bg_col,const ImVec4 tint_col);
+CIMGUI_API void igGetWindowScrollbarRect(ImRect *pOut,ImGuiWindow* window,ImGuiAxis axis);
+CIMGUI_API ImGuiID igGetWindowScrollbarID(ImGuiWindow* window,ImGuiAxis axis);
+CIMGUI_API ImGuiID igGetWindowResizeCornerID(ImGuiWindow* window,int n);
+CIMGUI_API ImGuiID igGetWindowResizeBorderID(ImGuiWindow* window,ImGuiDir dir);
 CIMGUI_API void igSeparatorEx(ImGuiSeparatorFlags flags);
-CIMGUI_API bool igCheckboxFlags_S64Ptr(const char* label, ImS64* flags, ImS64 flags_value);
-CIMGUI_API bool igCheckboxFlags_U64Ptr(const char* label, ImU64* flags, ImU64 flags_value);
-CIMGUI_API bool igButtonBehavior(const ImRect bb, ImGuiID id, bool* out_hovered, bool* out_held, ImGuiButtonFlags flags);
-CIMGUI_API bool igDragBehavior(ImGuiID id, ImGuiDataType data_type, void* p_v, float v_speed, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags);
-CIMGUI_API bool igSliderBehavior(const ImRect bb, ImGuiID id, ImGuiDataType data_type, void* p_v, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags, ImRect* out_grab_bb);
-CIMGUI_API bool igSplitterBehavior(const ImRect bb, ImGuiID id, ImGuiAxis axis, float* size1, float* size2, float min_size1, float min_size2, float hover_extend, float hover_visibility_delay, ImU32 bg_col);
-CIMGUI_API bool igTreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* label, const char* label_end);
+CIMGUI_API bool igCheckboxFlags_S64Ptr(const char* label,ImS64* flags,ImS64 flags_value);
+CIMGUI_API bool igCheckboxFlags_U64Ptr(const char* label,ImU64* flags,ImU64 flags_value);
+CIMGUI_API bool igButtonBehavior(const ImRect bb,ImGuiID id,bool* out_hovered,bool* out_held,ImGuiButtonFlags flags);
+CIMGUI_API bool igDragBehavior(ImGuiID id,ImGuiDataType data_type,void* p_v,float v_speed,const void* p_min,const void* p_max,const char* format,ImGuiSliderFlags flags);
+CIMGUI_API bool igSliderBehavior(const ImRect bb,ImGuiID id,ImGuiDataType data_type,void* p_v,const void* p_min,const void* p_max,const char* format,ImGuiSliderFlags flags,ImRect* out_grab_bb);
+CIMGUI_API bool igSplitterBehavior(const ImRect bb,ImGuiID id,ImGuiAxis axis,float* size1,float* size2,float min_size1,float min_size2,float hover_extend,float hover_visibility_delay,ImU32 bg_col);
+CIMGUI_API bool igTreeNodeBehavior(ImGuiID id,ImGuiTreeNodeFlags flags,const char* label,const char* label_end);
 CIMGUI_API void igTreePushOverrideID(ImGuiID id);
-CIMGUI_API void igTreeNodeSetOpen(ImGuiID id, bool open);
-CIMGUI_API bool igTreeNodeUpdateNextOpen(ImGuiID id, ImGuiTreeNodeFlags flags);
+CIMGUI_API void igTreeNodeSetOpen(ImGuiID id,bool open);
+CIMGUI_API bool igTreeNodeUpdateNextOpen(ImGuiID id,ImGuiTreeNodeFlags flags);
 CIMGUI_API const ImGuiDataTypeInfo* igDataTypeGetInfo(ImGuiDataType data_type);
-CIMGUI_API int igDataTypeFormatString(char* buf, int buf_size, ImGuiDataType data_type, const void* p_data, const char* format);
-CIMGUI_API void igDataTypeApplyOp(ImGuiDataType data_type, int op, void* output, const void* arg_1, const void* arg_2);
-CIMGUI_API bool igDataTypeApplyFromText(const char* buf, ImGuiDataType data_type, void* p_data, const char* format);
-CIMGUI_API int igDataTypeCompare(ImGuiDataType data_type, const void* arg_1, const void* arg_2);
-CIMGUI_API bool igDataTypeClamp(ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max);
-CIMGUI_API bool igInputTextEx(const char* label, const char* hint, char* buf, int buf_size, const ImVec2 size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data);
-CIMGUI_API bool igTempInputText(const ImRect bb, ImGuiID id, const char* label, char* buf, int buf_size, ImGuiInputTextFlags flags);
-CIMGUI_API bool igTempInputScalar(const ImRect bb, ImGuiID id, const char* label, ImGuiDataType data_type, void* p_data, const char* format, const void* p_clamp_min, const void* p_clamp_max);
+CIMGUI_API int igDataTypeFormatString(char* buf,int buf_size,ImGuiDataType data_type,const void* p_data,const char* format);
+CIMGUI_API void igDataTypeApplyOp(ImGuiDataType data_type,int op,void* output,const void* arg_1,const void* arg_2);
+CIMGUI_API bool igDataTypeApplyFromText(const char* buf,ImGuiDataType data_type,void* p_data,const char* format);
+CIMGUI_API int igDataTypeCompare(ImGuiDataType data_type,const void* arg_1,const void* arg_2);
+CIMGUI_API bool igDataTypeClamp(ImGuiDataType data_type,void* p_data,const void* p_min,const void* p_max);
+CIMGUI_API bool igInputTextEx(const char* label,const char* hint,char* buf,int buf_size,const ImVec2 size_arg,ImGuiInputTextFlags flags,ImGuiInputTextCallback callback,void* user_data);
+CIMGUI_API bool igTempInputText(const ImRect bb,ImGuiID id,const char* label,char* buf,int buf_size,ImGuiInputTextFlags flags);
+CIMGUI_API bool igTempInputScalar(const ImRect bb,ImGuiID id,const char* label,ImGuiDataType data_type,void* p_data,const char* format,const void* p_clamp_min,const void* p_clamp_max);
 CIMGUI_API bool igTempInputIsActive(ImGuiID id);
 CIMGUI_API ImGuiInputTextState* igGetInputTextState(ImGuiID id);
-CIMGUI_API void igColorTooltip(const char* text, const float* col, ImGuiColorEditFlags flags);
-CIMGUI_API void igColorEditOptionsPopup(const float* col, ImGuiColorEditFlags flags);
-CIMGUI_API void igColorPickerOptionsPopup(const float* ref_col, ImGuiColorEditFlags flags);
-CIMGUI_API int igPlotEx(ImGuiPlotType plot_type, const char* label, float(*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 frame_size);
-CIMGUI_API void igShadeVertsLinearColorGradientKeepAlpha(ImDrawList* draw_list, int vert_start_idx, int vert_end_idx, ImVec2 gradient_p0, ImVec2 gradient_p1, ImU32 col0, ImU32 col1);
-CIMGUI_API void igShadeVertsLinearUV(ImDrawList* draw_list, int vert_start_idx, int vert_end_idx, const ImVec2 a, const ImVec2 b, const ImVec2 uv_a, const ImVec2 uv_b, bool clamp);
+CIMGUI_API void igColorTooltip(const char* text,const float* col,ImGuiColorEditFlags flags);
+CIMGUI_API void igColorEditOptionsPopup(const float* col,ImGuiColorEditFlags flags);
+CIMGUI_API void igColorPickerOptionsPopup(const float* ref_col,ImGuiColorEditFlags flags);
+CIMGUI_API int igPlotEx(ImGuiPlotType plot_type,const char* label,float(*values_getter)(void* data,int idx),void* data,int values_count,int values_offset,const char* overlay_text,float scale_min,float scale_max,ImVec2 frame_size);
+CIMGUI_API void igShadeVertsLinearColorGradientKeepAlpha(ImDrawList* draw_list,int vert_start_idx,int vert_end_idx,ImVec2 gradient_p0,ImVec2 gradient_p1,ImU32 col0,ImU32 col1);
+CIMGUI_API void igShadeVertsLinearUV(ImDrawList* draw_list,int vert_start_idx,int vert_end_idx,const ImVec2 a,const ImVec2 b,const ImVec2 uv_a,const ImVec2 uv_b,bool clamp);
 CIMGUI_API void igGcCompactTransientMiscBuffers(void);
 CIMGUI_API void igGcCompactTransientWindowBuffers(ImGuiWindow* window);
 CIMGUI_API void igGcAwakeTransientWindowBuffers(ImGuiWindow* window);
-CIMGUI_API void igDebugLog(const char* fmt, ...);
-CIMGUI_API void igDebugLogV(const char* fmt, va_list args);
-CIMGUI_API void igErrorCheckEndFrameRecover(ImGuiErrorLogCallback log_callback, void* user_data);
-CIMGUI_API void igErrorCheckEndWindowRecover(ImGuiErrorLogCallback log_callback, void* user_data);
+CIMGUI_API void igDebugLog(const char* fmt,...);
+CIMGUI_API void igDebugLogV(const char* fmt,va_list args);
+CIMGUI_API void igErrorCheckEndFrameRecover(ImGuiErrorLogCallback log_callback,void* user_data);
+CIMGUI_API void igErrorCheckEndWindowRecover(ImGuiErrorLogCallback log_callback,void* user_data);
 CIMGUI_API void igErrorCheckUsingSetCursorPosToExtendParentBoundaries(void);
 CIMGUI_API void igDebugLocateItem(ImGuiID target_id);
 CIMGUI_API void igDebugLocateItemOnHover(ImGuiID target_id);
@@ -4359,41 +4352,41 @@ CIMGUI_API void igDebugLocateItemResolveWithLastItem(void);
 CIMGUI_API void igDebugDrawItemRect(ImU32 col);
 CIMGUI_API void igDebugStartItemPicker(void);
 CIMGUI_API void igShowFontAtlas(ImFontAtlas* atlas);
-CIMGUI_API void igDebugHookIdInfo(ImGuiID id, ImGuiDataType data_type, const void* data_id, const void* data_id_end);
+CIMGUI_API void igDebugHookIdInfo(ImGuiID id,ImGuiDataType data_type,const void* data_id,const void* data_id_end);
 CIMGUI_API void igDebugNodeColumns(ImGuiOldColumns* columns);
-CIMGUI_API void igDebugNodeDockNode(ImGuiDockNode* node, const char* label);
-CIMGUI_API void igDebugNodeDrawList(ImGuiWindow* window, ImGuiViewportP* viewport, const ImDrawList* draw_list, const char* label);
-CIMGUI_API void igDebugNodeDrawCmdShowMeshAndBoundingBox(ImDrawList* out_draw_list, const ImDrawList* draw_list, const ImDrawCmd* draw_cmd, bool show_mesh, bool show_aabb);
+CIMGUI_API void igDebugNodeDockNode(ImGuiDockNode* node,const char* label);
+CIMGUI_API void igDebugNodeDrawList(ImGuiWindow* window,ImGuiViewportP* viewport,const ImDrawList* draw_list,const char* label);
+CIMGUI_API void igDebugNodeDrawCmdShowMeshAndBoundingBox(ImDrawList* out_draw_list,const ImDrawList* draw_list,const ImDrawCmd* draw_cmd,bool show_mesh,bool show_aabb);
 CIMGUI_API void igDebugNodeFont(ImFont* font);
-CIMGUI_API void igDebugNodeFontGlyph(ImFont* font, const ImFontGlyph* glyph);
-CIMGUI_API void igDebugNodeStorage(ImGuiStorage* storage, const char* label);
-CIMGUI_API void igDebugNodeTabBar(ImGuiTabBar* tab_bar, const char* label);
+CIMGUI_API void igDebugNodeFontGlyph(ImFont* font,const ImFontGlyph* glyph);
+CIMGUI_API void igDebugNodeStorage(ImGuiStorage* storage,const char* label);
+CIMGUI_API void igDebugNodeTabBar(ImGuiTabBar* tab_bar,const char* label);
 CIMGUI_API void igDebugNodeTable(ImGuiTable* table);
 CIMGUI_API void igDebugNodeTableSettings(ImGuiTableSettings* settings);
 CIMGUI_API void igDebugNodeInputTextState(ImGuiInputTextState* state);
-CIMGUI_API void igDebugNodeWindow(ImGuiWindow* window, const char* label);
+CIMGUI_API void igDebugNodeWindow(ImGuiWindow* window,const char* label);
 CIMGUI_API void igDebugNodeWindowSettings(ImGuiWindowSettings* settings);
-CIMGUI_API void igDebugNodeWindowsList(ImVector_ImGuiWindowPtr* windows, const char* label);
-CIMGUI_API void igDebugNodeWindowsListByBeginStackParent(ImGuiWindow** windows, int windows_size, ImGuiWindow* parent_in_begin_stack);
+CIMGUI_API void igDebugNodeWindowsList(ImVector_ImGuiWindowPtr* windows,const char* label);
+CIMGUI_API void igDebugNodeWindowsListByBeginStackParent(ImGuiWindow** windows,int windows_size,ImGuiWindow* parent_in_begin_stack);
 CIMGUI_API void igDebugNodeViewport(ImGuiViewportP* viewport);
-CIMGUI_API void igDebugRenderViewportThumbnail(ImDrawList* draw_list, ImGuiViewportP* viewport, const ImRect bb);
-CIMGUI_API bool igIsKeyPressedMap(ImGuiKey key, bool repeat);
+CIMGUI_API void igDebugRenderViewportThumbnail(ImDrawList* draw_list,ImGuiViewportP* viewport,const ImRect bb);
+CIMGUI_API bool igIsKeyPressedMap(ImGuiKey key,bool repeat);
 CIMGUI_API const ImFontBuilderIO* igImFontAtlasGetBuilderForStbTruetype(void);
 CIMGUI_API void igImFontAtlasBuildInit(ImFontAtlas* atlas);
-CIMGUI_API void igImFontAtlasBuildSetupFont(ImFontAtlas* atlas, ImFont* font, ImFontConfig* font_config, float ascent, float descent);
-CIMGUI_API void igImFontAtlasBuildPackCustomRects(ImFontAtlas* atlas, void* stbrp_context_opaque);
+CIMGUI_API void igImFontAtlasBuildSetupFont(ImFontAtlas* atlas,ImFont* font,ImFontConfig* font_config,float ascent,float descent);
+CIMGUI_API void igImFontAtlasBuildPackCustomRects(ImFontAtlas* atlas,void* stbrp_context_opaque);
 CIMGUI_API void igImFontAtlasBuildFinish(ImFontAtlas* atlas);
-CIMGUI_API void igImFontAtlasBuildRender8bppRectFromString(ImFontAtlas* atlas, int x, int y, int w, int h, const char* in_str, char in_marker_char, unsigned char in_marker_pixel_value);
-CIMGUI_API void igImFontAtlasBuildRender32bppRectFromString(ImFontAtlas* atlas, int x, int y, int w, int h, const char* in_str, char in_marker_char, unsigned int in_marker_pixel_value);
-CIMGUI_API void igImFontAtlasBuildMultiplyCalcLookupTable(unsigned char out_table[256], float in_multiply_factor);
-CIMGUI_API void igImFontAtlasBuildMultiplyRectAlpha8(const unsigned char table[256], unsigned char* pixels, int x, int y, int w, int h, int stride);
+CIMGUI_API void igImFontAtlasBuildRender8bppRectFromString(ImFontAtlas* atlas,int x,int y,int w,int h,const char* in_str,char in_marker_char,unsigned char in_marker_pixel_value);
+CIMGUI_API void igImFontAtlasBuildRender32bppRectFromString(ImFontAtlas* atlas,int x,int y,int w,int h,const char* in_str,char in_marker_char,unsigned int in_marker_pixel_value);
+CIMGUI_API void igImFontAtlasBuildMultiplyCalcLookupTable(unsigned char out_table[256],float in_multiply_factor);
+CIMGUI_API void igImFontAtlasBuildMultiplyRectAlpha8(const unsigned char table[256],unsigned char* pixels,int x,int y,int w,int h,int stride);
 
 
 /////////////////////////hand written functions
 //no LogTextV
-CIMGUI_API void igLogText(CONST char* fmt, ...);
+CIMGUI_API void igLogText(CONST char *fmt, ...);
 //no appendfV
-CIMGUI_API void ImGuiTextBuffer_appendf(struct ImGuiTextBuffer* buffer, const char* fmt, ...);
+CIMGUI_API void ImGuiTextBuffer_appendf(struct ImGuiTextBuffer *buffer, const char *fmt, ...);
 //for getting FLT_MAX in bindings
 CIMGUI_API float igGET_FLT_MAX(void);
 //for getting FLT_MIN in bindings
@@ -4407,6 +4400,7 @@ CIMGUI_API void ImVector_ImWchar_UnInit(ImVector_ImWchar* p);
 
 
 #endif //CIMGUI_INCLUDED
+
 
 
 

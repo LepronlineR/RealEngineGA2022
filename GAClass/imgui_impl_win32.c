@@ -105,11 +105,6 @@ typedef struct ImGui_ImplWin32_Data
 
 } ImGui_ImplWin32_Data;
 
-ImGui_ImplWin32_Data* ImGuiImplWin32Data() { 
-    ImGui_ImplWin32_Data* res;
-    return res;
-}
-
 // Backend data stored in io.BackendPlatformUserData to allow support for multiple Dear ImGui contexts
 // It is STRONGLY preferred that you use docking branch with multi-viewports (== single Dear ImGui context + multiple windows) instead of multiple Dear ImGui contexts.
 // FIXME: multi-context support is not well tested and probably dysfunctional in this backend.
@@ -123,7 +118,6 @@ static ImGui_ImplWin32_Data* ImGui_ImplWin32_GetBackendData()
 bool    ImGui_ImplWin32_Init(void* hwnd)
 {
     ImGuiIO* io = igGetIO();
-    IM_ASSERT(io->BackendPlatformUserData == NULL && "Already initialized a platform backend!");
 
     INT64 perf_frequency, perf_counter;
     if (!QueryPerformanceFrequency((LARGE_INTEGER*)&perf_frequency))
@@ -132,7 +126,7 @@ bool    ImGui_ImplWin32_Init(void* hwnd)
         return false;
 
     // Setup backend capabilities flags
-    ImGui_ImplWin32_Data* bd = ImGuiImplWin32Data();
+    ImGui_ImplWin32_Data* bd = calloc(1, 8);
     io->BackendPlatformUserData = (void*)bd;
     io->BackendPlatformName = "imgui_impl_win32";
     io->BackendFlags |= ImGuiBackendFlags_HasMouseCursors;         // We can honor GetMouseCursor() values (optional)
