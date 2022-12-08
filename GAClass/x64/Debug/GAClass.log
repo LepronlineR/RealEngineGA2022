@@ -1,5 +1,5 @@
 ﻿x64\Debug\atomic.obj : warning LNK4042: object specified more than once; extras ignored
-     Creating library C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.lib and object C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exp
+     Creating library C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\x64\Debug\GAClass.lib and object C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\x64\Debug\GAClass.exp
 imgui_impl_vulkan.obj : error LNK2019: unresolved external symbol igGetIO referenced in function ImGui_ImplVulkan_CreateFontsTexture
 imgui_impl_win32.obj : error LNK2001: unresolved external symbol igGetIO
 scene.obj : error LNK2001: unresolved external symbol igGetIO
@@ -25,7 +25,10 @@ imgui_impl_win32.obj : error LNK2019: unresolved external symbol IsKeyDown refer
 imgui_impl_win32.obj : error LNK2019: unresolved external symbol ImGui_ImplWin32_UpdateGamepads referenced in function ImGui_ImplWin32_NewFrame
 imgui_impl_win32.obj : error LNK2019: unresolved external symbol _IsWindowsVistaOrGreater referenced in function ImGui_ImplWin32_EnableAlphaCompositing
 imgui_impl_win32.obj : error LNK2019: unresolved external symbol _IsWindows8OrGreater referenced in function ImGui_ImplWin32_EnableAlphaCompositing
+queue.obj : error LNK2019: unresolved external symbol atomic_increment referenced in function queue_pop
+scene.obj : error LNK2019: unresolved external symbol igCreateContext referenced in function scene_create
 scene.obj : error LNK2019: unresolved external symbol igNewFrame referenced in function scene_interaction
 scene.obj : error LNK2019: unresolved external symbol igRender referenced in function scene_interaction
+scene.obj : error LNK2019: unresolved external symbol igImFontAtlasBuildInit referenced in function scene_create
 scene.obj : error LNK2019: unresolved external symbol IMGUI_CHECKVERSION referenced in function scene_create
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe : fatal error LNK1120: 26 unresolved externals
+C:\Users\zhengz5\Documents\GitHub\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe : fatal error LNK1120: 29 unresolved externals
