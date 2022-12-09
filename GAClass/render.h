@@ -8,6 +8,7 @@ typedef struct render_t render_t;
 
 typedef struct ecs_entity_ref_t ecs_entity_ref_t;
 typedef struct gpu_mesh_info_t gpu_mesh_info_t;
+typedef struct gpu_image_mesh_info_t gpu_image_mesh_info_t;
 typedef struct gpu_shader_info_t gpu_shader_info_t;
 typedef struct gpu_uniform_buffer_info_t gpu_uniform_buffer_info_t;
 typedef struct heap_t heap_t;

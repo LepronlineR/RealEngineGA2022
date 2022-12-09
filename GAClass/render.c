@@ -60,6 +60,14 @@ typedef struct gpu_frame_t
 	gpu_cmd_buffer_t* cmd_buffer;
 } gpu_frame_t;
 
+typedef struct gpu_cmd_buffer_t
+{
+	VkCommandBuffer buffer;
+	VkPipelineLayout pipeline_layout;
+	int index_count;
+	int vertex_count;
+} gpu_cmd_buffer_t;
+
 typedef struct model_command_t
 {
 	command_type_t type;
@@ -228,6 +236,9 @@ static int render_thread_func(void* user)
 
 		ImGuiIO* io = igGetIO();
 		io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+		// Init for Win32
+		ImGui_ImplWin32_Init(wm_get_hwnd(render->window));
 		
 		// Init for Vulkan
 		ImGui_ImplVulkan_InitInfo init_info = {
@@ -240,13 +251,13 @@ static int render_thread_func(void* user)
 			.DescriptorPool = gpu_get_descriptor_pool(render->gpu),
 			.Allocator = gpu_get_allocator(render->gpu),
 			.MinImageCount = 2,
-			.ImageCount = 2,
+			.ImageCount = UINT8_MAX	,
 			.CheckVkResultFn = vk_result
 		};
 
 		ImGui_ImplVulkan_Init(&init_info, gpu_get_render_pass(render->gpu));
 
-		// create a command buffer
+		// create a command buffer (for texture/font)
 		VkCommandBuffer commandBuffer;
 		{
 			VkCommandBufferAllocateInfo allocation_info =
@@ -272,6 +283,7 @@ static int render_thread_func(void* user)
 			vkBeginCommandBuffer(commandBuffer, &begin_info);
 		}
 
+		// we need to create a font texture
 		ImGui_ImplVulkan_CreateFontsTexture(commandBuffer);
 
 		// end command buffer
@@ -296,10 +308,8 @@ static int render_thread_func(void* user)
 
 		igStyleColorsDark(NULL);
 
-		// Init for Win32
-		ImGui_ImplWin32_Init(wm_get_hwnd(render->window));
-		
 	}
+
 
 	while (true)
 	{
@@ -312,6 +322,36 @@ static int render_thread_func(void* user)
 		if (!cmdbuf)
 		{
 			cmdbuf = gpu_frame_begin(render->gpu);
+		}
+
+		if (render->render_mode == k_imgui_mode) {
+			// Start the frame
+			ImGui_ImplVulkan_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			igNewFrame();
+
+			// window
+
+			igShowDemoWindow(true);
+			/*
+			{
+				static float f = 0.0f;
+				static int counter = 0;
+
+				igBegin("Hello, world!", NULL, 0);
+
+				igText("This is some text.");
+
+				igText("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / igGetIO()->Framerate, igGetIO()->Framerate);
+				igEnd();
+			}
+			*/
+
+			// render
+			igRender();
+			ImDrawData* draw_data = igGetDrawData();
+			if (draw_data->CmdListsCount > 0)
+				ImGui_ImplVulkan_RenderDrawData(igGetDrawData(), cmdbuf->buffer);
 		}
 
 		if (*type == k_command_frame_done)
@@ -369,42 +409,6 @@ static int render_thread_func(void* user)
 			}
 			gpu_cmd_descriptor_bind(render->gpu, cmdbuf, instance->descriptors[frame_index]);
 			gpu_cmd_draw(render->gpu, cmdbuf);
-		}
-
-		if (render->render_mode == k_imgui_mode) {
-			ImGui_ImplVulkan_NewFrame();
-			ImGui_ImplWin32_NewFrame();
-			igNewFrame();
-
-			igShowDemoWindow(true);
-
-			igRender();
-			// create a command buffer
-			VkCommandBuffer commandBuffer;
-			{
-				VkCommandBufferAllocateInfo allocation_info =
-				{
-					.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-					.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-					.commandPool = gpu_get_command_pool(render->gpu),
-					.commandBufferCount = 1
-				};
-
-				VkResult result = vkAllocateCommandBuffers(gpu_get_logical_devices(render->gpu), &allocation_info, &commandBuffer);
-
-				if (result != VK_SUCCESS) {
-					debug_print_line(k_print_error, "vkAllocateCommandBuffers failed: %d\n", result);
-				}
-
-				VkCommandBufferBeginInfo begin_info =
-				{
-					.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-					.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT
-				};
-
-				vkBeginCommandBuffer(commandBuffer, &begin_info);
-			}
-			ImGui_ImplVulkan_RenderDrawData(igGetDrawData(), commandBuffer);
 		}
 
 		heap_free(render->heap, type);

@@ -184,6 +184,8 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	// load_scene_hierarchy_resources(scene, "resources/smile.jpg");
 	load_object_scene_resources(scene);
 
+	spawn_camera(scene);
+
 	add_object_to_scene(scene);
 
 	scene->current_entity = dummy_entity;
