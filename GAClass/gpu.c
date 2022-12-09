@@ -4,9 +4,6 @@
 #include "heap.h"
 #include "wm.h"
 
-#define VK_USE_PLATFORM_WIN32_KHR
-#include <vulkan/vulkan.h>
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
@@ -129,6 +126,9 @@ typedef struct gpu_t
 	VkIndexType mesh_index_size[k_gpu_mesh_layout_count];
 	VkIndexType mesh_index_type[k_gpu_mesh_layout_count];
 
+	VkPipelineCache pipeline_cache;
+	VkAllocationCallbacks* allocator;
+
 	uint32_t frame_width;
 	uint32_t frame_height;
 
@@ -154,6 +154,9 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 	gpu_t* gpu = heap_alloc(heap, sizeof(gpu_t), 8);
 	memset(gpu, 0, sizeof(*gpu));
 	gpu->heap = heap;
+
+	// set pipeline handle to null
+	gpu->pipeline_cache = VK_NULL_HANDLE;
 
 	//////////////////////////////////////////////////////
 	// Create VkInstance
@@ -191,7 +194,7 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 	};
 
 	const char* function = NULL;
-	VkResult result = vkCreateInstance(&instance_info, NULL, &gpu->instance);
+	VkResult result = vkCreateInstance(&instance_info, gpu->allocator, &gpu->instance);
 	if (result)
 	{
 		function = "vkCreateInstance";
@@ -276,7 +279,7 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 		.ppEnabledExtensionNames = device_extensions,
 	};
 
-	result = vkCreateDevice(gpu->physical_device, &device_info, NULL, &gpu->logical_device);
+	result = vkCreateDevice(gpu->physical_device, &device_info, gpu->allocator, &gpu->logical_device);
 	if (result)
 	{
 		function = "vkCreateDevice";
@@ -606,7 +609,7 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 		.pPoolSizes = descriptor_pool_sizes,
 		.maxSets = 512,
 	};
-	result = vkCreateDescriptorPool(gpu->logical_device, &descriptor_pool_info, NULL, &gpu->descriptor_pool);
+	result = vkCreateDescriptorPool(gpu->logical_device, &descriptor_pool_info, gpu->allocator, &gpu->descriptor_pool);
 	if (result)
 	{
 		function = "vkCreateDescriptorPool";
@@ -688,23 +691,23 @@ void gpu_destroy(gpu_t* gpu)
 	}
 	if (gpu && gpu->render_complete_sema)
 	{
-		vkDestroySemaphore(gpu->logical_device, gpu->render_complete_sema, NULL);
+		vkDestroySemaphore(gpu->logical_device, gpu->render_complete_sema, gpu->allocator);
 	}
 	if (gpu && gpu->present_complete_sema)
 	{
-		vkDestroySemaphore(gpu->logical_device, gpu->present_complete_sema, NULL);
+		vkDestroySemaphore(gpu->logical_device, gpu->present_complete_sema, gpu->allocator);
 	}
 	if (gpu && gpu->depth_stencil_view)
 	{
-		vkDestroyImageView(gpu->logical_device, gpu->depth_stencil_view, NULL);
+		vkDestroyImageView(gpu->logical_device, gpu->depth_stencil_view, gpu->allocator);
 	}
 	if (gpu && gpu->depth_stencil_image)
 	{
-		vkDestroyImage(gpu->logical_device, gpu->depth_stencil_image, NULL);
+		vkDestroyImage(gpu->logical_device, gpu->depth_stencil_image, gpu->allocator);
 	}
 	if (gpu && gpu->depth_stencil_memory)
 	{
-		vkFreeMemory(gpu->logical_device, gpu->depth_stencil_memory, NULL);
+		vkFreeMemory(gpu->logical_device, gpu->depth_stencil_memory, gpu->allocator);
 	}
 	if (gpu && gpu->frames)
 	{
@@ -712,7 +715,7 @@ void gpu_destroy(gpu_t* gpu)
 		{
 			if (gpu->frames[i].fence)
 			{
-				vkDestroyFence(gpu->logical_device, gpu->frames[i].fence, NULL);
+				vkDestroyFence(gpu->logical_device, gpu->frames[i].fence, gpu->allocator);
 			}
 			if (gpu->frames[i].cmd_buffer)
 			{
@@ -720,42 +723,42 @@ void gpu_destroy(gpu_t* gpu)
 			}
 			if (gpu->frames[i].frame_buffer)
 			{
-				vkDestroyFramebuffer(gpu->logical_device, gpu->frames[i].frame_buffer, NULL);
+				vkDestroyFramebuffer(gpu->logical_device, gpu->frames[i].frame_buffer, gpu->allocator);
 			}
 			if (gpu->frames[i].view)
 			{
-				vkDestroyImageView(gpu->logical_device, gpu->frames[i].view, NULL);
+				vkDestroyImageView(gpu->logical_device, gpu->frames[i].view, gpu->allocator);
 			}
 		}
 		heap_free(gpu->heap, gpu->frames);
 	}
 	if (gpu && gpu->descriptor_pool)
 	{
-		vkDestroyDescriptorPool(gpu->logical_device, gpu->descriptor_pool, NULL);
+		vkDestroyDescriptorPool(gpu->logical_device, gpu->descriptor_pool, gpu->allocator);
 	}
 	if (gpu && gpu->cmd_pool)
 	{
-		vkDestroyCommandPool(gpu->logical_device, gpu->cmd_pool, NULL);
+		vkDestroyCommandPool(gpu->logical_device, gpu->cmd_pool, gpu->allocator);
 	}
 	if (gpu && gpu->render_pass)
 	{
-		vkDestroyRenderPass(gpu->logical_device, gpu->render_pass, NULL);
+		vkDestroyRenderPass(gpu->logical_device, gpu->render_pass, gpu->allocator);
 	}
 	if (gpu && gpu->swap_chain)
 	{
-		vkDestroySwapchainKHR(gpu->logical_device, gpu->swap_chain, NULL);
+		vkDestroySwapchainKHR(gpu->logical_device, gpu->swap_chain, gpu->allocator);
 	}
 	if (gpu && gpu->surface)
 	{
-		vkDestroySurfaceKHR(gpu->instance, gpu->surface, NULL);
+		vkDestroySurfaceKHR(gpu->instance, gpu->surface, gpu->allocator);
 	}
 	if (gpu && gpu->logical_device)
 	{
-		vkDestroyDevice(gpu->logical_device, NULL);
+		vkDestroyDevice(gpu->logical_device, gpu->allocator);
 	}
 	if (gpu && gpu->instance)
 	{
-		vkDestroyInstance(gpu->instance, NULL);
+		vkDestroyInstance(gpu->instance, gpu->allocator);
 	}
 	if (gpu)
 	{
@@ -2171,214 +2174,58 @@ static void end_command_buffer(gpu_t* gpu, VkCommandBuffer command_buffer) {
 	vkFreeCommandBuffers(gpu->logical_device, gpu->cmd_pool, 1, &command_buffer);
 }
 
-/*
-static void copy_buffer_to_image(gpu_t* gpu, VkBuffer buffer, gpu_image_info_t* image_info) {
-	VkCommandBuffer command_buffer = create_command_buffer(gpu);
-
-	VkBufferImageCopy image_copy = {
-		.bufferOffset = 0,
-		.bufferRowLength = 0,
-		.bufferImageHeight = 0,
-		.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-		.imageSubresource.mipLevel = 0,
-		.imageSubresource.baseArrayLayer = 0,
-		.imageSubresource.layerCount = 1,
-		.imageOffset = {0, 0, 0},
-		.imageExtent = { image_info->width, image_info->height, 1 }
-	};
-
-	vkCmdCopyBufferToImage(command_buffer, buffer, image_info->image,
-		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &image_copy);
-
-	end_command_buffer(gpu, command_buffer);
+VkInstance gpu_get_instance(gpu_t* gpu) {
+	return gpu->instance;
 }
 
-void gpu_create_image_layout(gpu_t* gpu, gpu_image_layout_t* image_layout) {
-	VkCommandBuffer command_buffer = create_command_buffer(gpu);
-
-	VkImageMemoryBarrier image_memory_barrier =
-	{
-		.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-		.oldLayout = image_layout->old_layout,
-		.newLayout = image_layout->new_layout,
-		.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-		.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-		.image = image_layout->image,
-		.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-		.subresourceRange.baseMipLevel = 0,
-		.subresourceRange.levelCount = 1,
-		.subresourceRange.baseArrayLayer = 0,
-		.subresourceRange.layerCount = 1
-	};
-
-	VkPipelineStageFlags sourceStage;
-	VkPipelineStageFlags destinationStage;
-
-	if (image_layout->old_layout == VK_IMAGE_LAYOUT_UNDEFINED && image_layout->new_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
-		image_memory_barrier.srcAccessMask = 0;
-		image_memory_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-
-		sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-		destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-	}
-	else if (image_layout->old_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && image_layout->new_layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
-		image_memory_barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-		image_memory_barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-
-		sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-		destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-	}
-	else {
-		debug_print_line(k_print_error, "image layout swap invalid\n");
-	}
-
-	vkCmdPipelineBarrier(command_buffer, sourceStage, destinationStage, 0, 0, NULL, 0, NULL, 1, &image_memory_barrier);
-
-	end_command_buffer(gpu, command_buffer);
+VkPhysicalDevice gpu_get_physical_devices(gpu_t* gpu) {
+	return gpu->physical_device;
 }
 
-void gpu_create_image(gpu_t* gpu, gpu_image_info_t* image_info) {
-	VkImageCreateInfo image =
-	{
-		.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
-		.imageType = VK_IMAGE_TYPE_2D,
-		.extent.width = image_info->width,
-		.extent.height = image_info->height,
-		.extent.depth = 1,
-		.mipLevels = 1,
-		.arrayLayers = 1,
-		.format = image_info->format,
-		.tiling = image_info->tiling,
-		.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-		.usage = image_info->usage,
-		.samples = VK_SAMPLE_COUNT_1_BIT,
-		.sharingMode = VK_SHARING_MODE_EXCLUSIVE
-	};
-
-	VkResult result = vkCreateImage(gpu->logical_device, &image, NULL, image_info->image);
-
-	if (result != VK_SUCCESS) {
-		debug_print_line(k_print_error, "vkCreateImage failed for creating images: %d\n", result);
-	}
-
-	VkMemoryRequirements memory_requirements;
-	vkGetImageMemoryRequirements(gpu->logical_device, image_info->image, &memory_requirements);
-
-	VkMemoryAllocateInfo allocation_info =
-	{
-		.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-		.allocationSize = memory_requirements.size,
-		.memoryTypeIndex = get_memory_type_index(gpu, memory_requirements.memoryTypeBits, image_info->properties)
-	};
-
-	result = vkAllocateMemory(gpu->logical_device, &allocation_info, NULL, &image_info->image_memory);
-
-	if (result != VK_SUCCESS) {
-		debug_print_line(k_print_error, "vkAllocateMemory failed for creating images: %d\n", result);
-	}
-
-	vkBindImageMemory(gpu->logical_device, image_info->image, image_info->image_memory, 0);
+VkDevice gpu_get_logical_devices(gpu_t* gpu) {
+	return gpu->logical_device;
 }
 
-void gpu_generate_texture(gpu_t* gpu, const char* image_location) {
-	int texture_width, texture_height, texture_channels;
-	stbi_uc* image = stbi_load(image_location,
-		&texture_width, &texture_height, &texture_channels, STBI_rgb_alpha);
-
-	if (!image) {
-		debug_print_line(k_print_error, "stbi_uc failed for loading images\n");
-	}
-
-	VkDeviceSize img_size = texture_width * texture_height * 4;
-
-	gpu_buffer_info_t* buffer = heap_alloc(gpu->heap, sizeof(gpu_buffer_info_t), 8);
-	memset(buffer, 0, sizeof(*buffer));
-	buffer->size = img_size;
-	buffer->usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-	buffer->properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-	buffer->buffer = heap_alloc(gpu->heap, sizeof(VkBuffer), 8);
-	buffer->buffer_memory = heap_alloc(gpu->heap, sizeof(VkDeviceMemory), 8);
-
-	gpu_generate_buffer(gpu, buffer);
-
-	void* data;
-	vkMapMemory(gpu->logical_device, buffer->buffer_memory, 0, img_size, 0, &data);
-	memcpy(data, image, (size_t)(img_size));
-	vkUnmapMemory(gpu->logical_device, buffer->buffer_memory);
-
-	stbi_image_free(image);
-
-	// Create an image
-	gpu_image_info_t* image_info = heap_alloc(gpu->heap, sizeof(gpu_image_info_t), 8);
-	memset(image_info, 0, sizeof(*image_info));
-	image_info->height = texture_height;
-	image_info->width = texture_width;
-	image_info->format = VK_FORMAT_R8G8B8A8_SRGB;
-	image_info->tiling = VK_IMAGE_TILING_OPTIMAL;
-	image_info->usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-	image_info->properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-
-	gpu_create_image(gpu, image_info);
-
-	// format the image layouts and then copy the buffer to the image
-	gpu_image_layout_t* image_layout_1 = heap_alloc(gpu->heap, sizeof(gpu_image_layout_t), 8);
-	image_layout_1->format = VK_FORMAT_R8G8B8A8_SRGB;
-	image_layout_1->new_layout = VK_IMAGE_LAYOUT_UNDEFINED;
-	image_layout_1->old_layout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-	image_layout_1->image = image_info->image;
-
-	gpu_create_image_layout(gpu, image_layout_1);
-
-	copy_buffer_to_image(gpu, buffer->buffer, image_info);
-
-	gpu_image_layout_t* image_layout_2 = heap_alloc(gpu->heap, sizeof(gpu_image_layout_t), 8);
-	image_layout_1->format = VK_FORMAT_R8G8B8A8_SRGB;
-	image_layout_1->new_layout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-	image_layout_1->old_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-	image_layout_1->image = image_info->image;
-
-	gpu_create_image_layout(gpu, image_layout_2);
-
-	vkDestroyBuffer(gpu->logical_device, image_info->image, NULL);
-	vkFreeMemory(gpu->logical_device, image_info->image_memory, NULL);
+VkQueue gpu_get_queue(gpu_t* gpu) {
+	return gpu->queue;
 }
 
-static void init_imgui(gpu_t* gpu) {
-
-	// descriptor pool setup (VULKAN)
-
-	VkDescriptorPoolSize pool_sizes[] = {
-		{ VK_DESCRIPTOR_TYPE_SAMPLER, 512 },
-		{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 512 },
-		{ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 512 },
-		{ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 512 },
-		{ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 512 },
-		{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 512 },
-		{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 512 },
-		{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 512 },
-		{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 512 },
-		{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 512 },
-		{ VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 512 }
-	};
-
-	VkDescriptorPoolCreateInfo pool_info = {
-		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-		.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
-		.maxSets = 512,
-		.poolSizeCount = sizeof(pool_sizes) / sizeof(pool_sizes[0]),
-		.pPoolSizes = pool_sizes
-	};
-
-	VkDescriptorPool imgui_pool;
-	VK_CHECK(vkCreateDescriptorPool(gpu->logical_device, &pool_info, NULL, &imgui_pool));
-
-	// ImGui setup
-
-	igCreateContext(NULL);
-	ImGuiIO io = *igGetIO();
-	
-	//init_info = {
-
-	//};
+VkPipelineCache gpu_get_pipeline_cache(gpu_t* gpu) {
+	return gpu->pipeline_cache;
 }
-*/
+
+VkDescriptorPool gpu_get_descriptor_pool(gpu_t* gpu) {
+	return gpu->descriptor_pool;
+}
+
+VkAllocationCallbacks* gpu_get_allocator(gpu_t* gpu) {
+	return gpu->allocator;
+}
+
+VkSurfaceKHR gpu_get_surface(gpu_t* gpu) {
+	return gpu->surface;
+}
+
+VkRenderPass gpu_get_render_pass(gpu_t* gpu) {
+	return gpu->render_pass;
+}
+
+gpu_frame_t* gpu_get_frames(gpu_t* gpu) {
+	return gpu->frames;
+}
+
+uint32_t gpu_get_frame_index(gpu_t* gpu) {
+	return gpu->frame_index;
+}
+
+uint32_t gpu_get_frame_width(gpu_t* gpu) {
+	return gpu->frame_index;
+}
+
+uint32_t gpu_get_frame_height(gpu_t* gpu) {
+	return gpu->frame_height;
+}
+
+VkCommandPool gpu_get_command_pool(gpu_t* gpu) {
+	return gpu->cmd_pool;
+}

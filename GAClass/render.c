@@ -6,10 +6,18 @@
 #include "queue.h"
 #include "thread.h"
 #include "wm.h"
+#include "debug.h"
 
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+
+#include "imgui_impl_vulkan.h"
+#include "imgui_impl_win32.h"
+
+#define IMGUI_VERSION               "1.89.1 WIP"
+#define IMGUI_CHECKVERSION()        igDebugCheckVersionAndDataLayout(IMGUI_VERSION, sizeof(ImGuiIO), sizeof(ImGuiStyle), sizeof(ImVec2), sizeof(ImVec4), sizeof(ImDrawVert), sizeof(ImDrawIdx))
+#define IM_ARRAYSIZE(_ARR)          ((int)(sizeof(_ARR) / sizeof(*_ARR)))  
 
 enum
 {
@@ -21,6 +29,20 @@ enum
 	k_texture_sampler_binding = 1
 };
 
+static void vk_result(VkResult err) {
+	if (err == 0)
+		return;
+	debug_print_line(k_print_error, "Vulkan Error: %d\n", err);
+	if (err < 0)
+		abort();
+}
+
+typedef enum render_mode_type_t
+{
+	k_default_mode = 0,
+	k_imgui_mode = 1
+} render_mode_type_t;
+
 typedef enum command_type_t
 {
 	k_command_frame_done,
@@ -28,6 +50,15 @@ typedef enum command_type_t
 	k_command_texture_model
 	
 } command_type_t;
+
+typedef struct gpu_frame_t
+{
+	VkImage image;
+	VkImageView view;
+	VkFramebuffer frame_buffer;
+	VkFence fence;
+	gpu_cmd_buffer_t* cmd_buffer;
+} gpu_frame_t;
 
 typedef struct model_command_t
 {
@@ -100,6 +131,10 @@ typedef struct render_t
 	draw_mesh_t meshes[k_render_max_drawables];
 	draw_texture_mesh_t texture_meshes[k_render_max_drawables];
 	draw_shader_t shaders[k_render_max_drawables];
+
+	render_mode_type_t render_mode;
+	ImGui_ImplVulkanH_Window main_window_data;
+
 } render_t;
 
 static int render_thread_func(void* user);
@@ -115,7 +150,7 @@ static draw_instance_t* create_or_get_instance_for_texture_model_command(render_
 
 static void destroy_stale_data(render_t* render);
 
-render_t* render_create(heap_t* heap, wm_window_t* window)
+render_t* render_create(heap_t* heap, wm_window_t* window, bool render_imgui)
 {
 	render_t* render = heap_alloc(heap, sizeof(render_t), 8);
 	render->heap = heap;
@@ -126,6 +161,7 @@ render_t* render_create(heap_t* heap, wm_window_t* window)
 	render->mesh_count = 0;
 	render->shader_count = 0;
 	render->thread = thread_create(render_thread_func, render);
+	render->render_mode = (render_imgui) ? k_imgui_mode : k_default_mode;
 	return render;
 }
 
@@ -181,6 +217,171 @@ static int render_thread_func(void* user)
 	gpu_mesh_t* last_mesh = NULL;
 	gpu_texture_mesh_t* last_texture_mesh = NULL;
 	int frame_index = 0;
+
+	if (render->render_mode == k_imgui_mode) {
+		/*
+		VkResult res;
+		
+		// Setup the vulkan window
+		{
+			ImGui_ImplVulkanH_Window* wind = &render->main_window_data;
+			// Select Surface Format & Present Mode
+			const VkFormat requestSurfaceImageFormat[] = { VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM };
+			const VkColorSpaceKHR requestSurfaceColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
+
+			// Get the list of VkFormats that are supported:
+			uint32_t formatCount;
+			res = vkGetPhysicalDeviceSurfaceFormatsKHR(gpu_get_physical_devices(render->gpu), gpu_get_surface(render->gpu), &formatCount, NULL);
+			assert(res == VK_SUCCESS);
+			VkSurfaceFormatKHR* surfFormats = (VkSurfaceFormatKHR*)malloc(formatCount * sizeof(VkSurfaceFormatKHR));
+			res = vkGetPhysicalDeviceSurfaceFormatsKHR(gpu_get_physical_devices(render->gpu), gpu_get_surface(render->gpu), &formatCount, surfFormats);
+			assert(res == VK_SUCCESS);
+
+			wind->SurfaceFormat = surfFormats[0];
+			free(surfFormats);
+
+			uint32_t presentModeCount;
+			res = vkGetPhysicalDeviceSurfacePresentModesKHR(gpu_get_physical_devices(render->gpu), gpu_get_surface(render->gpu), &presentModeCount, NULL);
+			assert(res == VK_SUCCESS);
+			VkPresentModeKHR* presentModes = (VkPresentModeKHR*)malloc(presentModeCount * sizeof(VkPresentModeKHR));
+
+			res = vkGetPhysicalDeviceSurfacePresentModesKHR(gpu_get_physical_devices(render->gpu), gpu_get_surface(render->gpu), &presentModeCount, presentModes);
+			assert(res == VK_SUCCESS);
+
+			wind->PresentMode = presentModes[0];
+			free(presentModes);
+
+			wind->Surface = gpu_get_surface(render->gpu);
+
+			// get window size
+			int width = 0;
+			int height = 0;
+			RECT rect;
+			if (GetWindowRect(wm_get_hwnd(render->window), &rect))
+			{
+				width = rect.right - rect.left;
+				height = rect.bottom - rect.top;
+			}
+			else {
+				debug_print_line(k_print_error, "GetWindowRect cannot get a window\n");
+			}
+
+			ImGui_ImplVulkanH_CreateOrResizeWindow(
+				gpu_get_instance(render->gpu), gpu_get_physical_devices(render->gpu),
+				gpu_get_logical_devices(render->gpu), &render->main_window_data, (uint32_t)-1,
+				gpu_get_allocator(render->gpu), width, height, 2);
+			
+
+		}
+		*/
+
+		// Setup Dear ImGui binding
+		IMGUI_CHECKVERSION();
+
+		ImGuiContext* ctx = igCreateContext(0);
+		igSetCurrentContext(ctx);
+
+		ImGuiIO* io = igGetIO();
+		io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		
+		// Init for Vulkan
+		ImGui_ImplVulkan_InitInfo init_info = {
+			.Instance = gpu_get_instance(render->gpu),
+			.PhysicalDevice = gpu_get_physical_devices(render->gpu),
+			.Device = gpu_get_logical_devices(render->gpu),
+			.QueueFamily = (uint32_t)-1,
+			.Queue = gpu_get_queue(render->gpu),
+			.PipelineCache = gpu_get_pipeline_cache(render->gpu),
+			.DescriptorPool = gpu_get_descriptor_pool(render->gpu),
+			.Allocator = gpu_get_allocator(render->gpu),
+			.MinImageCount = 2,
+			.ImageCount = 2,
+			.CheckVkResultFn = vk_result
+		};
+
+		ImGui_ImplVulkan_Init(&init_info, gpu_get_render_pass(render->gpu));
+
+		// create a command buffer
+		VkCommandBuffer commandBuffer;
+		{
+			VkCommandBufferAllocateInfo allocation_info =
+			{
+				.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+				.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+				.commandPool = gpu_get_command_pool(render->gpu),
+				.commandBufferCount = 1
+			};
+
+			VkResult result = vkAllocateCommandBuffers(gpu_get_logical_devices(render->gpu), &allocation_info, &commandBuffer);
+
+			if (result != VK_SUCCESS) {
+				debug_print_line(k_print_error, "vkAllocateCommandBuffers failed: %d\n", result);
+			}
+
+			VkCommandBufferBeginInfo begin_info =
+			{
+				.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+				.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT
+			};
+
+			vkBeginCommandBuffer(commandBuffer, &begin_info);
+		}
+
+		ImGui_ImplVulkan_CreateFontsTexture(commandBuffer);
+
+		// end command buffer
+		{
+			vkEndCommandBuffer(commandBuffer);
+
+			VkSubmitInfo submit_info = {
+				.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+				.commandBufferCount = 1,
+				.pCommandBuffers = &commandBuffer
+			};
+
+			vkQueueSubmit(gpu_get_queue(render->gpu), 1, &submit_info, VK_NULL_HANDLE);
+			vkQueueWaitIdle(gpu_get_queue(render->gpu));
+
+			vkFreeCommandBuffers(gpu_get_logical_devices(render->gpu), gpu_get_command_pool(render->gpu), 1, &commandBuffer);
+		}
+
+		vkDeviceWaitIdle(gpu_get_logical_devices(render->gpu));
+
+		ImGui_ImplVulkan_DestroyFontUploadObjects();
+
+		//igStyleColorsDark(NULL);
+
+		// Init for Win32
+		ImGui_ImplWin32_Init(wm_get_hwnd(render->window));
+
+
+		// Upload Fonts
+		{
+			// Use any command queue
+			gpu_frame_t* frame = gpu_get_frames(render->gpu);
+			VkCommandPool command_pool = gpu_get_command_pool(render->gpu);
+			VkCommandBuffer command_buffer = frame[gpu_get_frame_index(render->gpu)].cmd_buffer;
+
+			vkResetCommandPool(gpu_get_logical_devices(render->gpu), command_pool, 0);
+
+			ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
+
+			VkSubmitInfo end_info = {
+				.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+				.commandBufferCount = 1,
+				.pCommandBuffers = &command_buffer,
+			};
+
+			vkEndCommandBuffer(command_buffer);
+
+			vkQueueSubmit(gpu_get_queue(render->gpu), 1, &end_info, VK_NULL_HANDLE);
+
+
+			vkDeviceWaitIdle(gpu_get_logical_devices(render->gpu));
+
+			ImGui_ImplVulkan_DestroyFontUploadObjects();
+		}
+	}
 
 	while (true)
 	{
@@ -250,6 +451,17 @@ static int render_thread_func(void* user)
 			}
 			gpu_cmd_descriptor_bind(render->gpu, cmdbuf, instance->descriptors[frame_index]);
 			gpu_cmd_draw(render->gpu, cmdbuf);
+		}
+
+		if (render->render_mode == k_imgui_mode) {
+			ImGui_ImplVulkan_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			igNewFrame();
+
+			igShowDemoWindow(true);
+
+			igRender();
+			// ImGui_ImplWin32_RenderDrawData();
 		}
 
 		heap_free(render->heap, type);
@@ -508,4 +720,8 @@ static void destroy_stale_data(render_t* render)
 			render->shader_count--;
 		}
 	}
+}
+
+gpu_t* render_get_gpu(render_t* render) {
+	return render->gpu;
 }

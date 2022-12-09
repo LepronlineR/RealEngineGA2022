@@ -13,8 +13,8 @@
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include "cimgui/cimgui.h"
 
-#define IMGUI_VERSION               "1.89"
-#define IMGUI_CHECKVERSION()        igDebugCheckVersionAndDataLayout(IMGUI_VERSION, sizeof(ImGuiIO), sizeof(ImGuiStyle), sizeof(ImVec2), sizeof(ImVec4), sizeof(ImDrawVert), sizeof(ImDrawIdx))
+#include "imgui_impl_vulkan.h"
+#include "imgui_impl_win32.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -179,27 +179,8 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	scene->collider_type = ecs_register_component_type(scene->ecs, "collider", sizeof(collider_component_t), _Alignof(collider_component_t));
 	scene->model_texture_type = ecs_register_component_type(scene->ecs, "model texture", sizeof(model_texture_component_t), _Alignof(model_texture_component_t));
 
-	load_scene_hierarchy_resources(scene, "resources/temp.png");
+	// load_scene_hierarchy_resources(scene, "resources/smile.jpg");
 	load_object_scene_resources(scene);
-
-	// Setup Dear ImGui binding
-	//IMGUI_CHECKVERSION();
-
-	//ImGuiContext* ctx = igCreateContext(0);
-
-	//ImGuiIO* io = igGetIO(); 
-	//(void)io;
-
-	//igStyleColorsDark(NULL);
-
-	// Init Win32
-	//ImGui_ImplWin32_Init(wm_get_hwnd(window));
-
-	// Init Vulkan
-
-	spawn_scene_hierarchy(scene);
-
-	spawn_camera(scene);
 
 	scene->current_entity = dummy_entity;
 
@@ -582,11 +563,6 @@ static void scene_interaction(scene_t* scene)
 		transform_multiply(&transform_comp->transform, &move);
 	}
 
-	// IMGUI
-	//ImGui_ImplVulkan_NewFrame();
-	//ImGui_ImplWin32_NewFrame();
-	igNewFrame();
-	igRender();
 }
 
 // ===========================================================================================

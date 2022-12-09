@@ -1,5 +1,8 @@
 #pragma once
 
+#define VK_USE_PLATFORM_WIN32_KHR
+#include <vulkan/vulkan.h>
+
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -14,6 +17,7 @@ typedef struct gpu_uniform_buffer_t gpu_uniform_buffer_t;
 typedef struct gpu_image_info_t gpu_image_info_t;
 typedef struct gpu_buffer_info_t gpu_buffer_info_t;
 typedef struct gpu_image_layout_t gpu_image_layout_t;
+typedef struct gpu_frame_t gpu_frame_t;
 
 typedef struct heap_t heap_t;
 typedef struct wm_window_t wm_window_t;
@@ -152,3 +156,34 @@ void gpu_cmd_draw(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer);
 
 // Generate a buffer and store it in the buffer info
 void gpu_generate_buffer(gpu_t* gpu, gpu_buffer_info_t* buffer_info);
+
+// Getters
+VkInstance gpu_get_instance(gpu_t* gpu);
+
+VkPhysicalDevice gpu_get_physical_devices(gpu_t* gpu);
+
+VkDevice gpu_get_logical_devices(gpu_t* gpu);
+
+VkQueue gpu_get_queue(gpu_t* gpu);
+
+VkPipelineCache gpu_get_pipeline_cache(gpu_t* gpu);
+
+VkDescriptorPool gpu_get_descriptor_pool(gpu_t* gpu);
+
+VkAllocationCallbacks* gpu_get_allocator(gpu_t* gpu);
+
+VkSurfaceKHR gpu_get_surface(gpu_t* gpu);
+
+VkRenderPass gpu_get_render_pass(gpu_t* gpu);
+
+gpu_frame_t* gpu_get_frames(gpu_t* gpu);
+
+uint32_t gpu_get_frame_count(gpu_t* gpu);
+
+uint32_t gpu_get_frame_index(gpu_t* gpu);
+
+uint32_t gpu_get_frame_width(gpu_t* gpu);
+
+uint32_t gpu_get_frame_height(gpu_t* gpu);
+
+VkCommandPool gpu_get_command_pool(gpu_t* gpu);
