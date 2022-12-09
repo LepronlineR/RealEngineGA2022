@@ -1,7 +1,2 @@
-﻿  render.c
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.h(181,41): warning C4142: 'gpu_get_frame_count': benign redefinition of type
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.h(91): message : see declaration of 'gpu_get_frame_count'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\render.c(335,25): warning C4047: 'function': 'bool *' differs in levels of indirection from 'int'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\render.c(335,21): warning C4024: 'igShowDemoWindow': different types for formal and actual parameter 1
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\render.c(646,64): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+﻿  main.c
   GAClass.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe

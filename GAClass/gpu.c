@@ -605,7 +605,7 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 		.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
 		.poolSizeCount = _countof(descriptor_pool_sizes),
 		.pPoolSizes = descriptor_pool_sizes,
-		.maxSets = 512,
+		.maxSets = 512 * 2,
 	};
 	result = vkCreateDescriptorPool(gpu->logical_device, &descriptor_pool_info, gpu->allocator, &gpu->descriptor_pool);
 	if (result)
@@ -1647,6 +1647,7 @@ gpu_cmd_buffer_t* gpu_frame_begin(gpu_t* gpu)
 	VkCommandBufferBeginInfo begin_info =
 	{
 		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+		.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
 	};
 	VkResult result = vkBeginCommandBuffer(frame->cmd_buffer->buffer, &begin_info);
 	if (result)

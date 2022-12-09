@@ -239,12 +239,12 @@ static int render_thread_func(void* user)
 
 		// Init for Win32
 		ImGui_ImplWin32_Init(wm_get_hwnd(render->window));
-		
+
 		// Init for Vulkan
 		ImGui_ImplVulkan_InitInfo init_info = {
 			.Instance = gpu_get_instance(render->gpu),
 			.PhysicalDevice = gpu_get_physical_devices(render->gpu),
-			.Device = gpu_get_logical_devices(render->gpu),
+			.Device = gpu_get_logical_devices(render->gpu), 
 			.QueueFamily = (uint32_t)-1,
 			.Queue = gpu_get_queue(render->gpu),
 			.PipelineCache = gpu_get_pipeline_cache(render->gpu),
@@ -310,7 +310,6 @@ static int render_thread_func(void* user)
 
 	}
 
-
 	while (true)
 	{
 		command_type_t* type = queue_pop(render->queue);
@@ -324,38 +323,11 @@ static int render_thread_func(void* user)
 			cmdbuf = gpu_frame_begin(render->gpu);
 		}
 
-		if (render->render_mode == k_imgui_mode) {
-			// Start the frame
-			ImGui_ImplVulkan_NewFrame();
-			ImGui_ImplWin32_NewFrame();
-			igNewFrame();
-
-			// window
-
-			igShowDemoWindow(true);
-			/*
-			{
-				static float f = 0.0f;
-				static int counter = 0;
-
-				igBegin("Hello, world!", NULL, 0);
-
-				igText("This is some text.");
-
-				igText("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / igGetIO()->Framerate, igGetIO()->Framerate);
-				igEnd();
-			}
-			*/
-
-			// render
-			igRender();
-			ImDrawData* draw_data = igGetDrawData();
-			if (draw_data->CmdListsCount > 0)
-				ImGui_ImplVulkan_RenderDrawData(igGetDrawData(), cmdbuf->buffer);
-		}
+		
 
 		if (*type == k_command_frame_done)
 		{
+
 			gpu_frame_end(render->gpu);
 			cmdbuf = NULL;
 			last_pipeline = NULL;
@@ -375,6 +347,7 @@ static int render_thread_func(void* user)
 
 			heap_free(render->heap, command->uniform_buffer.data);
 
+
 			if (last_pipeline != shader->pipeline)
 			{
 				gpu_cmd_pipeline_bind(render->gpu, cmdbuf, shader->pipeline);
@@ -385,8 +358,24 @@ static int render_thread_func(void* user)
 				gpu_cmd_mesh_bind(render->gpu, cmdbuf, mesh->mesh);
 				last_mesh = mesh->mesh;
 			}
+
 			gpu_cmd_descriptor_bind(render->gpu, cmdbuf, instance->descriptors[frame_index]);
 			gpu_cmd_draw(render->gpu, cmdbuf);
+
+			if (render->render_mode == k_imgui_mode) {
+
+				ImGui_ImplVulkan_NewFrame();
+				ImGui_ImplWin32_NewFrame();
+				igNewFrame();
+
+				// window
+				igShowDemoWindow(true);
+
+				// render
+				igRender();
+				ImDrawData* draw_data = igGetDrawData();
+				ImGui_ImplVulkan_RenderDrawData(draw_data, cmdbuf->buffer);
+			}
 		}
 		else if (*type == k_command_texture_model)
 		{
