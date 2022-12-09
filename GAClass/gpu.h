@@ -75,6 +75,15 @@ typedef struct gpu_shader_info_t
 	int uniform_buffer_count;
 } gpu_shader_info_t;
 
+typedef struct gpu_font_data_t {
+	VkSampler                g_FontSampler;
+	VkDeviceMemory           g_FontMemory;
+	VkImage                  g_FontImage;
+	VkImageView              g_FontView;
+	VkDeviceMemory           g_UploadBufferMemory;
+	VkBuffer                 g_UploadBuffer;
+} gpu_font_data_t;
+
 typedef struct gpu_uniform_buffer_info_t
 {
 	void* data;

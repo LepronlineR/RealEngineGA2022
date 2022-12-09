@@ -2245,6 +2245,7 @@ void init_imgui(gpu_t* gpu, wm_window_t* window) {
 
 	ImGuiIO* io = igGetIO();
 	io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	(void) io;
 
 	// Init for Win32
 	ImGui_ImplWin32_Init(wm_get_hwnd(window));
@@ -2282,8 +2283,9 @@ void init_imgui(gpu_t* gpu, wm_window_t* window) {
 }
 
 void imgui_draw(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer) {
-	ImGui_ImplVulkan_NewFrame();
+	// starting a new frame
 	ImGui_ImplWin32_NewFrame();
+	ImGui_ImplVulkan_NewFrame();
 	igNewFrame();
 
 	// window
@@ -2294,3 +2296,4 @@ void imgui_draw(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer) {
 	ImDrawData* draw_data = igGetDrawData();
 	ImGui_ImplVulkan_RenderDrawData(draw_data, cmd_buffer->buffer);
 }
+

@@ -131,6 +131,7 @@ static void unload_shader_resources(scene_t* scene);
 
 // camera
 static void spawn_camera(scene_t* scene);
+static void update_camera(scene_t* scene);
 
 // scene hierarchy (OLD UI)
 static void load_scene_hierarchy_resources(scene_t* scene, const char* image_location);
@@ -227,6 +228,7 @@ void scene_destroy(scene_t* scene)
 void scene_update(scene_t* scene) {
 	timer_object_update(scene->timer);
 	ecs_update(scene->ecs);
+	update_camera(scene);
 
 	scene_interaction(scene);
 
@@ -325,7 +327,8 @@ static void spawn_camera(scene_t* scene)
 {
 	uint64_t k_camera_ent_mask =
 		(1ULL << scene->camera_type) |
-		(1ULL << scene->name_type);
+		(1ULL << scene->name_type) |
+		(1ULL << scene->transform_type);
 	scene->camera_ent = ecs_entity_add(scene->ecs, k_camera_ent_mask);
 
 	name_component_t* name_comp = ecs_entity_get_component(scene->ecs, scene->camera_ent, scene->name_type, true);
@@ -338,6 +341,30 @@ static void spawn_camera(scene_t* scene)
 	vec3f_t forward = vec3f_forward();
 	vec3f_t up = vec3f_up();
 	mat4f_make_lookat(&camera_comp->view, &eye_pos, &forward, &up);
+
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->transform_type, true);
+	transform_identity(&transform_comp->transform);
+
+	transform_comp->transform.translation = eye_pos;
+}
+
+static void update_camera(scene_t* scene) {
+	// update the transform in the camera to the view
+
+	uint64_t k_query_mask = (1ULL << scene->transform_type) | (1ULL << scene->camera_type);
+
+	for (ecs_query_t query = ecs_query_create(scene->ecs, k_query_mask);
+		ecs_query_is_valid(scene->ecs, &query);
+		ecs_query_next(scene->ecs, &query))
+	{
+		transform_component_t* transform_comp = ecs_query_get_component(scene->ecs, &query, scene->transform_type);
+		camera_component_t* camera_comp = ecs_query_get_component(scene->ecs, &query, scene->camera_type);
+
+		vec3f_t eye_pos = transform_comp->transform.translation;
+		vec3f_t forward = vec3f_forward(); // quatf_to_eulers(transform_comp->transform.rotation);
+		vec3f_t up = vec3f_up();
+		mat4f_make_lookat(&camera_comp->view, &eye_pos, &forward, &up);
+	}
 }
 
 // ===========================================================================================
@@ -589,6 +616,144 @@ static void unload_shader_resources(scene_t* scene)
 	fs_work_destroy(scene->vertex_shader_work);
 }
 
+// moving and rotating (x, y, z) due to the current "selected" entity
+static void move_object_x_up(scene_t* scene, float dt) {
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_up(), -dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
+
+static void move_object_x_down(scene_t* scene, float dt) {
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_up(), dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
+
+static void move_object_y_up(scene_t* scene, float dt) {
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_right(), -dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
+
+static void move_object_y_down(scene_t* scene, float dt) {
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_right(), dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
+
+static void move_object_z_up(scene_t* scene, float dt) {
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_forward(), -dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
+
+static void move_object_z_down(scene_t* scene, float dt) {
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_forward(), dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
+
+static void rotate_object_x_up(scene_t* scene, float dt) {
+
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.rotation = quatf_from_eulers(vec3f_scale(vec3f_up(), -dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
+
+static void rotate_object_x_down(scene_t* scene, float dt) {
+
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.rotation = quatf_from_eulers(vec3f_scale(vec3f_up(), dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
+
+static void rotate_object_y_up(scene_t* scene, float dt) {
+
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.rotation = quatf_from_eulers(vec3f_scale(vec3f_right(), -dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
+
+static void rotate_object_y_down(scene_t* scene, float dt) {
+
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.rotation = quatf_from_eulers(vec3f_scale(vec3f_right(), dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
+
+static void rotate_object_z_up(scene_t* scene, float dt) {
+
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.rotation = quatf_from_eulers(vec3f_scale(vec3f_forward(), -dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
+
+static void rotate_object_z_down(scene_t* scene, float dt) {
+
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+
+	transform_t move;
+	transform_identity(&move);
+
+	move.rotation = quatf_from_eulers(vec3f_scale(vec3f_forward(), dt));
+
+	transform_multiply(&transform_comp->transform, &move);
+}
 
 static void scene_interaction(scene_t* scene)
 {
@@ -598,8 +763,16 @@ static void scene_interaction(scene_t* scene)
 
 	uint32_t key_mask = wm_get_key_mask(scene->window);
 
-	if (key_mask & k_key_zero) { // add object to the scene
+	if (key_mask & k_key_zero & k_key_nine) { // reset dummy
+		scene->current_entity = dummy_entity;
+	}
+
+	if (key_mask & k_key_zero && ecs_entity_is_dummy_entity(scene->current_entity)) { // add object to the scene
 		scene->current_entity = add_object_to_scene(scene);
+	}
+
+	if (key_mask & k_key_nine && ecs_entity_is_dummy_entity(scene->current_entity)) { // select camera a the current entity
+		scene->current_entity = scene->camera_ent;
 	}
 
 	/*
@@ -607,30 +780,57 @@ static void scene_interaction(scene_t* scene)
 	*	(ARROW KEYS TO MOVE IN THOSE DIRECTIONS)
 	*/
 	if(!ecs_entity_is_dummy_entity(scene->current_entity)) {
-		transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, true);
+		if (key_mask & k_key_one) {
+			if (key_mask & k_key_up) {
+				move_object_x_up(scene, dt);
+			}
+			if (key_mask & k_key_down) {
+				move_object_x_down(scene, dt);
+			}
+		}
+		if (key_mask & k_key_two) {
+			if (key_mask & k_key_up) {
+				move_object_y_up(scene, dt);
+			}
+			if (key_mask & k_key_down) {
+				move_object_y_down(scene, dt);
+			}
+		}
+		if (key_mask & k_key_three) {
+			if (key_mask & k_key_up) {
+				move_object_z_up(scene, dt);
+			}
+			if (key_mask & k_key_down) {
+				move_object_z_down(scene, dt);
+			}
+		}
 
-		transform_t move;
-		transform_identity(&move);
-		if (key_mask & k_key_up)
-		{
-			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_up(), -dt));
-		}
-		if (key_mask & k_key_down)
-		{
-			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_up(), dt));
-		}
-		if (key_mask & k_key_left)
-		{
-			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_right(), -dt));
-		}
-		if (key_mask & k_key_right)
-		{
-			move.translation = vec3f_add(move.translation, vec3f_scale(vec3f_right(), dt));
+		if (key_mask & k_key_four) {
+			if (key_mask & k_key_up) {
+				rotate_object_x_up(scene, dt);
+			}
+			if (key_mask & k_key_down) {
+				rotate_object_x_down(scene, dt);
+			}
 		}
 
-		transform_multiply(&transform_comp->transform, &move);
-	
-		debug_print_line(k_print_info, "location: %f\n", transform_comp->transform.translation.y);
+		if (key_mask & k_key_five) {
+			if (key_mask & k_key_up) {
+				rotate_object_y_up(scene, dt);
+			}
+			if (key_mask & k_key_down) {
+				rotate_object_y_up(scene, dt);
+			}
+		}
+
+		if (key_mask & k_key_six) {
+			if (key_mask & k_key_up) {
+				rotate_object_z_up(scene, dt);
+			}
+			if (key_mask & k_key_down) {
+				rotate_object_z_down(scene, dt);
+			}
+		}
 	}
 }
 

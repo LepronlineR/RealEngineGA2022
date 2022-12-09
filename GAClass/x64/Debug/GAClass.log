@@ -1,36 +1,4 @@
-﻿  frogger_game.c
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\frogger_game.c(186,29): warning C4020: 'load_enemy_resources': too many actual parameters
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\frogger_game.c(599,53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-  gpu.c
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(797,98): warning C4047: 'function': 'VkBuffer *' differs in levels of indirection from 'VkBuffer **'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(797,76): warning C4024: 'vkCreateBuffer': different types for formal and actual parameter 4
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(803,74): warning C4047: 'function': 'VkBuffer' differs in levels of indirection from 'VkBuffer *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(803,66): warning C4024: 'vkGetBufferMemoryRequirements': different types for formal and actual parameter 2
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(812,102): warning C4047: 'function': 'VkDeviceMemory *' differs in levels of indirection from 'VkDeviceMemory **'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(812,73): warning C4024: 'vkAllocateMemory': different types for formal and actual parameter 4
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(817,63): warning C4047: 'function': 'VkBuffer' differs in levels of indirection from 'VkBuffer *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(817,55): warning C4024: 'vkBindBufferMemory': different types for formal and actual parameter 2
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(817,93): warning C4047: 'function': 'VkDeviceMemory' differs in levels of indirection from 'VkDeviceMemory *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(817,78): warning C4024: 'vkBindBufferMemory': different types for formal and actual parameter 3
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1058,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1075,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1084,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1094,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1111,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1128,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1137,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1147,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1187,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1205,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1213,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1222,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(2290,23): warning C4047: 'function': 'bool *' differs in levels of indirection from 'int'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(2290,19): warning C4024: 'igShowDemoWindow': different types for formal and actual parameter 1
-  render.c
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\render.c(556,64): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
-  scene.c
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(366,48): warning C4098: 'spawn_ui': 'void' function returning a value
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(393,48): warning C4098: 'spawn_scene_hierarchy': 'void' function returning a value
-  simple_game.c
-  Generating Code...
+﻿  scene.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(393,48): warning C4098: 'spawn_ui': 'void' function returning a value
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(420,48): warning C4098: 'spawn_scene_hierarchy': 'void' function returning a value
   GAClass.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe

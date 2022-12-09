@@ -9,15 +9,6 @@
 #include "debug.h"
 
 #include <assert.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include "imgui_impl_vulkan.h"
-#include "imgui_impl_win32.h"
-
-#define IMGUI_VERSION               "1.89.1 WIP"
-#define IMGUI_CHECKVERSION()        igDebugCheckVersionAndDataLayout(IMGUI_VERSION, sizeof(ImGuiIO), sizeof(ImGuiStyle), sizeof(ImVec2), sizeof(ImVec4), sizeof(ImDrawVert), sizeof(ImDrawIdx))
-#define IM_ARRAYSIZE(_ARR)          ((int)(sizeof(_ARR) / sizeof(*_ARR)))  
 
 enum
 {
@@ -28,14 +19,6 @@ enum
 {
 	k_texture_sampler_binding = 1
 };
-
-static void vk_result(VkResult err) {
-	if (err == 0)
-		return;
-	debug_print_line(k_print_error, "Vulkan Error: %d\n", err);
-	if (err < 0)
-		abort();
-}
 
 typedef enum render_mode_type_t
 {
@@ -51,23 +34,6 @@ typedef enum command_type_t
 	k_command_imgui
 	
 } command_type_t;
-
-typedef struct gpu_frame_t
-{
-	VkImage image;
-	VkImageView view;
-	VkFramebuffer frame_buffer;
-	VkFence fence;
-	gpu_cmd_buffer_t* cmd_buffer;
-} gpu_frame_t;
-
-typedef struct gpu_cmd_buffer_t
-{
-	VkCommandBuffer buffer;
-	VkPipelineLayout pipeline_layout;
-	int index_count;
-	int vertex_count;
-} gpu_cmd_buffer_t;
 
 typedef struct model_command_t
 {
@@ -142,7 +108,6 @@ typedef struct render_t
 	draw_shader_t shaders[k_render_max_drawables];
 
 	render_mode_type_t render_mode;
-	ImGui_ImplVulkanH_Window main_window_data;
 
 } render_t;
 

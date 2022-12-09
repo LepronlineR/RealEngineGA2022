@@ -26,6 +26,9 @@ void mat4f_make_scaling(mat4f_t* m, const vec3f_t* s);
 // Make a matrix m that rotates vectors by q.
 void mat4f_make_rotation(mat4f_t* m, const quatf_t* q);
 
+// Make a matrix m that rotates vectors by q.
+void mat4f_make_rotation_other(mat4f_t* m, quatf_t q);
+
 // Translate matrix m by translation vector t.
 void mat4f_translate(mat4f_t* m, const vec3f_t* t);
 
@@ -34,6 +37,7 @@ void mat4f_scale(mat4f_t* m, const vec3f_t* s);
 
 // Rotate matrix m by quaternion q.
 void mat4f_rotate(mat4f_t* m, const quatf_t* q);
+void mat4f_rotate_default(mat4f_t* m, quatf_t q);
 
 // Concatenate matrices a and b to get matrix result.
 void mat4f_mul(mat4f_t* result, const mat4f_t* a, const mat4f_t* b);

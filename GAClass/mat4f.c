@@ -57,6 +57,29 @@ void mat4f_make_rotation(mat4f_t* m, const quatf_t* q)
 	m->data[3][3] = 1.0f;
 }
 
+void mat4f_make_rotation_other(mat4f_t* m, quatf_t q)
+{
+	m->data[0][0] = 1.0f - 2.0f * (q.y * q.y + q.z * q.z);
+	m->data[1][0] = 2.0f * (q.x * q.y - q.z * q.w);
+	m->data[2][0] = 2.0f * (q.x * q.z + q.y * q.w);
+	m->data[3][0] = 0.0f;
+
+	m->data[0][1] = 2.0f * (q.x * q.y + q.z * q.w);
+	m->data[1][1] = 1.0f - 2.0f * (q.x * q.x + q.z * q.z);
+	m->data[2][1] = 2.0f * (q.y * q.z - q.x * q.w);
+	m->data[3][1] = 0.0f;
+
+	m->data[0][2] = 2.0f * (q.x * q.z - q.y * q.w);
+	m->data[1][2] = 2.0f * (q.y * q.z + q.x * q.w);
+	m->data[2][2] = 1.0f - 2.0f * (q.x * q.x + q.y * q.y);
+	m->data[3][2] = 0.0f;
+
+	m->data[0][3] = 0.0f;
+	m->data[1][3] = 0.0f;
+	m->data[2][3] = 0.0f;
+	m->data[3][3] = 1.0f;
+}
+
 void mat4f_translate(mat4f_t* m, const vec3f_t* t)
 {
 	mat4f_t tmp;
@@ -75,6 +98,13 @@ void mat4f_rotate(mat4f_t* m, const quatf_t* q)
 {
 	mat4f_t tmp;
 	mat4f_make_rotation(&tmp, q);
+	mat4f_mul_inplace(m, &tmp);
+}
+
+void mat4f_rotate_default(mat4f_t* m, quatf_t q)
+{
+	mat4f_t tmp;
+	mat4f_make_rotation_other(&tmp, q);
 	mat4f_mul_inplace(m, &tmp);
 }
 
