@@ -39,11 +39,7 @@
 
 #include <float.h>
 
-#ifndef IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
 #include <xinput.h>
-typedef DWORD(WINAPI* PFN_XInputGetCapabilities)(DWORD, DWORD, XINPUT_CAPABILITIES*);
-typedef DWORD(WINAPI* PFN_XInputGetState)(DWORD, XINPUT_STATE*);
-#endif
 
 typedef struct ImGui_ImplWin32_Data
 {
@@ -54,14 +50,6 @@ typedef struct ImGui_ImplWin32_Data
     INT64                       Time;
     INT64                       TicksPerSecond;
     ImGuiMouseCursor            LastMouseCursor;
-
-#ifndef IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
-    bool                        HasGamepad;
-    bool                        WantUpdateHasGamepad;
-    HMODULE                     XInputDLL;
-    PFN_XInputGetCapabilities   XInputGetCapabilities;
-    PFN_XInputGetState          XInputGetState;
-#endif
 
 } ImGui_ImplWin32_Data;
 
@@ -102,27 +90,6 @@ bool    ImGui_ImplWin32_Init(void* hwnd)
     // Set platform dependent data in viewport
     igGetMainViewport()->PlatformHandleRaw = (void*)hwnd;
 
-    // Dynamically load XInput library
-#ifndef IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
-    bd->WantUpdateHasGamepad = true;
-    const char* xinput_dll_names[] =
-    {
-        "xinput1_4.dll",   // Windows 8+
-        "xinput1_3.dll",   // DirectX SDK
-        "xinput9_1_0.dll", // Windows Vista, Windows 7
-        "xinput1_2.dll",   // DirectX SDK
-        "xinput1_1.dll"    // DirectX SDK
-    };
-    for (int n = 0; n < IM_ARRAYSIZE(xinput_dll_names); n++)
-        if (LoadLibraryA(xinput_dll_names[n]))
-        {
-            bd->XInputDLL = LoadLibraryA(xinput_dll_names[n]);
-            bd->XInputGetCapabilities = (PFN_XInputGetCapabilities)GetProcAddress(LoadLibraryA(xinput_dll_names[n]), "XInputGetCapabilities");
-            bd->XInputGetState = (PFN_XInputGetState)GetProcAddress(LoadLibraryA(xinput_dll_names[n]), "XInputGetState");
-            break;
-        }
-#endif // IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
-
     return true;
 }
 
@@ -131,12 +98,6 @@ void    ImGui_ImplWin32_Shutdown()
     ImGui_ImplWin32_Data* bd = ImGui_ImplWin32_GetBackendData();
     IM_ASSERT(bd != NULL && "No platform backend to shutdown, or already shutdown?");
     ImGuiIO* io = igGetIO();
-
-    // Unload XInput library
-#ifndef IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
-    if (bd->XInputDLL)
-        FreeLibrary(bd->XInputDLL);
-#endif // IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
 
     io->BackendPlatformName = NULL;
     io->BackendPlatformUserData = NULL;
@@ -544,10 +505,6 @@ CIMGUI_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wP
             return 1;
         return 0;
     case WM_DEVICECHANGE:
-#ifndef IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
-        if ((UINT)wParam == DBT_DEVNODES_CHANGED)
-            bd->WantUpdateHasGamepad = true;
-#endif
         return 0;
     }
     return 0;

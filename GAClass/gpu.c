@@ -10,6 +10,13 @@
 #include <malloc.h>
 #include <string.h>
 
+#include "imgui_impl_vulkan.h"
+#include "imgui_impl_win32.h"
+
+#define IMGUI_VERSION               "1.89.1 WIP"
+#define IMGUI_CHECKVERSION()        igDebugCheckVersionAndDataLayout(IMGUI_VERSION, sizeof(ImGuiIO), sizeof(ImGuiStyle), sizeof(ImVec2), sizeof(ImVec4), sizeof(ImDrawVert), sizeof(ImDrawIdx))
+#define IM_ARRAYSIZE(_ARR)          ((int)(sizeof(_ARR) / sizeof(*_ARR)))  
+
 typedef struct gpu_cmd_buffer_t
 {
 	VkCommandBuffer buffer;
@@ -126,7 +133,6 @@ typedef struct gpu_t
 	VkIndexType mesh_index_size[k_gpu_mesh_layout_count];
 	VkIndexType mesh_index_type[k_gpu_mesh_layout_count];
 
-	VkPipelineCache pipeline_cache;
 	VkAllocationCallbacks* allocator;
 
 	uint32_t frame_width;
@@ -147,14 +153,19 @@ static void flush_command_buffer(gpu_t* gpu, VkCommandBuffer cmd_buffer, bool fr
 
 static void end_command_buffer(gpu_t* gpu, VkCommandBuffer command_buffer);
 
+static void vk_result(VkResult err) {
+	if (err == 0)
+		return;
+	debug_print_line(k_print_error, "Vulkan Error: %d\n", err);
+	if (err < 0)
+		abort();
+}
+
 gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 {
 	gpu_t* gpu = heap_alloc(heap, sizeof(gpu_t), 8);
 	memset(gpu, 0, sizeof(*gpu));
 	gpu->heap = heap;
-
-	// set pipeline handle to null
-	gpu->pipeline_cache = VK_NULL_HANDLE;
 
 	//////////////////////////////////////////////////////
 	// Create VkInstance
@@ -2189,10 +2200,6 @@ VkQueue gpu_get_queue(gpu_t* gpu) {
 	return gpu->queue;
 }
 
-VkPipelineCache gpu_get_pipeline_cache(gpu_t* gpu) {
-	return gpu->pipeline_cache;
-}
-
 VkDescriptorPool gpu_get_descriptor_pool(gpu_t* gpu) {
 	return gpu->descriptor_pool;
 }
@@ -2227,4 +2234,63 @@ uint32_t gpu_get_frame_height(gpu_t* gpu) {
 
 VkCommandPool gpu_get_command_pool(gpu_t* gpu) {
 	return gpu->cmd_pool;
+}
+
+void init_imgui(gpu_t* gpu, wm_window_t* window) {
+	// Setup Dear ImGui binding
+	IMGUI_CHECKVERSION();
+
+	ImGuiContext* ctx = igCreateContext(0);
+	igSetCurrentContext(ctx);
+
+	ImGuiIO* io = igGetIO();
+	io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+	// Init for Win32
+	ImGui_ImplWin32_Init(wm_get_hwnd(window));
+
+	// Init for Vulkan
+	ImGui_ImplVulkan_InitInfo init_info = {
+		.Instance = gpu->instance,
+		.PhysicalDevice = gpu->physical_device,
+		.Device = gpu->logical_device,
+		.QueueFamily = (uint32_t)-1,
+		.Queue = gpu->queue,
+		.PipelineCache = VK_NULL_HANDLE,
+		.DescriptorPool = gpu->descriptor_pool,
+		.Allocator = gpu->allocator,
+		.MinImageCount = 3,
+		.ImageCount = UINT8_MAX,
+		.CheckVkResultFn = vk_result
+	};
+
+	ImGui_ImplVulkan_Init(&init_info, gpu->render_pass);
+
+	// create a command buffer (for texture/font)
+	VkCommandBuffer command_buffer = create_command_buffer(gpu, VK_COMMAND_BUFFER_LEVEL_PRIMARY, true);
+
+	// we need to create a font texture
+	ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
+
+	end_command_buffer(gpu, command_buffer);
+
+	vkDeviceWaitIdle(gpu_get_logical_devices(gpu));
+
+	ImGui_ImplVulkan_DestroyFontUploadObjects();
+
+	igStyleColorsDark(NULL);
+}
+
+void imgui_draw(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer) {
+	ImGui_ImplVulkan_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	igNewFrame();
+
+	// window
+	igShowDemoWindow(true);
+
+	// render
+	igRender();
+	ImDrawData* draw_data = igGetDrawData();
+	ImGui_ImplVulkan_RenderDrawData(draw_data, cmd_buffer->buffer);
 }

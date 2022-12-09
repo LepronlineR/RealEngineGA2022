@@ -157,6 +157,12 @@ void gpu_cmd_draw(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer);
 // Generate a buffer and store it in the buffer info
 void gpu_generate_buffer(gpu_t* gpu, gpu_buffer_info_t* buffer_info);
 
+// Initialize the IMGUI instance (generating font atlas, etc)
+void init_imgui(gpu_t* gpu, wm_window_t* window);
+
+// The draw call for IMGUI instance
+void imgui_draw(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer);
+
 // Getters
 VkInstance gpu_get_instance(gpu_t* gpu);
 
@@ -165,8 +171,6 @@ VkPhysicalDevice gpu_get_physical_devices(gpu_t* gpu);
 VkDevice gpu_get_logical_devices(gpu_t* gpu);
 
 VkQueue gpu_get_queue(gpu_t* gpu);
-
-VkPipelineCache gpu_get_pipeline_cache(gpu_t* gpu);
 
 VkDescriptorPool gpu_get_descriptor_pool(gpu_t* gpu);
 
@@ -177,8 +181,6 @@ VkSurfaceKHR gpu_get_surface(gpu_t* gpu);
 VkRenderPass gpu_get_render_pass(gpu_t* gpu);
 
 gpu_frame_t* gpu_get_frames(gpu_t* gpu);
-
-uint32_t gpu_get_frame_count(gpu_t* gpu);
 
 uint32_t gpu_get_frame_index(gpu_t* gpu);
 

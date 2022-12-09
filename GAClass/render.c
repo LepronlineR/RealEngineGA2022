@@ -47,7 +47,8 @@ typedef enum command_type_t
 {
 	k_command_frame_done,
 	k_command_model,
-	k_command_texture_model
+	k_command_texture_model,
+	k_command_imgui
 	
 } command_type_t;
 
@@ -206,6 +207,19 @@ void render_push_model_image(render_t* render, ecs_entity_ref_t* entity, gpu_ima
 	queue_push(render->queue, command);
 }
 
+void render_push_model_imgui(render_t* render, ecs_entity_ref_t* entity, gpu_mesh_info_t* mesh, gpu_shader_info_t* shader, gpu_uniform_buffer_info_t* uniform)
+{
+	model_command_t* command = heap_alloc(render->heap, sizeof(model_command_t), 8);
+	command->type = k_command_imgui;
+	command->entity = *entity;
+	command->mesh = mesh;
+	command->shader = shader;
+	command->uniform_buffer.size = uniform->size;
+	command->uniform_buffer.data = heap_alloc(render->heap, uniform->size, 8);
+	memcpy(command->uniform_buffer.data, uniform->data, uniform->size);
+	queue_push(render->queue, command);
+}
+
 void render_push_done(render_t* render)
 {
 	frame_done_command_t* command = heap_alloc(render->heap, sizeof(frame_done_command_t), 8);
@@ -227,87 +241,7 @@ static int render_thread_func(void* user)
 	int frame_index = 0;
 
 	if (render->render_mode == k_imgui_mode) {
-
-		// Setup Dear ImGui binding
-		IMGUI_CHECKVERSION();
-
-		ImGuiContext* ctx = igCreateContext(0);
-		igSetCurrentContext(ctx);
-
-		ImGuiIO* io = igGetIO();
-		io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-		// Init for Win32
-		ImGui_ImplWin32_Init(wm_get_hwnd(render->window));
-
-		// Init for Vulkan
-		ImGui_ImplVulkan_InitInfo init_info = {
-			.Instance = gpu_get_instance(render->gpu),
-			.PhysicalDevice = gpu_get_physical_devices(render->gpu),
-			.Device = gpu_get_logical_devices(render->gpu), 
-			.QueueFamily = (uint32_t)-1,
-			.Queue = gpu_get_queue(render->gpu),
-			.PipelineCache = gpu_get_pipeline_cache(render->gpu),
-			.DescriptorPool = gpu_get_descriptor_pool(render->gpu),
-			.Allocator = gpu_get_allocator(render->gpu),
-			.MinImageCount = 2,
-			.ImageCount = UINT8_MAX	,
-			.CheckVkResultFn = vk_result
-		};
-
-		ImGui_ImplVulkan_Init(&init_info, gpu_get_render_pass(render->gpu));
-
-		// create a command buffer (for texture/font)
-		VkCommandBuffer commandBuffer;
-		{
-			VkCommandBufferAllocateInfo allocation_info =
-			{
-				.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-				.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-				.commandPool = gpu_get_command_pool(render->gpu),
-				.commandBufferCount = 1
-			};
-
-			VkResult result = vkAllocateCommandBuffers(gpu_get_logical_devices(render->gpu), &allocation_info, &commandBuffer);
-
-			if (result != VK_SUCCESS) {
-				debug_print_line(k_print_error, "vkAllocateCommandBuffers failed: %d\n", result);
-			}
-
-			VkCommandBufferBeginInfo begin_info =
-			{
-				.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-				.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT
-			};
-
-			vkBeginCommandBuffer(commandBuffer, &begin_info);
-		}
-
-		// we need to create a font texture
-		ImGui_ImplVulkan_CreateFontsTexture(commandBuffer);
-
-		// end command buffer
-		{
-			vkEndCommandBuffer(commandBuffer);
-
-			VkSubmitInfo submit_info = {
-				.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-				.commandBufferCount = 1,
-				.pCommandBuffers = &commandBuffer
-			};
-
-			vkQueueSubmit(gpu_get_queue(render->gpu), 1, &submit_info, VK_NULL_HANDLE);
-			vkQueueWaitIdle(gpu_get_queue(render->gpu));
-
-			vkFreeCommandBuffers(gpu_get_logical_devices(render->gpu), gpu_get_command_pool(render->gpu), 1, &commandBuffer);
-		}
-
-		vkDeviceWaitIdle(gpu_get_logical_devices(render->gpu));
-
-		ImGui_ImplVulkan_DestroyFontUploadObjects();
-
-		igStyleColorsDark(NULL);
-
+		init_imgui(render->gpu, render->window);
 	}
 
 	while (true)
@@ -327,7 +261,6 @@ static int render_thread_func(void* user)
 
 		if (*type == k_command_frame_done)
 		{
-
 			gpu_frame_end(render->gpu);
 			cmdbuf = NULL;
 			last_pipeline = NULL;
@@ -361,21 +294,6 @@ static int render_thread_func(void* user)
 
 			gpu_cmd_descriptor_bind(render->gpu, cmdbuf, instance->descriptors[frame_index]);
 			gpu_cmd_draw(render->gpu, cmdbuf);
-
-			if (render->render_mode == k_imgui_mode) {
-
-				ImGui_ImplVulkan_NewFrame();
-				ImGui_ImplWin32_NewFrame();
-				igNewFrame();
-
-				// window
-				igShowDemoWindow(true);
-
-				// render
-				igRender();
-				ImDrawData* draw_data = igGetDrawData();
-				ImGui_ImplVulkan_RenderDrawData(draw_data, cmdbuf->buffer);
-			}
 		}
 		else if (*type == k_command_texture_model)
 		{
@@ -398,6 +316,9 @@ static int render_thread_func(void* user)
 			}
 			gpu_cmd_descriptor_bind(render->gpu, cmdbuf, instance->descriptors[frame_index]);
 			gpu_cmd_draw(render->gpu, cmdbuf);
+		}
+		else if (*type == k_command_imgui) {
+			imgui_draw(render->gpu, cmdbuf);
 		}
 
 		heap_free(render->heap, type);

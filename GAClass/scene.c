@@ -65,6 +65,12 @@ typedef struct name_component_t
 	char name[32];
 } name_component_t;
 
+typedef struct ui_component_t
+{
+	gpu_mesh_info_t* mesh_info;
+	gpu_shader_info_t* shader_info;
+} ui_component_t;
+
 // Axis Aligned Bounding Boxes
 typedef struct collider_component_t {
 	// Note that we are using transform without a pointer or in its own component, so colliders can have
@@ -96,6 +102,7 @@ typedef struct scene_t
 	int model_texture_type;
 	int name_type;
 	int collider_type;
+	int ui_type;
 
 	ecs_entity_ref_t camera_ent;
 	ecs_entity_ref_t current_entity;
@@ -125,12 +132,15 @@ static void unload_shader_resources(scene_t* scene);
 // camera
 static void spawn_camera(scene_t* scene);
 
-// scene hierarchy
+// scene hierarchy (OLD UI)
 static void load_scene_hierarchy_resources(scene_t* scene, const char* image_location);
 static void spawn_scene_hierarchy(scene_t* scene);
 static void update_scene_hierarchy(scene_t* scene);
 
 static void scene_interaction(scene_t* scene);
+
+// UI
+static void spawn_ui(scene_t* scene);
 
 // component editing/adding
 static void replace_name(scene_t* scene, ecs_entity_ref_t entity, const char* new_name);
@@ -180,11 +190,16 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 	scene->name_type = ecs_register_component_type(scene->ecs, "name", sizeof(name_component_t), _Alignof(name_component_t));
 	scene->collider_type = ecs_register_component_type(scene->ecs, "collider", sizeof(collider_component_t), _Alignof(collider_component_t));
 	scene->model_texture_type = ecs_register_component_type(scene->ecs, "model texture", sizeof(model_texture_component_t), _Alignof(model_texture_component_t));
-
+	scene->ui_type = ecs_register_component_type(scene->ecs, "ui", sizeof(ui_component_t), _Alignof(ui_component_t));
+	
 	// load_scene_hierarchy_resources(scene, "resources/smile.jpg");
 	load_object_scene_resources(scene);
 
+	// camera
 	spawn_camera(scene);
+
+	// UI
+	spawn_ui(scene);
 
 	scene->current_entity = dummy_entity;
 
@@ -273,6 +288,30 @@ static void draw_models(scene_t* scene)
 
 			render_push_model_image(scene->render, &entity_ref, model_comp->mesh_info, model_comp->shader_info, &uniform_info);
 		}
+
+		uint64_t k_ui_query_mark = (1ULL << scene->transform_type) | (1ULL << scene->ui_type);
+		for (ecs_query_t query = ecs_query_create(scene->ecs, k_ui_query_mark);
+			ecs_query_is_valid(scene->ecs, &query);
+			ecs_query_next(scene->ecs, &query))
+		{
+			transform_component_t* transform_comp = ecs_query_get_component(scene->ecs, &query, scene->transform_type);
+			ui_component_t* ui_comp = ecs_query_get_component(scene->ecs, &query, scene->ui_type);
+			ecs_entity_ref_t entity_ref = ecs_query_get_entity(scene->ecs, &query);
+
+			struct
+			{
+				mat4f_t projection;
+				mat4f_t model;
+				mat4f_t view;
+			} uniform_data;
+			uniform_data.projection = camera_comp->projection;
+			uniform_data.view = camera_comp->view;
+			transform_to_matrix(&transform_comp->transform, &uniform_data.model);
+			// add sampler
+			gpu_uniform_buffer_info_t uniform_info = { .data = &uniform_data, sizeof(uniform_data) };
+
+			render_push_model_imgui(scene->render, &entity_ref, ui_comp->mesh_info, ui_comp->shader_info, &uniform_info);
+		}
 	}
 }
 
@@ -301,7 +340,32 @@ static void spawn_camera(scene_t* scene)
 	mat4f_make_lookat(&camera_comp->view, &eye_pos, &forward, &up);
 }
 
+// ===========================================================================================
+//												UI
+// ===========================================================================================
 
+static void spawn_ui(scene_t* scene) {
+	uint64_t k_object_ent_mask =
+		(1ULL << scene->transform_type) |
+		(1ULL << scene->name_type) |
+		(1ULL << scene->ui_type);
+	scene->all_ent[scene->next_free_entity] = ecs_entity_add(scene->ecs, k_object_ent_mask);
+
+	transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->transform_type, true);
+	transform_identity(&transform_comp->transform);
+
+	name_component_t* name_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->name_type, true);
+	strcpy_s(name_comp->name, sizeof(name_comp->name), "UI");
+
+	ui_component_t* ui_comp = ecs_entity_get_component(scene->ecs, scene->all_ent[scene->next_free_entity], scene->ui_type, true);
+	ui_comp->mesh_info = &scene->cube_mesh;
+	ui_comp->shader_info = &scene->cube_shader;
+
+	update_next_entity_location(scene);
+
+	return scene->all_ent[scene->next_free_entity];
+
+}
 
 // ===========================================================================================
 //                                       SCENE HIERARCHY
@@ -565,8 +629,9 @@ static void scene_interaction(scene_t* scene)
 		}
 
 		transform_multiply(&transform_comp->transform, &move);
+	
+		debug_print_line(k_print_info, "location: %f\n", transform_comp->transform.translation.y);
 	}
-
 }
 
 // ===========================================================================================
