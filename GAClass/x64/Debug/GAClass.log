@@ -1,6 +1,6 @@
-﻿  imgui_impl_vulkan.c
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_vulkan.c(714,1): warning C4047: 'initializing': 'const void *' differs in levels of indirection from 'uint32_t'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_vulkan.c(714,1): warning C4047: 'initializing': 'VkDescriptorSetLayoutCreateFlags' differs in levels of indirection from 'const VkDescriptorSetLayoutBinding *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_vulkan.c(981,128): warning C4028: formal parameter 3 different from declaration
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_vulkan.c(991,98): warning C4133: 'function': incompatible types - from 'VkSurfaceFormatKHR *' to 'VkPresentModeKHR *'
+﻿  scene.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.h(181,41): warning C4142: 'gpu_get_frame_count': benign redefinition of type
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.h(91): message : see declaration of 'gpu_get_frame_count'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(274,77): warning C4133: 'function': incompatible types - from 'gpu_image_mesh_info_t *' to 'gpu_mesh_info_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(329,48): warning C4098: 'spawn_scene_hierarchy': 'void' function returning a value
   GAClass.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe

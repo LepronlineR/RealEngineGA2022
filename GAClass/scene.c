@@ -100,6 +100,8 @@ typedef struct scene_t
 	ecs_entity_ref_t camera_ent;
 	ecs_entity_ref_t current_entity;
 
+	ecs_entity_ref_t ui_ent;
+
 	ecs_entity_ref_t all_ent[k_max_entities];
 	int next_free_entity;
 
@@ -181,6 +183,8 @@ scene_t* scene_create(heap_t* heap, fs_t* fs, wm_window_t* window, render_t* ren
 
 	// load_scene_hierarchy_resources(scene, "resources/smile.jpg");
 	load_object_scene_resources(scene);
+
+	add_object_to_scene(scene);
 
 	scene->current_entity = dummy_entity;
 

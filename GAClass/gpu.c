@@ -146,8 +146,6 @@ static VkCommandBuffer create_command_buffer(gpu_t* gpu, VkCommandBufferLevel le
 static void flush_command_buffer(gpu_t* gpu, VkCommandBuffer cmd_buffer, bool free);
 
 static void end_command_buffer(gpu_t* gpu, VkCommandBuffer command_buffer);
-static void copy_buffer_to_image(gpu_t* gpu, VkBuffer buffer, gpu_image_info_t* image_info);
-static void init_imgui(gpu_t* gpu);
 
 gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 {

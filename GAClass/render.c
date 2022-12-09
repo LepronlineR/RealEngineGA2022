@@ -219,61 +219,6 @@ static int render_thread_func(void* user)
 	int frame_index = 0;
 
 	if (render->render_mode == k_imgui_mode) {
-		/*
-		VkResult res;
-		
-		// Setup the vulkan window
-		{
-			ImGui_ImplVulkanH_Window* wind = &render->main_window_data;
-			// Select Surface Format & Present Mode
-			const VkFormat requestSurfaceImageFormat[] = { VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM };
-			const VkColorSpaceKHR requestSurfaceColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
-
-			// Get the list of VkFormats that are supported:
-			uint32_t formatCount;
-			res = vkGetPhysicalDeviceSurfaceFormatsKHR(gpu_get_physical_devices(render->gpu), gpu_get_surface(render->gpu), &formatCount, NULL);
-			assert(res == VK_SUCCESS);
-			VkSurfaceFormatKHR* surfFormats = (VkSurfaceFormatKHR*)malloc(formatCount * sizeof(VkSurfaceFormatKHR));
-			res = vkGetPhysicalDeviceSurfaceFormatsKHR(gpu_get_physical_devices(render->gpu), gpu_get_surface(render->gpu), &formatCount, surfFormats);
-			assert(res == VK_SUCCESS);
-
-			wind->SurfaceFormat = surfFormats[0];
-			free(surfFormats);
-
-			uint32_t presentModeCount;
-			res = vkGetPhysicalDeviceSurfacePresentModesKHR(gpu_get_physical_devices(render->gpu), gpu_get_surface(render->gpu), &presentModeCount, NULL);
-			assert(res == VK_SUCCESS);
-			VkPresentModeKHR* presentModes = (VkPresentModeKHR*)malloc(presentModeCount * sizeof(VkPresentModeKHR));
-
-			res = vkGetPhysicalDeviceSurfacePresentModesKHR(gpu_get_physical_devices(render->gpu), gpu_get_surface(render->gpu), &presentModeCount, presentModes);
-			assert(res == VK_SUCCESS);
-
-			wind->PresentMode = presentModes[0];
-			free(presentModes);
-
-			wind->Surface = gpu_get_surface(render->gpu);
-
-			// get window size
-			int width = 0;
-			int height = 0;
-			RECT rect;
-			if (GetWindowRect(wm_get_hwnd(render->window), &rect))
-			{
-				width = rect.right - rect.left;
-				height = rect.bottom - rect.top;
-			}
-			else {
-				debug_print_line(k_print_error, "GetWindowRect cannot get a window\n");
-			}
-
-			ImGui_ImplVulkanH_CreateOrResizeWindow(
-				gpu_get_instance(render->gpu), gpu_get_physical_devices(render->gpu),
-				gpu_get_logical_devices(render->gpu), &render->main_window_data, (uint32_t)-1,
-				gpu_get_allocator(render->gpu), width, height, 2);
-			
-
-		}
-		*/
 
 		// Setup Dear ImGui binding
 		IMGUI_CHECKVERSION();
@@ -349,38 +294,11 @@ static int render_thread_func(void* user)
 
 		ImGui_ImplVulkan_DestroyFontUploadObjects();
 
-		//igStyleColorsDark(NULL);
+		igStyleColorsDark(NULL);
 
 		// Init for Win32
 		ImGui_ImplWin32_Init(wm_get_hwnd(render->window));
-
-
-		// Upload Fonts
-		{
-			// Use any command queue
-			gpu_frame_t* frame = gpu_get_frames(render->gpu);
-			VkCommandPool command_pool = gpu_get_command_pool(render->gpu);
-			VkCommandBuffer command_buffer = frame[gpu_get_frame_index(render->gpu)].cmd_buffer;
-
-			vkResetCommandPool(gpu_get_logical_devices(render->gpu), command_pool, 0);
-
-			ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
-
-			VkSubmitInfo end_info = {
-				.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-				.commandBufferCount = 1,
-				.pCommandBuffers = &command_buffer,
-			};
-
-			vkEndCommandBuffer(command_buffer);
-
-			vkQueueSubmit(gpu_get_queue(render->gpu), 1, &end_info, VK_NULL_HANDLE);
-
-
-			vkDeviceWaitIdle(gpu_get_logical_devices(render->gpu));
-
-			ImGui_ImplVulkan_DestroyFontUploadObjects();
-		}
+		
 	}
 
 	while (true)
@@ -461,7 +379,32 @@ static int render_thread_func(void* user)
 			igShowDemoWindow(true);
 
 			igRender();
-			// ImGui_ImplWin32_RenderDrawData();
+			// create a command buffer
+			VkCommandBuffer commandBuffer;
+			{
+				VkCommandBufferAllocateInfo allocation_info =
+				{
+					.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+					.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+					.commandPool = gpu_get_command_pool(render->gpu),
+					.commandBufferCount = 1
+				};
+
+				VkResult result = vkAllocateCommandBuffers(gpu_get_logical_devices(render->gpu), &allocation_info, &commandBuffer);
+
+				if (result != VK_SUCCESS) {
+					debug_print_line(k_print_error, "vkAllocateCommandBuffers failed: %d\n", result);
+				}
+
+				VkCommandBufferBeginInfo begin_info =
+				{
+					.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+					.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT
+				};
+
+				vkBeginCommandBuffer(commandBuffer, &begin_info);
+			}
+			ImGui_ImplVulkan_RenderDrawData(igGetDrawData(), commandBuffer);
 		}
 
 		heap_free(render->heap, type);

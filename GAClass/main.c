@@ -16,7 +16,7 @@ int main(int argc, const char* argv[])
 	heap_t* heap = heap_create(2 * 1024 * 1024);
 	fs_t* fs = fs_create(heap, 8);
 	wm_window_t* window = wm_create(heap);
-	render_t* render = render_create(heap, window, true);
+	render_t* render = render_create(heap, window, false);
 
 	scene_t* scene = scene_create(heap, fs, window, render);
 

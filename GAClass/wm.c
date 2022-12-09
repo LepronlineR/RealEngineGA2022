@@ -115,8 +115,8 @@ static LRESULT CALLBACK _window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
 			break;
 
 		case WM_ACTIVATEAPP:
-			ShowCursor(!wParam);
-			win->has_focus = wParam;
+			ShowCursor(wParam);
+			win->has_focus = !wParam;
 			break;
 
 		case WM_CLOSE:
@@ -161,10 +161,10 @@ wm_window_t* wm_create(heap_t* heap)
 	}
 
 	wm_window_t* win = heap_alloc(heap, sizeof(wm_window_t), 8);
-	win->has_focus = false;
+	win->has_focus = true;
 	win->hwnd = hwnd;
 	win->key_mask = 0;
-	win->mouse_mask = 0;
+	win->mouse_mask = 1;
 	win->quit = false;
 	win->heap = heap;
 

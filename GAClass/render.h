@@ -24,7 +24,7 @@ void render_destroy(render_t* render);
 void render_push_model(render_t* render, ecs_entity_ref_t* entity, gpu_mesh_info_t* mesh, gpu_shader_info_t* shader, gpu_uniform_buffer_info_t* uniform);
 
 // Push a model image onto a queue of items to be rendered.
-void render_push_model_image(render_t* render, ecs_entity_ref_t* entity, gpu_mesh_info_t* mesh, gpu_shader_info_t* shader, gpu_uniform_buffer_info_t* uniform);
+void render_push_model_image(render_t* render, ecs_entity_ref_t* entity, gpu_image_mesh_info_t* mesh, gpu_shader_info_t* shader, gpu_uniform_buffer_info_t* uniform);
 
 // Push an end-of-frame marker on a queue of items to be rendered.
 void render_push_done(render_t* render);

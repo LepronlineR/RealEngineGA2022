@@ -67,6 +67,10 @@
 #include <malloc.h>
 #include <string.h>
 
+// ==============================================================================================================================
+//                                                  C VERSION OF AN IMGUI_IMPL_VULKAN.C BUILD 
+// ==============================================================================================================================
+
 // Reusable buffers used for rendering 1 current in-flight frame, for ImGui_ImplVulkan_RenderDrawData()
 // [Please zero-clear before use!]
 typedef struct ImGui_ImplVulkanH_FrameRenderBuffers
@@ -339,21 +343,25 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
                     vkFreeMemory(v->Device, rb->VertexBufferMemory, v->Allocator);
 
                 VkDeviceSize vertex_buffer_size_aligned = ((vertex_size - 1) / g_BufferMemoryAlignment + 1) * g_BufferMemoryAlignment;
-                VkBufferCreateInfo buffer_info ;
-                buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-                buffer_info.size = vertex_buffer_size_aligned;
-                buffer_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-                buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+                VkBufferCreateInfo buffer_info = {
+                    .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+                    .size = vertex_buffer_size_aligned,
+                    .usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                    .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+                };
+                
                 err = vkCreateBuffer(v->Device, &buffer_info, v->Allocator, &rb->VertexBuffer);
                 check_vk_result(err);
 
                 VkMemoryRequirements req;
                 vkGetBufferMemoryRequirements(v->Device, rb->VertexBuffer, &req);
                 g_BufferMemoryAlignment = (g_BufferMemoryAlignment > req.alignment) ? g_BufferMemoryAlignment : req.alignment;
-                VkMemoryAllocateInfo alloc_info ;
-                alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-                alloc_info.allocationSize = req.size;
-                alloc_info.memoryTypeIndex = ImGui_ImplVulkan_MemoryType(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, req.memoryTypeBits);
+                VkMemoryAllocateInfo alloc_info = {
+                    .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+                    .allocationSize = req.size,
+                    .memoryTypeIndex = ImGui_ImplVulkan_MemoryType(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, req.memoryTypeBits)
+                };
+
                 err = vkAllocateMemory(v->Device, &alloc_info, v->Allocator, &rb->VertexBufferMemory);
                 check_vk_result(err);
 
@@ -375,21 +383,25 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
                     vkFreeMemory(v->Device, rb->IndexBufferMemory, v->Allocator);
 
                 VkDeviceSize vertex_buffer_size_aligned = ((index_size - 1) / g_BufferMemoryAlignment + 1) * g_BufferMemoryAlignment;
-                VkBufferCreateInfo buffer_info ;
-                buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-                buffer_info.size = vertex_buffer_size_aligned;
-                buffer_info.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-                buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+                VkBufferCreateInfo buffer_info = {
+                    .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+                    .size = vertex_buffer_size_aligned,
+                    .usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+                    .sharingMode = VK_SHARING_MODE_EXCLUSIVE
+                };
+
                 err = vkCreateBuffer(v->Device, &buffer_info, v->Allocator, &rb->IndexBuffer);
                 check_vk_result(err);
 
                 VkMemoryRequirements req;
                 vkGetBufferMemoryRequirements(v->Device, rb->IndexBuffer, &req);
                 g_BufferMemoryAlignment = (g_BufferMemoryAlignment > req.alignment) ? g_BufferMemoryAlignment : req.alignment;
-                VkMemoryAllocateInfo alloc_info ;
-                alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-                alloc_info.allocationSize = req.size;
-                alloc_info.memoryTypeIndex = ImGui_ImplVulkan_MemoryType(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, req.memoryTypeBits);
+                VkMemoryAllocateInfo alloc_info = {
+                    .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+                    .allocationSize = req.size,
+                    .memoryTypeIndex = ImGui_ImplVulkan_MemoryType(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, req.memoryTypeBits)
+                };
+
                 err = vkAllocateMemory(v->Device, &alloc_info, v->Allocator, &rb->IndexBufferMemory);
                 check_vk_result(err);
 
@@ -413,13 +425,15 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
             vtx_dst += cmd_list->VtxBuffer.Size;
             idx_dst += cmd_list->IdxBuffer.Size;
         }
-        VkMappedMemoryRange range[2] ;
-        range[0].sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-        range[0].memory = rb->VertexBufferMemory;
-        range[0].size = VK_WHOLE_SIZE;
-        range[1].sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-        range[1].memory = rb->IndexBufferMemory;
-        range[1].size = VK_WHOLE_SIZE;
+        VkMappedMemoryRange* range = alloca(sizeof(VkMappedMemoryRange) * 2);
+        for (int i = 0; i < 2; i++) {
+            range[i] = (VkMappedMemoryRange){
+                .sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+                .memory = rb->VertexBufferMemory,
+                .size = VK_WHOLE_SIZE,
+            };
+        }
+
         err = vkFlushMappedMemoryRanges(v->Device, 2, range);
         check_vk_result(err);
         vkUnmapMemory(v->Device, rb->VertexBufferMemory);
@@ -505,30 +519,29 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
     {
         VkImageCreateInfo info = {
             .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+            .imageType = VK_IMAGE_TYPE_2D,
+            .format = VK_FORMAT_R8G8B8A8_UNORM,
+            .extent.width = width,
+            .extent.height = height,
+            .extent.depth = 1,
+            .mipLevels = 1,
+            .arrayLayers = 1,
+            .samples = VK_SAMPLE_COUNT_1_BIT,
+            .tiling = VK_IMAGE_TILING_OPTIMAL,
+            .usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+            .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+            .initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
         };
-        info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-        info.imageType = VK_IMAGE_TYPE_2D;
-        info.format = VK_FORMAT_R8G8B8A8_UNORM;
-        info.extent.width = width;
-        info.extent.height = height;
-        info.extent.depth = 1;
-        info.mipLevels = 1;
-        info.arrayLayers = 1;
-        info.samples = VK_SAMPLE_COUNT_1_BIT;
-        info.tiling = VK_IMAGE_TILING_OPTIMAL;
-        info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-        info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        
         err = vkCreateImage(v->Device, &info, v->Allocator, &g_FontImage);
         check_vk_result(err);
         VkMemoryRequirements req;
         vkGetImageMemoryRequirements(v->Device, g_FontImage, &req);
         VkMemoryAllocateInfo alloc_info = {
             .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+            .allocationSize = req.size,
+            .memoryTypeIndex = ImGui_ImplVulkan_MemoryType(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, req.memoryTypeBits)
         };
-        alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-        alloc_info.allocationSize = req.size;
-        alloc_info.memoryTypeIndex = ImGui_ImplVulkan_MemoryType(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, req.memoryTypeBits);
         err = vkAllocateMemory(v->Device, &alloc_info, v->Allocator, &g_FontMemory);
         check_vk_result(err);
         err = vkBindImageMemory(v->Device, g_FontImage, g_FontMemory, 0);
@@ -552,16 +565,29 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
 
     // Update the Descriptor Set:
     {
-        VkDescriptorImageInfo desc_image[1] ;
-        desc_image[0].sampler = g_FontSampler;
-        desc_image[0].imageView = g_FontView;
-        desc_image[0].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        VkWriteDescriptorSet write_desc[1] ;
-        write_desc[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        write_desc[0].dstSet = g_DescriptorSet;
-        write_desc[0].descriptorCount = 1;
-        write_desc[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        write_desc[0].pImageInfo = desc_image;
+        VkDescriptorImageInfo* desc_image = alloca(sizeof(VkDescriptorImageInfo) * 1);
+        for (int i = 0; i < 1; ++i)
+        {
+            desc_image[i] = (VkDescriptorImageInfo)
+            {
+                .sampler = g_FontSampler,
+                .imageView = g_FontView,
+                .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+            };
+        }
+
+        VkWriteDescriptorSet* write_desc = alloca(sizeof(VkWriteDescriptorSet) * 1);
+        for (int i = 0; i < 1; ++i)
+        {
+            write_desc[i] = (VkWriteDescriptorSet)
+            {
+                .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+                .dstSet = g_DescriptorSet,
+                .descriptorCount = 1,
+                .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                .pImageInfo = desc_image,
+            };
+        }
         vkUpdateDescriptorSets(v->Device, 1, write_desc, 0, NULL);
     }
 
@@ -579,12 +605,13 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
         VkMemoryRequirements req;
         vkGetBufferMemoryRequirements(v->Device, g_UploadBuffer, &req);
         g_BufferMemoryAlignment = (g_BufferMemoryAlignment > req.alignment) ? g_BufferMemoryAlignment : req.alignment;
+
         VkMemoryAllocateInfo alloc_info = {
             .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+            .allocationSize = req.size,
+            .memoryTypeIndex = ImGui_ImplVulkan_MemoryType(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, req.memoryTypeBits),
         };
-        alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-        alloc_info.allocationSize = req.size;
-        alloc_info.memoryTypeIndex = ImGui_ImplVulkan_MemoryType(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, req.memoryTypeBits);
+
         err = vkAllocateMemory(v->Device, &alloc_info, v->Allocator, &g_UploadBufferMemory);
         check_vk_result(err);
         err = vkBindBufferMemory(v->Device, g_UploadBuffer, g_UploadBufferMemory, 0);
@@ -597,10 +624,18 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
         err = vkMapMemory(v->Device, g_UploadBufferMemory, 0, upload_size, 0, (void**)(&map));
         check_vk_result(err);
         memcpy(map, pixels, upload_size);
-        VkMappedMemoryRange range[1] ;
-        range[0].sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-        range[0].memory = g_UploadBufferMemory;
-        range[0].size = upload_size;
+
+        VkMappedMemoryRange* range = alloca(sizeof(VkWriteDescriptorSet) * 1);
+        for (int i = 0; i < 1; ++i)
+        {
+            range[i] = (VkMappedMemoryRange)
+            {
+                .sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+                .memory = g_UploadBufferMemory,
+                .size = upload_size
+            };
+        }
+
         err = vkFlushMappedMemoryRanges(v->Device, 1, range);
         check_vk_result(err);
         vkUnmapMemory(v->Device, g_UploadBufferMemory);
@@ -608,39 +643,59 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
 
     // Copy to Image:
     {
-        VkImageMemoryBarrier copy_barrier[1] ;
-        copy_barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        copy_barrier[0].dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-        copy_barrier[0].oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        copy_barrier[0].newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-        copy_barrier[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        copy_barrier[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        copy_barrier[0].image = g_FontImage;
-        copy_barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        copy_barrier[0].subresourceRange.levelCount = 1;
-        copy_barrier[0].subresourceRange.layerCount = 1;
-        vkCmdPipelineBarrier(command_buffer, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, NULL, 0, NULL, 1, copy_barrier);
 
-        VkBufferImageCopy region ;
-        region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        region.imageSubresource.layerCount = 1;
-        region.imageExtent.width = width;
-        region.imageExtent.height = height;
-        region.imageExtent.depth = 1;
+        VkImageSubresourceRange subresourceRange = {
+            .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+            .levelCount = 1,
+            .layerCount = 1,
+        };
+
+
+        VkImageMemoryBarrier copy_barrier = 
+            {
+                .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+                .dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
+                .oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+                .newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                .image = g_FontImage,
+                .subresourceRange = subresourceRange
+            };
+
+        vkCmdPipelineBarrier(command_buffer, VK_PIPELINE_STAGE_HOST_BIT, 
+            VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, 
+            NULL, 0, NULL, 1, &copy_barrier);
+
+        VkBufferImageCopy region = {
+            .imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+            .imageSubresource.layerCount = 1,
+            .imageExtent.width = width,
+            .imageExtent.height = height,
+            .imageExtent.depth = 1,
+        };
+
         vkCmdCopyBufferToImage(command_buffer, g_UploadBuffer, g_FontImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-        VkImageMemoryBarrier use_barrier[1] ;
-        use_barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        use_barrier[0].srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-        use_barrier[0].dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-        use_barrier[0].oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-        use_barrier[0].newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        use_barrier[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        use_barrier[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        use_barrier[0].image = g_FontImage;
-        use_barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        use_barrier[0].subresourceRange.levelCount = 1;
-        use_barrier[0].subresourceRange.layerCount = 1;
+        VkImageMemoryBarrier* use_barrier = alloca(sizeof(VkImageMemoryBarrier) * 1);
+        for (int i = 0; i < 1; ++i)
+        {
+            use_barrier[i] = (VkImageMemoryBarrier)
+            {
+                .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+                .srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
+                .dstAccessMask = VK_ACCESS_SHADER_READ_BIT,
+                .oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                .newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                .image = g_FontImage,
+                .subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+                .subresourceRange.levelCount = 1,
+                .subresourceRange.layerCount = 1,
+            };
+        }
+
         vkCmdPipelineBarrier(command_buffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, NULL, 0, NULL, 1, use_barrier);
     }
 
@@ -703,7 +758,7 @@ bool ImGui_ImplVulkan_CreateDeviceObjects()
         {
             binding[i] = (VkDescriptorSetLayoutBinding)
             {
-                .binding = i,
+                .binding = 1,
                 .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
                 .descriptorCount = 1,
                 .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
@@ -712,9 +767,9 @@ bool ImGui_ImplVulkan_CreateDeviceObjects()
         }
 
         VkDescriptorSetLayoutCreateInfo info = {
-            info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
-            info.bindingCount = 1,
-            info.pBindings = binding,
+            .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+            .bindingCount = 1,
+            .pBindings = binding,
         };
 
         err = vkCreateDescriptorSetLayout(v->Device, &info, v->Allocator, &g_DescriptorSetLayout);
