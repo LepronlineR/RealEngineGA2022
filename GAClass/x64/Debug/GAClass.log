@@ -1,4 +1,320 @@
-﻿  scene.c
+﻿  atomic.c
+  debug.c
+  ecs.c
+  event.c
+  frogger_game.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\frogger_game.c(186,29): warning C4020: 'load_enemy_resources': too many actual parameters
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\frogger_game.c(599,53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  fs.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\fs.c(241,28): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\fs.c(265,46): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\fs.c(268,21): warning C4022: 'memcpy': pointer mismatch for actual parameter 2
+  gpu.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(797,98): warning C4047: 'function': 'VkBuffer *' differs in levels of indirection from 'VkBuffer **'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(797,76): warning C4024: 'vkCreateBuffer': different types for formal and actual parameter 4
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(803,74): warning C4047: 'function': 'VkBuffer' differs in levels of indirection from 'VkBuffer *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(803,66): warning C4024: 'vkGetBufferMemoryRequirements': different types for formal and actual parameter 2
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(812,102): warning C4047: 'function': 'VkDeviceMemory *' differs in levels of indirection from 'VkDeviceMemory **'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(812,73): warning C4024: 'vkAllocateMemory': different types for formal and actual parameter 4
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(817,63): warning C4047: 'function': 'VkBuffer' differs in levels of indirection from 'VkBuffer *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(817,55): warning C4024: 'vkBindBufferMemory': different types for formal and actual parameter 2
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(817,93): warning C4047: 'function': 'VkDeviceMemory' differs in levels of indirection from 'VkDeviceMemory *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(817,78): warning C4024: 'vkBindBufferMemory': different types for formal and actual parameter 3
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1058,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1075,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1084,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1094,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1111,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1128,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1137,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1147,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1187,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1205,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1213,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(1222,30): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(2293,23): warning C4047: 'function': 'bool *' differs in levels of indirection from 'int'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\gpu.c(2293,19): warning C4024: 'igShowDemoWindow': different types for formal and actual parameter 1
+  heap.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\heap.c(171,40): warning C4047: 'function': 'PVOID *' differs in levels of indirection from 'char *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\heap.c(171,31): warning C4022: 'RtlCaptureStackBackTrace': pointer mismatch for actual parameter 3
+  hw1.c
+  hw2.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\hw2.c(9,31): warning C4013: 'strlen' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\hw2.c(21,2): warning C4013: 'strcmp' undefined; assuming extern returning int
+  hw3.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\hw3.c(113,50): warning C4133: 'function': incompatible types - from 'void (__cdecl *)(trace_t *)' to 'int (__cdecl *)(void *)'
+  imgui_impl_glfw.c
+  imgui_impl_vulkan.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_vulkan.c(1037,128): warning C4028: formal parameter 3 different from declaration
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_vulkan.c(1047,98): warning C4133: 'function': incompatible types - from 'VkSurfaceFormatKHR *' to 'VkPresentModeKHR *'
+  imgui_impl_win32.c
+  lz4.c
+  lz4file.c
+  lz4frame.c
+  lz4hc.c
+  xxhash.c
+  tlsf.c
+  Generating Code...
+  Compiling...
+  main.c
+  mat4f.c
+  mutex.c
+  quatf.c
+  queue.c
+  random.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\random.c(5,10): warning C4013: 'rand' undefined; assuming extern returning int
+  render.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\render.c(521,64): warning C4133: 'function': incompatible types - from 'gpu_texture_mesh_t *' to 'gpu_mesh_t *'
+  scene.c
 C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(393,48): warning C4098: 'spawn_ui': 'void' function returning a value
 C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(420,48): warning C4098: 'spawn_scene_hierarchy': 'void' function returning a value
-  GAClass.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\GAClass.exe
+  semaphore.c
+  simple_game.c
+  temp.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(186,5): error C2365: 'SDL_FALSE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_stdinc.h(94): message : see declaration of 'SDL_FALSE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(186,5): error C2086: 'SDL_FALSE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(186): message : see declaration of 'SDL_FALSE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(187,5): error C2365: 'SDL_TRUE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_stdinc.h(95): message : see declaration of 'SDL_TRUE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(187,5): error C2086: '<unnamed-enum-SDL_FALSE> SDL_TRUE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(187): message : see declaration of 'SDL_TRUE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(417,5): error C2365: 'DUMMY_ENUM_VALUE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_stdinc.h(147): message : see declaration of 'DUMMY_ENUM_VALUE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(417,5): error C2086: 'DUMMY_ENUM_VALUE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(417): message : see declaration of 'DUMMY_ENUM_VALUE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(439,54): warning C4273: 'malloc': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_malloc.h(101,15): message : see previous definition of 'malloc'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(440,68): warning C4273: 'calloc': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_malloc.h(66,15): message : see previous definition of 'calloc'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(441,66): warning C4273: 'realloc': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_malloc.h(126,15): message : see previous definition of 'realloc'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(442,49): warning C4273: 'free': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_malloc.h(89,14): message : see previous definition of 'free'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(489,131): warning C4273: 'qsort': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_search.h(60,23): message : see previous definition of 'qsort'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(492,29): error C2375: 'abs': redefinition; different linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(293): message : see declaration of 'abs'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(503,47): warning C4273: 'isdigit': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\ctype.h(39,56): message : see previous definition of 'isdigit'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(506,47): warning C4273: 'isspace': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\ctype.h(46,56): message : see previous definition of 'isspace'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(511,47): warning C4273: 'toupper': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\ctype.h(63,56): message : see previous definition of 'toupper'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(512,47): warning C4273: 'tolower': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\ctype.h(66,56): message : see previous definition of 'tolower'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(517,31): error C2375: 'memset': redefinition; different linkage
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime_string.h(63): message : see declaration of 'memset'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(529,23): error C2059: syntax error: 'do'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(529,23): error C2059: syntax error: 'while'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(559,31): error C2375: 'memcpy': redefinition; different linkage
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime_string.h(43): message : see declaration of 'memcpy'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(561,31): error C2375: 'memmove': redefinition; different linkage
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime_string.h(50): message : see declaration of 'memmove'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(562,29): error C2375: 'memcmp': redefinition; different linkage
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime_string.h(29): message : see declaration of 'memcmp'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(575,32): error C2375: 'strlen': redefinition; different linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\string.h(215): message : see declaration of 'strlen'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(580,52): warning C4273: '_strrev': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\string.h(406,24): message : see previous definition of '_strrev'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(581,52): warning C4273: '_strupr': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\string.h(452,1): message : see previous definition of '_strupr'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(582,52): warning C4273: '_strlwr': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\string.h(230,1): message : see previous definition of '_strlwr'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(583,31): error C2375: 'strchr': redefinition; different linkage
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime_string.h(70): message : see declaration of 'strchr'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(584,31): error C2375: 'strrchr': redefinition; different linkage
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime_string.h(76): message : see declaration of 'strrchr'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(585,31): error C2375: 'strstr': redefinition; different linkage
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime_string.h(82): message : see declaration of 'strstr'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(591,72): warning C4273: 'itoa': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(1316,28): message : see previous definition of 'itoa'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(592,31): error C2143: syntax error: missing ')' before '('
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(592,31): error C2059: syntax error: ')'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(592,31): error C2143: syntax error: missing ')' before 'type'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(592,31): error C2091: function returns function
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(592,31): error C2373: '_ultoa': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdlib.h(687): message : see declaration of '_ultoa'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(592,31): error C2085: 'value': not in formal parameter list
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(592,31): error C2059: syntax error: 'type'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(606,29): error C2375: 'strcmp': redefinition; different linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\string.h(100): message : see declaration of 'strcmp'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(611,29): error C2375: 'sscanf': redefinition; different linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stdio.h(2240): message : see declaration of 'sscanf'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(707,1): warning C4005: 'SDL_iconv_utf8_ucs2': macro redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_stdinc.h(611): message : see previous definition of 'SDL_iconv_utf8_ucs2'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(708,1): warning C4005: 'SDL_iconv_utf8_ucs4': macro redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_stdinc.h(612): message : see previous definition of 'SDL_iconv_utf8_ucs4'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(758,24): error C2059: syntax error: '('
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(758,24): error C2146: syntax error: missing ')' before identifier 'size_t'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(758,24): warning C4029: declared formal parameter list different from definition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(758,24): error C2059: syntax error: ')'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(758,24): error C2085: 'dwords': not in formal parameter list
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_stdinc.h(758,24): error C2143: syntax error: missing ';' before '<<'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_pixels.h(310,1): error C2011: 'SDL_Color': 'struct' type redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(55): message : see declaration of 'SDL_Color'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_pixels.h(319,1): error C2011: 'SDL_Palette': 'struct' type redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(63): message : see declaration of 'SDL_Palette'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_pixels.h(330,1): error C2011: 'SDL_PixelFormat': 'struct' type redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(70): message : see declaration of 'SDL_PixelFormat'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(66,29): error C2371: 'SDL_SetError': redefinition; different basic types
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_error.h(43): message : see declaration of 'SDL_SetError'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(103,37): error C2373: 'SDL_GetError': redefinition; different type modifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_error.h(44): message : see declaration of 'SDL_GetError'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(144,5): error C2365: 'SDL_ENOMEM': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_error.h(56): message : see declaration of 'SDL_ENOMEM'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(144,5): error C2086: 'SDL_ENOMEM': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(144): message : see declaration of 'SDL_ENOMEM'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(145,5): error C2365: 'SDL_EFREAD': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_error.h(57): message : see declaration of 'SDL_EFREAD'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(145,5): error C2086: '<unnamed-enum-SDL_ENOMEM> SDL_EFREAD': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(145): message : see declaration of 'SDL_EFREAD'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(146,5): error C2365: 'SDL_EFWRITE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_error.h(58): message : see declaration of 'SDL_EFWRITE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(146,5): error C2086: '<unnamed-enum-SDL_ENOMEM> SDL_EFWRITE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(146): message : see declaration of 'SDL_EFWRITE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(147,5): error C2365: 'SDL_EFSEEK': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_error.h(59): message : see declaration of 'SDL_EFSEEK'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(147,5): error C2086: '<unnamed-enum-SDL_ENOMEM> SDL_EFSEEK': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(147): message : see declaration of 'SDL_EFSEEK'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(148,5): error C2365: 'SDL_UNSUPPORTED': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_error.h(60): message : see declaration of 'SDL_UNSUPPORTED'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(148,5): error C2086: '<unnamed-enum-SDL_ENOMEM> SDL_UNSUPPORTED': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(148): message : see declaration of 'SDL_UNSUPPORTED'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(149,5): error C2365: 'SDL_LASTERROR': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_error.h(61): message : see declaration of 'SDL_LASTERROR'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(149,5): error C2086: '<unnamed-enum-SDL_ENOMEM> SDL_LASTERROR': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(149): message : see declaration of 'SDL_LASTERROR'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_error.h(152,29): error C2371: 'SDL_Error': redefinition; different basic types
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_error.h(63): message : see declaration of 'SDL_Error'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(53,1): error C2011: 'SDL_RWops': 'struct' type redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_rwops.h(42): message : see declaration of 'SDL_RWops'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(211,79): warning C4028: formal parameter 2 different from declaration
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(423,1): error C2059: syntax error: '('
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(450,32): error C2059: syntax error: '('
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(484,1): error C2059: syntax error: '('
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(518,1): error C2059: syntax error: '('
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(547,29): error C2059: syntax error: '('
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(743,32): error C2371: 'SDL_WriteLE16': redefinition; different basic types
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_rwops.h(141): message : see declaration of 'SDL_WriteLE16'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(760,32): error C2371: 'SDL_WriteBE16': redefinition; different basic types
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_rwops.h(142): message : see declaration of 'SDL_WriteBE16'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(778,32): error C2371: 'SDL_WriteLE32': redefinition; different basic types
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_rwops.h(143): message : see declaration of 'SDL_WriteLE32'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(795,32): error C2371: 'SDL_WriteBE32': redefinition; different basic types
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_rwops.h(144): message : see declaration of 'SDL_WriteBE32'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(813,32): error C2371: 'SDL_WriteLE64': redefinition; different basic types
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_rwops.h(145): message : see declaration of 'SDL_WriteLE64'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rwops.h(830,32): error C2371: 'SDL_WriteBE64': redefinition; different basic types
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_rwops.h(146): message : see declaration of 'SDL_WriteBE64'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_rect.h(79,1): error C2011: 'SDL_Rect': 'struct' type redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(50): message : see declaration of 'SDL_Rect'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_surface.h(52,1): warning C4005: 'SDL_SWSURFACE': macro redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(131): message : see previous definition of 'SDL_SWSURFACE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_surface.h(53,1): warning C4005: 'SDL_PREALLOC': macro redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(155): message : see previous definition of 'SDL_PREALLOC'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_surface.h(54,1): warning C4005: 'SDL_RLEACCEL': macro redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(153): message : see previous definition of 'SDL_RLEACCEL'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_surface.h(62,1): warning C4005: 'SDL_MUSTLOCK': macro redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(163): message : see previous definition of 'SDL_MUSTLOCK'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_surface.h(73,1): error C2011: 'SDL_Surface': 'struct' type redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(96): message : see declaration of 'SDL_Surface'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_surface.h(447,66): warning C4028: formal parameter 2 different from declaration
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_surface.h(676,67): warning C4028: formal parameter 2 different from declaration
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_surface.h(775,61): warning C4028: formal parameter 2 different from declaration
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_surface.h(875,44): warning C4028: formal parameter 2 different from declaration
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_surface.h(915,70): warning C4028: formal parameter 2 different from declaration
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_surface.h(915,70): warning C4028: formal parameter 4 different from declaration
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(225,5): error C2365: 'SDL_GL_RED_SIZE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(231): message : see declaration of 'SDL_GL_RED_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(225,5): error C2086: 'SDL_GL_RED_SIZE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(225): message : see declaration of 'SDL_GL_RED_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(226,5): error C2365: 'SDL_GL_GREEN_SIZE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(232): message : see declaration of 'SDL_GL_GREEN_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(226,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_GREEN_SIZE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(226): message : see declaration of 'SDL_GL_GREEN_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(227,5): error C2365: 'SDL_GL_BLUE_SIZE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(233): message : see declaration of 'SDL_GL_BLUE_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(227,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_BLUE_SIZE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(227): message : see declaration of 'SDL_GL_BLUE_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(228,5): error C2365: 'SDL_GL_ALPHA_SIZE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(234): message : see declaration of 'SDL_GL_ALPHA_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(228,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_ALPHA_SIZE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(228): message : see declaration of 'SDL_GL_ALPHA_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(229,5): error C2365: 'SDL_GL_BUFFER_SIZE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(235): message : see declaration of 'SDL_GL_BUFFER_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(229,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_BUFFER_SIZE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(229): message : see declaration of 'SDL_GL_BUFFER_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(230,5): error C2365: 'SDL_GL_DOUBLEBUFFER': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(236): message : see declaration of 'SDL_GL_DOUBLEBUFFER'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(230,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_DOUBLEBUFFER': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(230): message : see declaration of 'SDL_GL_DOUBLEBUFFER'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(231,5): error C2365: 'SDL_GL_DEPTH_SIZE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(237): message : see declaration of 'SDL_GL_DEPTH_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(231,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_DEPTH_SIZE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(231): message : see declaration of 'SDL_GL_DEPTH_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(232,5): error C2365: 'SDL_GL_STENCIL_SIZE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(238): message : see declaration of 'SDL_GL_STENCIL_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(232,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_STENCIL_SIZE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(232): message : see declaration of 'SDL_GL_STENCIL_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(233,5): error C2365: 'SDL_GL_ACCUM_RED_SIZE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(239): message : see declaration of 'SDL_GL_ACCUM_RED_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(233,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_ACCUM_RED_SIZE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(233): message : see declaration of 'SDL_GL_ACCUM_RED_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(234,5): error C2365: 'SDL_GL_ACCUM_GREEN_SIZE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(240): message : see declaration of 'SDL_GL_ACCUM_GREEN_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(234,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_ACCUM_GREEN_SIZE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(234): message : see declaration of 'SDL_GL_ACCUM_GREEN_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(235,5): error C2365: 'SDL_GL_ACCUM_BLUE_SIZE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(241): message : see declaration of 'SDL_GL_ACCUM_BLUE_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(235,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_ACCUM_BLUE_SIZE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(235): message : see declaration of 'SDL_GL_ACCUM_BLUE_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(236,5): error C2365: 'SDL_GL_ACCUM_ALPHA_SIZE': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(242): message : see declaration of 'SDL_GL_ACCUM_ALPHA_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(236,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_ACCUM_ALPHA_SIZE': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(236): message : see declaration of 'SDL_GL_ACCUM_ALPHA_SIZE'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(237,5): error C2365: 'SDL_GL_STEREO': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(243): message : see declaration of 'SDL_GL_STEREO'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(237,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_STEREO': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(237): message : see declaration of 'SDL_GL_STEREO'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(238,5): error C2365: 'SDL_GL_MULTISAMPLEBUFFERS': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(244): message : see declaration of 'SDL_GL_MULTISAMPLEBUFFERS'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(238,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_MULTISAMPLEBUFFERS': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(238): message : see declaration of 'SDL_GL_MULTISAMPLEBUFFERS'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(239,5): error C2365: 'SDL_GL_MULTISAMPLESAMPLES': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(245): message : see declaration of 'SDL_GL_MULTISAMPLESAMPLES'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(239,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_MULTISAMPLESAMPLES': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(239): message : see declaration of 'SDL_GL_MULTISAMPLESAMPLES'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(240,5): error C2365: 'SDL_GL_ACCELERATED_VISUAL': redefinition; previous definition was 'enumerator'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_video.h(246): message : see declaration of 'SDL_GL_ACCELERATED_VISUAL'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(240,5): error C2086: '<unnamed-enum-SDL_GL_RED_SIZE> SDL_GL_ACCELERATED_VISUAL': redefinition
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(240): message : see declaration of 'SDL_GL_ACCELERATED_VISUAL'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\sdl2.nuget.2.26.1\build\native\include\SDL_video.h(340,67): warning C4030: first formal parameter list longer than the second list
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\winioctl.h(4723,1): warning C4020: 'memcpy': too many actual parameters
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\temp.c(311,67): warning C4020: 'ImGui_ImplVulkan_RenderDrawData': too many actual parameters
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\temp.c(359,9): warning C4013: 'SDL_Log' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\temp.c(379,20): warning C4090: 'function': different 'const' qualifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\temp.c(405,5): warning C4013: 'ImGui_ImplSDL2_InitForVulkan' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\temp.c(414,8): error C2039: 'Subpass': is not a member of 'ImGui_ImplVulkan_InitInfo'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\imgui_impl_vulkan.h(14): message : see declaration of 'ImGui_ImplVulkan_InitInfo'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\temp.c(472,13): warning C4013: 'ImGui_ImplSDL2_ProcessEvent' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\temp.c(475,43): error C2065: 'SDL_WINDOWEVENT': undeclared identifier
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\temp.c(475,48): error C2039: 'window': is not a member of 'SDL_Event'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_events.h(227): message : see declaration of 'SDL_Event'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\temp.c(476,19): error C2039: 'window': is not a member of 'SDL_Event'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\packages\SDL.1.2.15.16\build\native\include\SDL_events.h(227): message : see declaration of 'SDL_Event'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\temp.c(498,9): warning C4013: 'ImGui_ImplSDL2_NewFrame' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\temp.c(562,5): warning C4013: 'ImGui_ImplSDL2_Shutdown' undefined; assuming extern returning int
+  thread.c
+  timeofday.c
+  timer.c
+  timer_object.c
+  trace.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\trace.c(76,21): warning C4013: 'getpid' undefined; assuming extern returning int
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\trace.c(169,54): warning C4267: 'function': conversion from 'size_t' to 'DWORD', possible loss of data
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\trace.c(189,45): warning C4267: 'function': conversion from 'size_t' to 'DWORD', possible loss of data
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\trace.c(204,52): warning C4267: 'function': conversion from 'size_t' to 'DWORD', possible loss of data
+  transform.c
+  wm.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\wm.c(118,15): warning C4244: 'function': conversion from 'WPARAM' to 'BOOL', possible loss of data
+  Generating Code...

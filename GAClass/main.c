@@ -6,7 +6,9 @@
 #include "wm.h"
 #include "scene.h"
 
-int main(int argc, const char* argv[])
+#include <GLFW/glfw3.h>
+
+int bain(int argc, const char* argv[])
 {
 	debug_set_print_mask(k_print_info | k_print_warning | k_print_error);
 	debug_install_exception_handler();
@@ -24,7 +26,6 @@ int main(int argc, const char* argv[])
 		scene_update(scene);
 	}
 
-	/* XXX: Shutdown render before the game. Render uses game resources. */
 	render_destroy(render);
 
 	scene_destroy(scene);

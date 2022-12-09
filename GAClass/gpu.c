@@ -176,8 +176,8 @@ gpu_t* gpu_create(heap_t* heap, wm_window_t* window)
 	VkApplicationInfo app_info =
 	{
 		.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
-		.pApplicationName = "GA 2022",
-		.pEngineName = "GA 2022",
+		.pApplicationName = "RE Scene",
+		.pEngineName = "Real Engine",
 		.apiVersion = VK_API_VERSION_1_2,
 	};
 
@@ -2248,7 +2248,8 @@ void init_imgui(gpu_t* gpu, wm_window_t* window) {
 	(void) io;
 
 	// Init for Win32
-	ImGui_ImplWin32_Init(wm_get_hwnd(window));
+	HWND hwnd = wm_get_hwnd(window);
+	ImGui_ImplWin32_Init(hwnd);
 
 	// Init for Vulkan
 	ImGui_ImplVulkan_InitInfo init_info = {

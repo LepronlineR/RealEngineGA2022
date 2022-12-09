@@ -223,8 +223,8 @@ static void ImGui_ImplVulkan_SetupRenderState(ImDrawData* draw_data, VkCommandBu
     // Bind Vertex And Index Buffer:
     if (draw_data->TotalVtxCount > 0)
     {
-        VkBuffer vertex_buffers[1] = { rb->VertexBuffer };
-        VkDeviceSize vertex_offset[1] = { 0 };
+        VkBuffer vertex_buffers[1] = { {rb->VertexBuffer} };
+        VkDeviceSize vertex_offset[1] = { {0} };
         vkCmdBindVertexBuffers(command_buffer, 0, 1, vertex_buffers, vertex_offset);
         vkCmdBindIndexBuffer(command_buffer, rb->IndexBuffer, 0, sizeof(ImDrawIdx) == 2 ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32);
     }
@@ -380,14 +380,18 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
             vtx_dst += cmd_list->VtxBuffer.Size;
             idx_dst += cmd_list->IdxBuffer.Size;
         }
-        VkMappedMemoryRange* range = alloca(sizeof(VkMappedMemoryRange) * 2);
-        for (int i = 0; i < 2; i++) {
-            range[i] = (VkMappedMemoryRange){
+        VkMappedMemoryRange range[2] = {
+            {
                 .sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
                 .memory = rb->VertexBufferMemory,
                 .size = VK_WHOLE_SIZE,
-            };
-        }
+            },
+            {
+                .sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+                .memory = rb->IndexBufferMemory,
+                .size = VK_WHOLE_SIZE,
+            }
+        };
 
         err = vkFlushMappedMemoryRanges(v->Device, 2, range);
         check_vk_result(err);
@@ -520,29 +524,24 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
 
     // Update the Descriptor Set:
     {
-        VkDescriptorImageInfo* desc_image = alloca(sizeof(VkDescriptorImageInfo) * 1);
-        for (int i = 0; i < 1; ++i)
-        {
-            desc_image[i] = (VkDescriptorImageInfo)
+        VkDescriptorImageInfo desc_image[1] = {
             {
                 .sampler = g_FontSampler,
                 .imageView = g_FontView,
                 .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-            };
-        }
+            }
+        };
 
-        VkWriteDescriptorSet* write_desc = alloca(sizeof(VkWriteDescriptorSet) * 1);
-        for (int i = 0; i < 1; ++i)
-        {
-            write_desc[i] = (VkWriteDescriptorSet)
+        VkWriteDescriptorSet write_desc[1] = {
             {
                 .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
                 .dstSet = g_DescriptorSet,
                 .descriptorCount = 1,
                 .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
                 .pImageInfo = desc_image,
-            };
-        }
+            }
+        };
+
         vkUpdateDescriptorSets(v->Device, 1, write_desc, 0, NULL);
     }
 
@@ -580,16 +579,13 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
         check_vk_result(err);
         memcpy(map, pixels, upload_size);
 
-        VkMappedMemoryRange* range = alloca(sizeof(VkWriteDescriptorSet) * 1);
-        for (int i = 0; i < 1; ++i)
-        {
-            range[i] = (VkMappedMemoryRange)
+        VkMappedMemoryRange range[1] = {
             {
                 .sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
                 .memory = g_UploadBufferMemory,
                 .size = upload_size
-            };
-        }
+            }
+        };
 
         err = vkFlushMappedMemoryRanges(v->Device, 1, range);
         check_vk_result(err);
@@ -632,10 +628,7 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
 
         vkCmdCopyBufferToImage(command_buffer, g_UploadBuffer, g_FontImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-        VkImageMemoryBarrier* use_barrier = alloca(sizeof(VkImageMemoryBarrier) * 1);
-        for (int i = 0; i < 1; ++i)
-        {
-            use_barrier[i] = (VkImageMemoryBarrier)
+        VkImageMemoryBarrier use_barrier[1] = {
             {
                 .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
                 .srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
@@ -648,8 +641,8 @@ bool ImGui_ImplVulkan_CreateFontsTexture(VkCommandBuffer command_buffer)
                 .subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                 .subresourceRange.levelCount = 1,
                 .subresourceRange.layerCount = 1,
-            };
-        }
+            }
+        };
 
         vkCmdPipelineBarrier(command_buffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, NULL, 0, NULL, 1, use_barrier);
     }
@@ -997,6 +990,50 @@ void ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count)
 // (The ImGui_ImplVulkanH_XXX functions do not interact with any of the state used by the regular ImGui_ImplVulkan_XXX functions)
 //-------------------------------------------------------------------------
 
+VkSurfaceFormatKHR ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physical_device, VkSurfaceKHR surface, const VkFormat* request_formats, int request_formats_count, VkColorSpaceKHR request_color_space)
+{
+    IM_ASSERT(request_formats != NULL);
+    IM_ASSERT(request_formats_count > 0);
+
+    // Per Spec Format and View Format are expected to be the same unless VK_IMAGE_CREATE_MUTABLE_BIT was set at image creation
+    // Assuming that the default behavior is without setting this bit, there is no need for separate Swapchain image and image view format
+    // Additionally several new color spaces were introduced with Vulkan Spec v1.0.40,
+    // hence we must make sure that a format with the mostly available color space, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR, is found and used.
+    uint32_t avail_count;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &avail_count, NULL);
+
+    VkSurfaceFormatKHR* avail_format = alloca(sizeof(VkSurfaceFormatKHR) * avail_count);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &avail_count, avail_format);
+
+    // First check if only one format, VK_FORMAT_UNDEFINED, is available, which would imply that any format is available
+    if (avail_count == 1)
+    {
+        if (avail_format[0].format == VK_FORMAT_UNDEFINED)
+        {
+            VkSurfaceFormatKHR ret;
+            ret.format = request_formats[0];
+            ret.colorSpace = request_color_space;
+            return ret;
+        }
+        else
+        {
+            // No point in searching another format
+            return avail_format[0];
+        }
+    }
+    else
+    {
+        // Request several formats, the first found will be used
+        for (int request_i = 0; request_i < request_formats_count; request_i++)
+            for (uint32_t avail_i = 0; avail_i < avail_count; avail_i++)
+                if (avail_format[avail_i].format == request_formats[request_i] && avail_format[avail_i].colorSpace == request_color_space)
+                    return avail_format[avail_i];
+
+        // If none of the requested image formats could be found, use the first available
+        return avail_format[0];
+    }
+}
+
 VkPresentModeKHR ImGui_ImplVulkanH_SelectPresentMode(VkPhysicalDevice physical_device, VkSurfaceKHR surface, VkPresentModeKHR* request_modes, int request_modes_count)
 {
     IM_ASSERT(request_modes != NULL);
@@ -1037,24 +1074,29 @@ void ImGui_ImplVulkanH_CreateWindowCommandBuffers(VkPhysicalDevice physical_devi
             check_vk_result(err);
         }
         {
-            VkCommandBufferAllocateInfo info ;
-            info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-            info.commandPool = fd->CommandPool;
-            info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-            info.commandBufferCount = 1;
+            VkCommandBufferAllocateInfo info = {
+                .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+                .commandPool = fd->CommandPool,
+                .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+                .commandBufferCount = 1,
+            };
+            
             err = vkAllocateCommandBuffers(device, &info, &fd->CommandBuffer);
             check_vk_result(err);
         }
         {
-            VkFenceCreateInfo info ;
-            info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-            info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+            VkFenceCreateInfo info = {
+                .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+                .flags = VK_FENCE_CREATE_SIGNALED_BIT,
+            };
+
             err = vkCreateFence(device, &info, allocator, &fd->Fence);
             check_vk_result(err);
         }
         {
-            VkSemaphoreCreateInfo info ;
-            info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+            VkSemaphoreCreateInfo info = {
+                .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
+            };
             err = vkCreateSemaphore(device, &info, allocator, &fsd->ImageAcquiredSemaphore);
             check_vk_result(err);
             err = vkCreateSemaphore(device, &info, allocator, &fsd->RenderCompleteSemaphore);

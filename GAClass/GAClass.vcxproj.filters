@@ -132,6 +132,12 @@
     <ClCompile Include="imgui_impl_win32.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="temp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_glfw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wm.h">
@@ -302,6 +308,9 @@
     <ClInclude Include="imgui_impl_win32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="imgui_impl_glfw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag">
@@ -334,6 +343,7 @@
     <None Include="shaders\ui-vert.spv">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\temp.png">
