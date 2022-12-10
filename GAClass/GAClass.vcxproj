@@ -189,7 +189,6 @@
     <ClCompile Include="scene.c" />
     <ClCompile Include="semaphore.c" />
     <ClCompile Include="simple_game.c" />
-    <ClCompile Include="temp.c" />
     <ClCompile Include="thread.c" />
     <ClCompile Include="timeofday.c" />
     <ClCompile Include="timer.c" />

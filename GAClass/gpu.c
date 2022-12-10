@@ -12,13 +12,13 @@
 
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include "cimgui.h"
-#define CIMGUI_USE_WIN32
-#define CIMGUI_USE_VULKAN
 #include "cimgui_impl.h"
 
 #define IMGUI_VERSION               "1.89.1 WIP"
 #define IMGUI_CHECKVERSION()        igDebugCheckVersionAndDataLayout(IMGUI_VERSION, sizeof(ImGuiIO), sizeof(ImGuiStyle), sizeof(ImVec2), sizeof(ImVec4), sizeof(ImDrawVert), sizeof(ImDrawIdx))
-#define IM_ARRAYSIZE(_ARR)          ((int)(sizeof(_ARR) / sizeof(*_ARR)))  
+#define IM_UNUSED(_VAR)  ((void)(_VAR))
+#define IM_ASSERT(_EXPR) assert(_EXPR)
+#define IM_ARRAYSIZE(_ARR) ((int)(sizeof(_ARR) / sizeof(*(_ARR))))
 
 typedef struct gpu_cmd_buffer_t
 {
@@ -2238,7 +2238,6 @@ uint32_t gpu_get_frame_height(gpu_t* gpu) {
 VkCommandPool gpu_get_command_pool(gpu_t* gpu) {
 	return gpu->cmd_pool;
 }
-
 /*
 void init_imgui(gpu_t* gpu, wm_window_t* window) {
 	// Setup Dear ImGui binding
