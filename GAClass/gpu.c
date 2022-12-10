@@ -10,8 +10,11 @@
 #include <malloc.h>
 #include <string.h>
 
-#include "imgui_impl_vulkan.h"
-#include "imgui_impl_win32.h"
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#include "cimgui.h"
+#define CIMGUI_USE_VULKAN
+#define CIMGUI_USE_WINDOWS
+#include "cimgui_impl.h"
 
 #define IMGUI_VERSION               "1.89.1 WIP"
 #define IMGUI_CHECKVERSION()        igDebugCheckVersionAndDataLayout(IMGUI_VERSION, sizeof(ImGuiIO), sizeof(ImGuiStyle), sizeof(ImVec2), sizeof(ImVec4), sizeof(ImDrawVert), sizeof(ImDrawIdx))
@@ -2295,6 +2298,6 @@ void imgui_draw(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer) {
 	// render
 	igRender();
 	ImDrawData* draw_data = igGetDrawData();
-	ImGui_ImplVulkan_RenderDrawData(draw_data, cmd_buffer->buffer);
+	ImGui_ImplVulkan_RenderDrawData(draw_data, cmd_buffer->buffer, NULL);
 }
 

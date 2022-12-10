@@ -1,6 +1,6 @@
-#pragma once
-//#ifndef _X_
-//#define _X_
+//#pragma once
+#ifndef _X_
+#define _X_
 
 // Atomic operations on 32-bit integers.
 
@@ -30,4 +30,4 @@ int atomic_load(int* address);
 // Paired with an atomic_load, can guarantee ordering and visibility.
 void atomic_store(int* address, int value);
 
-//#endif
+#endif

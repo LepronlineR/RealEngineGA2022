@@ -87,13 +87,14 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\Debug;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\cimgui\imgui;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\cimgui\backend_test\example_glfw_opengl3\..\..\generator\output</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;$(ProjectDir)include\SDL2\include;$(ProjectDir)include\cimgui\generator\output;$(ProjectDir)include\cimgui;$(ProjectDir)include\cimgui\imgui\backends;$(ProjectDir)include\cimgui\imgui</AdditionalIncludeDirectories>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;cimgui.lib;glfw3.lib;SDL.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\Debug;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\GLFW;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\SDL</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;cimgui.lib;glfw3.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)include;$(ProjectDir)include\vulkan;$(ProjectDir)include\cimgui\lib;$(ProjectDir)include\GLFW;$(ProjectDir)include\SDL;$(ProjectDir)include\SDL2\include\SDL2\lib\x64;$(ProjectDir)include\SDL2\lib\x64</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -121,13 +122,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\Debug;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\cimgui\imgui;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\cimgui\backend_test\example_glfw_opengl3\..\..\generator\output</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;$(ProjectDir)include\SDL2\include;$(ProjectDir)include\cimgui\generator\output;$(ProjectDir)include\cimgui;$(ProjectDir)include\cimgui\imgui\backends;$(ProjectDir)include\cimgui\imgui</AdditionalIncludeDirectories>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;cimgui.lib;glfw3.lib;SDL.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\vulkan;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\Debug;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\GLFW;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\SDL</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;cimgui.lib;glfw3.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)include;$(ProjectDir)include\vulkan;$(ProjectDir)include\cimgui\lib;$(ProjectDir)include\GLFW;$(ProjectDir)include\SDL;$(ProjectDir)include\SDL2\include\SDL2\lib\x64;$(ProjectDir)include\SDL2\lib\x64</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -160,9 +162,6 @@
     <ClCompile Include="hw1.c" />
     <ClCompile Include="hw2.c" />
     <ClCompile Include="hw3.c" />
-    <ClCompile Include="imgui_impl_glfw.c" />
-    <ClCompile Include="imgui_impl_vulkan.c" />
-    <ClCompile Include="imgui_impl_win32.c" />
     <ClCompile Include="include\lz4\lz4.c" />
     <ClCompile Include="include\lz4\lz4file.c" />
     <ClCompile Include="include\lz4\lz4frame.c" />
@@ -180,7 +179,6 @@
     <ClCompile Include="scene.c" />
     <ClCompile Include="semaphore.c" />
     <ClCompile Include="simple_game.c" />
-    <ClCompile Include="temp.c" />
     <ClCompile Include="thread.c" />
     <ClCompile Include="timeofday.c" />
     <ClCompile Include="timer.c" />
@@ -218,9 +216,6 @@
     <ClInclude Include="hw1.h" />
     <ClInclude Include="hw2.h" />
     <ClInclude Include="hw3.h" />
-    <ClInclude Include="imgui_impl_glfw.h" />
-    <ClInclude Include="imgui_impl_vulkan.h" />
-    <ClInclude Include="imgui_impl_win32.h" />
     <ClInclude Include="include\lz4\lz4.h" />
     <ClInclude Include="include\lz4\lz4file.h" />
     <ClInclude Include="include\lz4\lz4frame.h" />
@@ -267,17 +262,15 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="packages\sdl2.nuget.redist.2.26.1\build\native\sdl2.nuget.redist.targets" Condition="Exists('packages\sdl2.nuget.redist.2.26.1\build\native\sdl2.nuget.redist.targets')" />
-    <Import Project="packages\sdl2.nuget.2.26.1\build\native\sdl2.nuget.targets" Condition="Exists('packages\sdl2.nuget.2.26.1\build\native\sdl2.nuget.targets')" />
     <Import Project="packages\SDL.redist.1.2.15.16\build\native\SDL.redist.targets" Condition="Exists('packages\SDL.redist.1.2.15.16\build\native\SDL.redist.targets')" />
-    <Import Project="packages\SDL.1.2.15.16\build\native\SDL.targets" Condition="Exists('packages\SDL.1.2.15.16\build\native\SDL.targets')" />
+    <Import Project="packages\sdl2.nuget.2.26.1\build\native\sdl2.nuget.targets" Condition="Exists('packages\sdl2.nuget.2.26.1\build\native\sdl2.nuget.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\sdl2.nuget.redist.2.26.1\build\native\sdl2.nuget.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sdl2.nuget.redist.2.26.1\build\native\sdl2.nuget.redist.targets'))" />
-    <Error Condition="!Exists('packages\sdl2.nuget.2.26.1\build\native\sdl2.nuget.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sdl2.nuget.2.26.1\build\native\sdl2.nuget.targets'))" />
     <Error Condition="!Exists('packages\SDL.redist.1.2.15.16\build\native\SDL.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SDL.redist.1.2.15.16\build\native\SDL.redist.targets'))" />
-    <Error Condition="!Exists('packages\SDL.1.2.15.16\build\native\SDL.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SDL.1.2.15.16\build\native\SDL.targets'))" />
+    <Error Condition="!Exists('packages\sdl2.nuget.2.26.1\build\native\sdl2.nuget.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sdl2.nuget.2.26.1\build\native\sdl2.nuget.targets'))" />
   </Target>
 </Project>
