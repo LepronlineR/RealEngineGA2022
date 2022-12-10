@@ -126,6 +126,9 @@
     <ClCompile Include="gpu.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="temp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wm.h">

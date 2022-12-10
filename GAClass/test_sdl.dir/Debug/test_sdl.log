@@ -1,0 +1,3 @@
+﻿  main.c
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\backend_test\example_sdl_vulkan\main.c(378,18): warning C4090: 'function': different 'const' qualifiers
+  test_sdl.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\Debug\test_sdl.exe

@@ -13,9 +13,6 @@
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include "cimgui/cimgui.h"
 
-#include "imgui_impl_vulkan.h"
-#include "imgui_impl_win32.h"
-
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <string.h>

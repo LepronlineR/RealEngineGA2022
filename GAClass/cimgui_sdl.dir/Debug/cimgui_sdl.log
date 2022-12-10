@@ -1,0 +1,12 @@
+﻿  Building Custom Rule C:/Users/getog/Desktop/GA2022/RealEngineGA2022/GAClass/include/cimgui/backend_test/example_sdl_vulkan/CMakeLists.txt
+  cimgui.cpp
+  imgui.cpp
+  imgui_draw.cpp
+  imgui_demo.cpp
+  imgui_widgets.cpp
+  imgui_tables.cpp
+  imgui_impl_vulkan.cpp
+  imgui_impl_sdl.cpp
+  Generating Code...
+     Creating library C:/Users/getog/Desktop/GA2022/RealEngineGA2022/GAClass/Debug/cimgui_sdl.lib and object C:/Users/getog/Desktop/GA2022/RealEngineGA2022/GAClass/Debug/cimgui_sdl.exp
+  cimgui_sdl.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\Debug\cimgui_sdl.dll

@@ -12,8 +12,8 @@
 
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include "cimgui.h"
+#define CIMGUI_USE_WIN32
 #define CIMGUI_USE_VULKAN
-#define CIMGUI_USE_WINDOWS
 #include "cimgui_impl.h"
 
 #define IMGUI_VERSION               "1.89.1 WIP"
@@ -2239,6 +2239,7 @@ VkCommandPool gpu_get_command_pool(gpu_t* gpu) {
 	return gpu->cmd_pool;
 }
 
+/*
 void init_imgui(gpu_t* gpu, wm_window_t* window) {
 	// Setup Dear ImGui binding
 	IMGUI_CHECKVERSION();
@@ -2300,4 +2301,4 @@ void imgui_draw(gpu_t* gpu, gpu_cmd_buffer_t* cmd_buffer) {
 	ImDrawData* draw_data = igGetDrawData();
 	ImGui_ImplVulkan_RenderDrawData(draw_data, cmd_buffer->buffer, NULL);
 }
-
+*/

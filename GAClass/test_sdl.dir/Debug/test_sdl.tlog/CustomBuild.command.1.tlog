@@ -1,0 +1,10 @@
+^C:\USERS\GETOG\DESKTOP\GA2022\REALENGINEGA2022\GACLASS\INCLUDE\CIMGUI\BACKEND_TEST\EXAMPLE_SDL_VULKAN\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/getog/Desktop/GA2022/RealEngineGA2022/GAClass/include/cimgui/backend_test/example_sdl_vulkan -BC:/Users/getog/Desktop/GA2022/RealEngineGA2022/GAClass --check-stamp-file C:/Users/getog/Desktop/GA2022/RealEngineGA2022/GAClass/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -74,28 +74,34 @@
     <ExecutablePath>C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include;$(ExecutablePath)</ExecutablePath>
     <IncludePath>C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include;$(LibraryPath)</LibraryPath>
+    <TargetName>Real Engine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ExecutablePath>C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include;$(ExecutablePath)</ExecutablePath>
     <IncludePath>C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include;$(LibraryPath)</LibraryPath>
+    <TargetName>Real Engine</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;CIMGUI_USE_VULKAN;CIMGUI_USE_SDL;IMGUI_DISABLE_OBSOLETE_FUNCTIONS=1;IMGUI_IMPL_API=extern "C" __declspec(dllexport);CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ConformanceMode>Default</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;$(ProjectDir)include\SDL2\include;$(ProjectDir)include\cimgui\generator\output;$(ProjectDir)include\cimgui;$(ProjectDir)include\cimgui\imgui\backends;$(ProjectDir)include\cimgui\imgui</AdditionalIncludeDirectories>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;$(ProjectDir)include\SDL2\include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\backend_test\example_sdl_vulkan\..\..\imgui;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\backend_test\example_sdl_vulkan\..\..;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\backend_test\example_sdl_vulkan\..\..\generator\output;C:\VulkanSDK\1.3.231.1\cmake\SDL2\include;C:\VulkanSDK\1.3.231.1\cmake\SDL2\include\SDL2;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include</AdditionalIncludeDirectories>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <UseFullPaths>false</UseFullPaths>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;cimgui.lib;glfw3.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;Debug\cimgui_sdl.lib;glfw3.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)include;$(ProjectDir)include\vulkan;$(ProjectDir)include\cimgui\lib;$(ProjectDir)include\GLFW;$(ProjectDir)include\SDL;$(ProjectDir)include\SDL2\include\SDL2\lib\x64;$(ProjectDir)include\SDL2\lib\x64</AdditionalLibraryDirectories>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -119,18 +125,22 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;CIMGUI_USE_VULKAN;CIMGUI_USE_SDL;IMGUI_DISABLE_OBSOLETE_FUNCTIONS=1;IMGUI_IMPL_API=extern "C" __declspec(dllexport);CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ConformanceMode>Default</ConformanceMode>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;$(ProjectDir)include\SDL2\include;$(ProjectDir)include\cimgui\generator\output;$(ProjectDir)include\cimgui;$(ProjectDir)include\cimgui\imgui\backends;$(ProjectDir)include\cimgui\imgui</AdditionalIncludeDirectories>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\vulkan;$(ProjectDir)include;$(ProjectDir)include\SDL2\include;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\backend_test\example_sdl_vulkan\..\..\imgui;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\backend_test\example_sdl_vulkan\..\..;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include\cimgui\backend_test\example_sdl_vulkan\..\..\generator\output;C:\VulkanSDK\1.3.231.1\cmake\SDL2\include;C:\VulkanSDK\1.3.231.1\cmake\SDL2\include\SDL2;C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\include</AdditionalIncludeDirectories>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <UseFullPaths>false</UseFullPaths>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;cimgui.lib;glfw3.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DbgHelp.lib;vulkan-1.lib;Debug\cimgui_sdl.lib;glfw3.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)include;$(ProjectDir)include\vulkan;$(ProjectDir)include\cimgui\lib;$(ProjectDir)include\GLFW;$(ProjectDir)include\SDL;$(ProjectDir)include\SDL2\include\SDL2\lib\x64;$(ProjectDir)include\SDL2\lib\x64</AdditionalLibraryDirectories>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -179,6 +189,7 @@
     <ClCompile Include="scene.c" />
     <ClCompile Include="semaphore.c" />
     <ClCompile Include="simple_game.c" />
+    <ClCompile Include="temp.c" />
     <ClCompile Include="thread.c" />
     <ClCompile Include="timeofday.c" />
     <ClCompile Include="timer.c" />
@@ -258,6 +269,14 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\temp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="cimgui_sdl.vcxproj">
+      <Project>{8b63edcf-5f25-3e32-be67-d9e7667d4f26}</Project>
+    </ProjectReference>
+    <ProjectReference Include="ZERO_CHECK.vcxproj">
+      <Project>{39c17e6d-c5eb-3b5f-8a57-c94c16fed974}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

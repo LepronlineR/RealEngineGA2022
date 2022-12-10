@@ -206,7 +206,7 @@ static int render_thread_func(void* user)
 	int frame_index = 0;
 
 	if (render->render_mode == k_imgui_mode) {
-		init_imgui(render->gpu, render->window);
+		//init_imgui(render->gpu, render->window);
 	}
 
 	while (true)
@@ -283,7 +283,7 @@ static int render_thread_func(void* user)
 			gpu_cmd_draw(render->gpu, cmdbuf);
 		}
 		else if (*type == k_command_imgui) {
-			imgui_draw(render->gpu, cmdbuf);
+			//imgui_draw(render->gpu, cmdbuf);
 		}
 
 		heap_free(render->heap, type);
