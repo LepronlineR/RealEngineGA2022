@@ -1016,11 +1016,12 @@ static void IMGUI_HIERARCHY(scene_t* scene) {
 
 				// name
 				igText(name_comp->name);
-				//char* changeName = heap_alloc(scene->heap, sizeof(char), 1);
-				//char changeName[512];
-				//memset(changeName, 0, sizeof(changeName));
+
+				char changeName[32];
+				memset(changeName, 0, sizeof(changeName));
 				//igInputText(changeName, name_comp->name, sizeof(changeName), 0, NULL, NULL);
 				//strcpy_s(name_comp->name, sizeof(changeName), changeName);
+				
 				// transform
 				{
 					// position
@@ -1077,6 +1078,9 @@ static void IMGUI_HIERARCHY(scene_t* scene) {
 					igSameLine(0.0f, -1.0f);
 					igText(">");
 
+					// add a collider component
+					if (igButton("Add Collider Component", defButtonSize))
+						add_collider(scene, scene->current_entity);
 
 					name_component_t* name_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->name_type, false);
 					if (name_comp != NULL) {
@@ -1085,6 +1089,14 @@ static void IMGUI_HIERARCHY(scene_t* scene) {
 					transform_component_t* transform_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->transform_type, false);
 					if (transform_comp != NULL) {
 						igText("[Transform Component]");
+					}
+					collider_component_t* collider_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->collider_type, false);
+					if (collider_comp != NULL) {
+						igText("[Collider Component]");
+					}
+					model_component_t* model_comp = ecs_entity_get_component(scene->ecs, scene->current_entity, scene->model_type, false);
+					if (model_comp != NULL) {
+						igText("[Model Component]");
 					}
 				}
 			}

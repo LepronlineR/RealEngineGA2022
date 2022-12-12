@@ -15,17 +15,17 @@ C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(990,43): warning 
 C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(990,39): warning C4024: 'igBeginTabItem': different types for formal and actual parameter 3
 C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1012,44): warning C4047: 'function': 'ImGuiTabItemFlags' differs in levels of indirection from 'void *'
 C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1012,40): warning C4024: 'igBeginTabItem': different types for formal and actual parameter 3
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1032,29): warning C4090: 'function': different 'const' qualifiers
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1036,29): warning C4090: 'function': different 'const' qualifiers
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1040,29): warning C4090: 'function': different 'const' qualifiers
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1050,29): warning C4090: 'function': different 'const' qualifiers
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1054,29): warning C4090: 'function': different 'const' qualifiers
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1058,29): warning C4090: 'function': different 'const' qualifiers
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1067,29): warning C4090: 'function': different 'const' qualifiers
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1071,29): warning C4090: 'function': different 'const' qualifiers
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1075,29): warning C4090: 'function': different 'const' qualifiers
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1136,45): warning C4047: 'function': 'ImGuiTabItemFlags' differs in levels of indirection from 'void *'
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1136,41): warning C4024: 'igBeginTabItem': different types for formal and actual parameter 3
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1033,29): warning C4090: 'function': different 'const' qualifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1037,29): warning C4090: 'function': different 'const' qualifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1041,29): warning C4090: 'function': different 'const' qualifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1051,29): warning C4090: 'function': different 'const' qualifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1055,29): warning C4090: 'function': different 'const' qualifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1059,29): warning C4090: 'function': different 'const' qualifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1068,29): warning C4090: 'function': different 'const' qualifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1072,29): warning C4090: 'function': different 'const' qualifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1076,29): warning C4090: 'function': different 'const' qualifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1148,45): warning C4047: 'function': 'ImGuiTabItemFlags' differs in levels of indirection from 'void *'
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1148,41): warning C4024: 'igBeginTabItem': different types for formal and actual parameter 3
 C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(985,19): warning C4101: 'flags': unreferenced local variable
-C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1239,15): warning C4090: 'function': different 'const' qualifiers
+C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\scene.c(1251,15): warning C4090: 'function': different 'const' qualifiers
   GAClass.vcxproj -> C:\Users\getog\Desktop\GA2022\RealEngineGA2022\GAClass\x64\Debug\Real Engine.exe
